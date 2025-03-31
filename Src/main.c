@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
+#include "module/hcsr04.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -76,22 +77,36 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
+  /* Configure the system clock */
+  HAL_TIM_Base_Start_IT(&htim2);
 
+  // Use pin PE0 as output for PWM signal
+  // Use pin PE1 as input for echo signal
+  HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_0); // Set PE0 as output
+  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET); // Set PE0 to high
+  HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_1); // Set PE1 as input
+  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_1, GPIO_PIN_RESET); // Set PE1 to low
+
+  // uint8_t hcsr04_delay = 250; // Delay in milliseconds
+  
+  // Initialize the HCSR04 sensor with the trigger pin and echo pin
+  hcsr04_init(GPIOE, GPIO_PIN_0, GPIOE, GPIO_PIN_1);
+  
   /* USER CODE END Init */
 
   /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+  
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM6_Init();
+
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim2);
-  // HAL_TIM_PeriodElapsedCallback(&htim2);
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
