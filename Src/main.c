@@ -34,7 +34,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim1;
 static uint8_t ledState = 0;
 /* USER CODE END PD */
 
@@ -78,19 +78,7 @@ int main(void)
 
   /* USER CODE BEGIN Init */
   /* Configure the system clock */
-  HAL_TIM_Base_Start_IT(&htim2);
-
-  // Use pin PE0 as output for PWM signal
-  // Use pin PE1 as input for echo signal
-  HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_0); // Set PE0 as output
-  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET); // Set PE0 to high
-  HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_1); // Set PE1 as input
-  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_1, GPIO_PIN_RESET); // Set PE1 to low
-
-  // uint8_t hcsr04_delay = 250; // Delay in milliseconds
-  
-  // Initialize the HCSR04 sensor with the trigger pin and echo pin
-  hcsr04_init(GPIOE, GPIO_PIN_0, GPIOE, GPIO_PIN_1);
+  HAL_TIM_Base_Start_IT(&htim1);
   
   /* USER CODE END Init */
 
@@ -104,7 +92,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_TIM6_Init();
-
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   
   /* USER CODE END 2 */
@@ -162,13 +150,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-HAL_TIM_PeriodElapsedCallback(){
-  ledState = (ledState +1) % 4;
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, (ledState == 0));
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, (ledState == 1));
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, (ledState == 2));
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, (ledState == 3));
-}
+
 /* USER CODE END 4 */
 
 /**
