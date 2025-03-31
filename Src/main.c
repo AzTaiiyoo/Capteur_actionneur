@@ -24,6 +24,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
+
+#include "module/hcsr04.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,7 +94,10 @@ int main(void)
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   
+  // Lancement de la PWM sur le canal 1 de TIM1
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1); // Start PWM on TIM1 Channel 1
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0); // Set initial duty cycle to 0%
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
