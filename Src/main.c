@@ -24,7 +24,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
-#include "module/hcsr04.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -34,8 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-TIM_HandleTypeDef htim1;
-static uint8_t ledState = 0;
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -46,7 +44,7 @@ static uint8_t ledState = 0;
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+// TIM_HandleTypeDef htim1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -78,8 +76,7 @@ int main(void)
 
   /* USER CODE BEGIN Init */
   /* Configure the system clock */
-  HAL_TIM_Base_Start_IT(&htim1);
-  
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -95,6 +92,7 @@ int main(void)
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1); // Start PWM on TIM1 Channel 1
   /* USER CODE END 2 */
 
   /* Infinite loop */
