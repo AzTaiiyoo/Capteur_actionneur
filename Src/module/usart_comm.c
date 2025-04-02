@@ -60,46 +60,50 @@ int receiveMessage(char* buffer, size_t maxSize) {
     uint8_t c;
     int index = 0;
     bool startReceived = false;
-    uint32_t startTime = HAL_GetTick();
+    char echoChar[2] = {0}; // Pour l'écho d'un caractère
     
     // Vider le buffer de destination
     memset(buffer, 0, maxSize);
     
-    // Attendre jusqu'au timeout
-    while ((HAL_GetTick() - startTime) < USART_TIMEOUT) {
-        // Lire un caractère
-        if (HAL_UART_Receive(&huart2, &c, 1, 10) == HAL_OK) {
-            // Stocker aussi dans le buffer global pour référence
-            if (index < USART_BUFFER_SIZE - 1) {
-                rxBuffer[index] = c;
-            }
+    // Attendre indéfiniment
+    while (1) {
+        // Lire un caractère avec un timeout beaucoup plus long (3 secondes)
+        if (HAL_UART_Receive(&huart2, &c, 1, 3000) == HAL_OK) {
+            // Créer un écho du caractère reçu
+            echoChar[0] = c;
+            HAL_UART_Transmit(&huart2, (uint8_t*)echoChar, 1, 10);
             
             // Vérifier si c'est le caractère de début
             if (c == '<' && !startReceived) {
                 startReceived = true;
-                index = 0; // Réinitialiser l'index pour le buffer de destination
-                continue; // Passer au caractère suivant
+                index = 0; // Réinitialiser l'index
+                continue;
             }
             
             // Vérifier si c'est le caractère de fin
             if (c == '>' && startReceived) {
                 buffer[index] = '\0'; // Terminer la chaîne
-                rxBuffer[index + 1] = '\0'; // Aussi terminer le buffer global
-                return index; // Retourner la longueur du message
+                HAL_UART_Transmit(&huart2, (uint8_t*)"\r\n", 2, 10);
+                return index; // Commande complète
             }
             
-            // Si on a déjà reçu le caractère de début, stocker les caractères
+            // Si on est en train de recevoir une commande, stocker le caractère
             if (startReceived) {
-                if (index < maxSize - 1) { // Laisser de la place pour '\0'
+                if (index < maxSize - 1) {
                     buffer[index++] = c;
                 } else {
                     // Buffer overflow
-                    return -1;
+                    HAL_UART_Transmit(&huart2, (uint8_t*)"\r\nBuffer overflow\r\n", 18, 100);
+                    startReceived = false;
+                    index = 0;
                 }
             }
+        } else if (startReceived) {
+            // Timeout seulement si on a commencé une commande
+            HAL_UART_Transmit(&huart2, (uint8_t*)"\r\nTimeout pendant la saisie\r\n", 29, 100);
+            startReceived = false;
+            index = 0;
         }
+        // Sinon, on continue d'attendre un début de commande
     }
-    
-    // Timeout atteint sans recevoir un message complet
-    return -1;
 }

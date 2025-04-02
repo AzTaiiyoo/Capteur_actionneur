@@ -1,4 +1,4 @@
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
   11:Src/main.c    ****   *
   12:Src/main.c    ****   * This software is licensed under terms that can be found in the LICENSE file
   13:Src/main.c    ****   * in the root directory of this software component.
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 2
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 2
 
 
   14:Src/main.c    ****   * If no LICENSE file comes with this software, it is provided AS-IS.
@@ -118,7 +118,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
   68:Src/main.c    **** 
   69:Src/main.c    **** /* Private variables ---------------------------------------------------------*/
   70:Src/main.c    **** 
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 3
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 3
 
 
   71:Src/main.c    **** /* USER CODE BEGIN PV */
@@ -178,7 +178,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  125:Src/main.c    **** 
  126:Src/main.c    ****   sendMessage("System ready. Available commands: mode1, mode2, quit");
  127:Src/main.c    ****   /* USER CODE END 2 */
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 4
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 4
 
 
  128:Src/main.c    **** 
@@ -238,7 +238,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  182:Src/main.c    ****   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
  183:Src/main.c    ****   {
  184:Src/main.c    ****     Error_Handler();
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 5
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 5
 
 
  185:Src/main.c    ****   }
@@ -298,7 +298,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
   66 000e 1249     		ldr	r1, .L9+4
   67 0010 2046     		mov	r0, r4
   68 0012 FFF7FEFF 		bl	strcmp
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 6
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 6
 
 
   69              	.LVL2:
@@ -358,7 +358,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  225:Src/main.c    ****       if (value >= 1 && value <= 12) {
  104              		.loc 1 225 10 view .LVU19
  105 0038 0B2A     		cmp	r2, #11
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 7
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 7
 
 
  106 003a F9D8     		bhi	.L3
@@ -418,7 +418,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  152      20312061 
  152      63746976 
  152      61746564 
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 8
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 8
 
 
  152      3A204C45 
@@ -478,7 +478,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  175      616E206F 
  175      6E6C7920 
  175      73657420 
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 9
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 9
 
 
  176 0121 000000   		.align	2
@@ -538,7 +538,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  213 0011 03       		.byte	(.L17-.L14)/2
  214 0012 12       		.byte	(.L16-.L14)/2
  215 0013 21       		.byte	(.L15-.L14)/2
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 10
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 10
 
 
  216 0014 2F       		.byte	(.L13-.L14)/2
@@ -598,7 +598,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  258 003c 184B     		ldr	r3, .L26
  259 003e 0222     		movs	r2, #2
  260 0040 1A70     		strb	r2, [r3]
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 11
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 11
 
 
  256:Src/main.c    ****         sendMessage("Mode 2 activated: LED green + servo follows serial input (1-12)");
@@ -658,7 +658,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  303 0068 FFF7FEFF 		bl	sendMessage
  304              	.LVL24:
  305 006c 15E0     		b	.L11
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 12
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 12
 
 
  306              	.LVL25:
@@ -718,7 +718,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  280:Src/main.c    ****       
  281:Src/main.c    ****     case CMD_NONE:
  282:Src/main.c    ****       sendMessage("Unknown command. Available: mode1, mode2, quit, or value (1-12) in Mode 2");
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 13
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 13
 
 
  344              		.loc 1 282 7 view .LVU69
@@ -778,7 +778,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  395              		.loc 1 194 3 view .LVU74
  197:Src/main.c    ****   
  396              		.loc 1 197 3 view .LVU75
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 14
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 14
 
 
  197:Src/main.c    ****   
@@ -838,7 +838,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  439              		.loc 1 292 1 is_stmt 1 view -0
  440              		.cfi_startproc
  441              		@ args = 0, pretend = 0, frame = 0
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 15
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 15
 
 
  442              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -898,7 +898,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  484 0030 0022     		movs	r2, #0
  485 0032 4FF48051 		mov	r1, #4096
  486 0036 2046     		mov	r0, r4
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 16
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 16
 
 
  487 0038 FFF7FEFF 		bl	HAL_GPIO_WritePin
@@ -958,7 +958,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  511              		.loc 1 313 9 is_stmt 1 view .LVU101
  512 0054 0022     		movs	r2, #0
  513 0056 4FF48051 		mov	r1, #4096
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 17
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 17
 
 
  514 005a 2046     		mov	r0, r4
@@ -1018,7 +1018,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  558              	.L38:
  559              		.align	2
  560              	.L37:
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 18
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 18
 
 
  561 0098 00000000 		.word	lastUpdate.0
@@ -1078,7 +1078,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
   19:Drivers/CMSIS/Include/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
   20:Drivers/CMSIS/Include/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   21:Drivers/CMSIS/Include/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 19
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 19
 
 
   22:Drivers/CMSIS/Include/cmsis_gcc.h ****  * limitations under the License.
@@ -1138,7 +1138,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
   76:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
   77:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
   78:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 20
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 20
 
 
   79:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
@@ -1198,7 +1198,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  133:Drivers/CMSIS/Include/cmsis_gcc.h ****   extern void _start(void) __NO_RETURN;
  134:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  135:Drivers/CMSIS/Include/cmsis_gcc.h ****   typedef struct {
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 21
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 21
 
 
  136:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t const* src;
@@ -1258,7 +1258,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  190:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __TZ_STACK_SEAL_SIZE
  191:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __TZ_STACK_SEAL_SIZE      8U
  192:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 22
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 22
 
 
  193:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -1318,7 +1318,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  247:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Send Event is a hint instruction. It causes an event to be signaled to the CPU.
  248:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  249:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __SEV()                             __ASM volatile ("sev")
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 23
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 23
 
 
  250:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -1378,7 +1378,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  304:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  305:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
  306:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Reverse byte order (16 bit)
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 24
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 24
 
 
  307:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Reverses the byte order within each halfword of a word. For example, 0x12345678 becomes 
@@ -1438,7 +1438,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  361:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    value  is ignored by the processor.
  362:Drivers/CMSIS/Include/cmsis_gcc.h ****                  If required, a debugger can use it to store additional information about the break
  363:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 25
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 25
 
 
  364:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __BKPT(value)                       __ASM volatile ("bkpt "#value)
@@ -1498,7 +1498,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  418:Drivers/CMSIS/Include/cmsis_gcc.h ****   return __builtin_clz(value);
  419:Drivers/CMSIS/Include/cmsis_gcc.h **** }
  420:Drivers/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 26
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 26
 
 
  421:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -1558,7 +1558,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  475:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  476:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __LDREXW(volatile uint32_t *addr)
  477:Drivers/CMSIS/Include/cmsis_gcc.h **** {
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 27
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 27
 
 
  478:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t result;
@@ -1618,7 +1618,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  532:Drivers/CMSIS/Include/cmsis_gcc.h ****    return(result);
  533:Drivers/CMSIS/Include/cmsis_gcc.h **** }
  534:Drivers/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 28
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 28
 
 
  535:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -1678,7 +1678,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  589:Drivers/CMSIS/Include/cmsis_gcc.h ****            The carry input is shifted in at the left end of the bitstring.
  590:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    value  Value to rotate
  591:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               Rotated value
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 29
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 29
 
 
  592:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
@@ -1738,7 +1738,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  646:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
  647:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   LDRT Unprivileged (32 bit)
  648:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Executes a Unprivileged LDRT instruction for 32 bit values.
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 30
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 30
 
 
  649:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to data
@@ -1798,7 +1798,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  703:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]  value  Value to be saturated
  704:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    sat  Bit position to saturate to (1..32)
  705:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return             Saturated value
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 31
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 31
 
 
  706:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
@@ -1858,7 +1858,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  760:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return             value of type uint8_t at (*ptr)
  761:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  762:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint8_t __LDAB(volatile uint8_t *ptr)
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 32
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 32
 
 
  763:Drivers/CMSIS/Include/cmsis_gcc.h **** {
@@ -1918,7 +1918,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  817:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    ptr  Pointer to location
  818:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
  819:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __STLH(uint16_t value, volatile uint16_t *ptr)
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 33
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 33
 
 
  820:Drivers/CMSIS/Include/cmsis_gcc.h **** {
@@ -1978,7 +1978,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  874:Drivers/CMSIS/Include/cmsis_gcc.h **** {
  875:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t result;
  876:Drivers/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 34
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 34
 
 
  877:Drivers/CMSIS/Include/cmsis_gcc.h ****    __ASM volatile ("ldaex %0, %1" : "=r" (result) : "Q" (*ptr) : "memory" );
@@ -2038,7 +2038,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  931:Drivers/CMSIS/Include/cmsis_gcc.h **** 
  932:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif /* ((defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
  933:Drivers/CMSIS/Include/cmsis_gcc.h ****            (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    ) */
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 35
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 35
 
 
  934:Drivers/CMSIS/Include/cmsis_gcc.h **** 
@@ -2098,7 +2098,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  610              		.syntax unified
  611              		.thumb
  612              		.thumb_func
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 36
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 36
 
 
  614              	SystemClock_Config:
@@ -2158,7 +2158,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  658 0030 019A     		ldr	r2, [sp, #4]
  659              	.LBE11:
  158:Src/main.c    ****   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 37
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 37
 
 
  660              		.loc 1 158 3 view .LVU130
@@ -2218,7 +2218,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  168:Src/main.c    ****   {
  698              		.loc 1 168 6 discriminator 1 view .LVU147
  699 005c 60B9     		cbnz	r0, .L45
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 38
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 38
 
 
  175:Src/main.c    ****                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
@@ -2278,7 +2278,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  738              		.loc 1 184 5 view .LVU163
  739 007c FFF7FEFF 		bl	Error_Handler
  740              	.LVL57:
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 39
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 39
 
 
  741              	.L48:
@@ -2338,7 +2338,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  787              	.LVL62:
  118:Src/main.c    ****   MX_USART2_UART_Init();
  788              		.loc 1 118 3 view .LVU170
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 40
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 40
 
 
  789 0016 FFF7FEFF 		bl	MX_UART4_Init
@@ -2398,7 +2398,7 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  837              		.section	.data.servoPosition,"aw"
  840              	servoPosition:
  841 0000 06       		.byte	6
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 41
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 41
 
 
  842              		.global	currentState
@@ -2425,41 +2425,41 @@ ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 1
  865              		.file 18 "Inc/usart.h"
  866              		.file 19 "Inc/gpio.h"
  867              		.file 20 "<built-in>"
-ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s 			page 42
+ARM GAS  /var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s 			page 42
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:21     .rodata.parseCommand.str1.4:00000000 $d
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:34     .text.parseCommand:00000000 $t
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:40     .text.parseCommand:00000000 parseCommand
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:141    .text.parseCommand:00000054 $d
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:840    .data.servoPosition:00000000 servoPosition
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:150    .rodata.processCommand.str1.4:00000000 $d
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:181    .text.processCommand:00000000 $t
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:187    .text.processCommand:00000000 processCommand
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:212    .text.processCommand:00000010 $d
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:361    .text.processCommand:000000a0 $d
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:846    .bss.currentState:00000000 currentState
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:376    .text.handleSerialCommunication:00000000 $t
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:382    .text.handleSerialCommunication:00000000 handleSerialCommunication
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:431    .text.updateSystem:00000000 $t
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:437    .text.updateSystem:00000000 updateSystem
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:561    .text.updateSystem:00000098 $d
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:834    .bss.lastUpdate.0:00000000 lastUpdate.0
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:570    .text.Error_Handler:00000000 $t
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:576    .text.Error_Handler:00000000 Error_Handler
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:608    .text.SystemClock_Config:00000000 $t
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:614    .text.SystemClock_Config:00000000 SystemClock_Config
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:744    .text.SystemClock_Config:00000080 $d
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:750    .rodata.main.str1.4:00000000 $d
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:755    .text.main:00000000 $t
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:761    .text.main:00000000 main
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:825    .text.main:00000044 $d
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:831    .bss.lastUpdate.0:00000000 $d
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:847    .bss.currentState:00000000 $d
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:217    .text.processCommand:00000015 $d
-/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc2HE4ap.s:217    .text.processCommand:00000016 $t
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:21     .rodata.parseCommand.str1.4:00000000 $d
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:34     .text.parseCommand:00000000 $t
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:40     .text.parseCommand:00000000 parseCommand
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:141    .text.parseCommand:00000054 $d
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:840    .data.servoPosition:00000000 servoPosition
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:150    .rodata.processCommand.str1.4:00000000 $d
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:181    .text.processCommand:00000000 $t
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:187    .text.processCommand:00000000 processCommand
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:212    .text.processCommand:00000010 $d
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:361    .text.processCommand:000000a0 $d
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:846    .bss.currentState:00000000 currentState
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:376    .text.handleSerialCommunication:00000000 $t
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:382    .text.handleSerialCommunication:00000000 handleSerialCommunication
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:431    .text.updateSystem:00000000 $t
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:437    .text.updateSystem:00000000 updateSystem
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:561    .text.updateSystem:00000098 $d
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:834    .bss.lastUpdate.0:00000000 lastUpdate.0
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:570    .text.Error_Handler:00000000 $t
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:576    .text.Error_Handler:00000000 Error_Handler
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:608    .text.SystemClock_Config:00000000 $t
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:614    .text.SystemClock_Config:00000000 SystemClock_Config
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:744    .text.SystemClock_Config:00000080 $d
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:750    .rodata.main.str1.4:00000000 $d
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:755    .text.main:00000000 $t
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:761    .text.main:00000000 main
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:825    .text.main:00000044 $d
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:831    .bss.lastUpdate.0:00000000 $d
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:847    .bss.currentState:00000000 $d
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:217    .text.processCommand:00000015 $d
+/var/folders/yr/v27j6cl917jdx7ksvb_6h6k00000gn/T//cc6m4Zuv.s:217    .text.processCommand:00000016 $t
 
 UNDEFINED SYMBOLS
 strcmp
