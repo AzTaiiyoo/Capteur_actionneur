@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "hcsr04.h": "c"
+        "hcsr04.h": "c",
+        "usart_serie.h": "c",
+        "stm32f4xx_hal.h": "c",
+        "stm32f4xx_hal_conf.h": "c"
     }
 }

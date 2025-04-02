@@ -21,21 +21,43 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-
+#include "module/usart_comm.h"
+#include "module/hcsr04.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
-
-#include "module/hcsr04.h"
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+typedef enum {
+  STATE_IDLE,    // État initial/neutre
+  STATE_MODE1,   // Mode 1: LED bleue + servo positionné selon distance HCSR04
+  STATE_MODE2    // Mode 2: LED verte + servo positionné selon consigne série
+} SystemState;
+
+/* Définition des commandes */
+typedef enum {
+  CMD_NONE,
+  CMD_MODE1,
+  CMD_MODE2,
+  CMD_QUIT,
+  CMD_VALUE      // Pour consigne du mode 2
+} Command;
+
+SystemState currentState = STATE_IDLE;
+uint8_t servoPosition = 6;  // Position par défaut (milieu)
 
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+void processCommand(char* command);
+Command parseCommand(char* command);
+void updateSystem(void);
+void handleSerialCommunication(void);
 
 /* USER CODE END PD */
 
@@ -94,12 +116,14 @@ int main(void)
   MX_TIM6_Init();
   MX_TIM1_Init();
   MX_UART4_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   
   // Lancement de la PWM sur le canal 1 de TIM1
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1); // Start PWM on TIM1 Channel 1
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0); // Set initial duty cycle to 0%
 
+  sendMessage("System ready. Available commands: mode1, mode2, quit");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -107,7 +131,14 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+     // Gestion de la communication série
+     handleSerialCommunication();
+    
+     // Mise à jour du système selon l'état courant
+     updateSystem();
+     
+     // Petite pause pour éviter de surcharger le CPU
+     HAL_Delay(10);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -155,7 +186,149 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+/**
+ * @brief Gère la réception des commandes via la liaison série
+ */
+void handleSerialCommunication(void)
+{
+  char cmdBuffer[32];
+  
+  // Essayer de recevoir une commande
+  int result = receiveMessage(cmdBuffer, sizeof(cmdBuffer));
+  
+  if (result >= 0) {
+    // Commande reçue, la traiter
+    processCommand(cmdBuffer);
+  }
+}
 
+/**
+ * @brief Analyse la commande reçue
+ * @param command Chaîne de caractères contenant la commande
+ * @return Type de commande identifiée
+ */
+Command parseCommand(char* command)
+{
+  if (strcmp(command, "mode1") == 0) {
+    return CMD_MODE1;
+  }
+  else if (strcmp(command, "mode2") == 0) {
+    return CMD_MODE2;
+  }
+  else if (strcmp(command, "quit") == 0) {
+    return CMD_QUIT;
+  }
+  else {
+    // Vérifier si c'est une valeur numérique (pour le mode 2)
+    int value;
+    if (sscanf(command, "%d", &value) == 1) {
+      if (value >= 1 && value <= 12) {
+        servoPosition = value;
+        return CMD_VALUE;
+      }
+    }
+  }
+  
+  return CMD_NONE;
+}
+
+/**
+ * @brief Traite la commande reçue et met à jour l'état du système
+ * @param command Chaîne de caractères contenant la commande
+ */
+void processCommand(char* command)
+{
+  Command cmd = parseCommand(command);
+  
+  switch (cmd) {
+    case CMD_MODE1:
+      if (currentState != STATE_MODE1) {
+        currentState = STATE_MODE1;
+        sendMessage("Mode 1 activated: LED blue + servo follows ultrasonic sensor");
+      } else {
+        sendMessage("Already in Mode 1");
+      }
+      break;
+      
+    case CMD_MODE2:
+      if (currentState != STATE_MODE2) {
+        currentState = STATE_MODE2;
+        sendMessage("Mode 2 activated: LED green + servo follows serial input (1-12)");
+      } else {
+        sendMessage("Already in Mode 2");
+      }
+      break;
+      
+    case CMD_QUIT:
+      if (currentState != STATE_IDLE) {
+        currentState = STATE_IDLE;
+        sendMessage("Returned to idle state");
+      } else {
+        sendMessage("Already in idle state");
+      }
+      break;
+      
+    case CMD_VALUE:
+      if (currentState == STATE_MODE2) {
+        char response[50];
+        sprintf(response, "Servo position set to %d", servoPosition);
+        sendMessage(response);
+      } else {
+        sendMessage("Error: Can only set servo position in Mode 2");
+      }
+      break;
+      
+    case CMD_NONE:
+      sendMessage("Unknown command. Available: mode1, mode2, quit, or value (1-12) in Mode 2");
+      break;
+  }
+}
+
+
+/**
+ * @brief Met à jour l'état du système en fonction du mode actuel
+ */
+void updateSystem(void)
+{
+  static uint32_t lastUpdate = 0;
+  uint32_t currentTime = HAL_GetTick();
+  
+  // Mettre à jour l'état toutes les 100ms
+  if (currentTime - lastUpdate >= 100) {
+    lastUpdate = currentTime;
+    
+    switch (currentState) {
+      case STATE_IDLE:
+        // Éteindre toutes les LEDs
+        HAL_GPIO_WritePin(GPIOD, LED_BLEU_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(GPIOD, LED_VERT_Pin, GPIO_PIN_RESET);
+        
+        // Mettre le servo en position neutre
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 75); // Position neutre (~50%)
+        break;
+        
+      case STATE_MODE1:
+        // Allumer la LED bleue, éteindre la LED verte
+        HAL_GPIO_WritePin(GPIOD, LED_BLEU_Pin, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(GPIOD, LED_VERT_Pin, GPIO_PIN_RESET);
+        
+        // TODO: Lire la distance du capteur HCSR04 et ajuster la position du servo
+        // Pour le moment, on simule avec une position fixe
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 50); // ~33%
+        break;
+        
+      case STATE_MODE2:
+        // Allumer la LED verte, éteindre la LED bleue
+        HAL_GPIO_WritePin(GPIOD, LED_VERT_Pin, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(GPIOD, LED_BLEU_Pin, GPIO_PIN_RESET);
+        
+        // Positionner le servo selon la consigne
+        uint32_t pulseWidth = 50 + (servoPosition * 10); // Conversion valeur 1-12 en largeur d'impulsion
+        __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, pulseWidth);
+        break;
+    }
+  }
+}
 /* USER CODE END 4 */
 
 /**
