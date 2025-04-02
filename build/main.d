@@ -24,7 +24,7 @@ build/main.o: Src/main.c Inc/main.h \
  Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h Inc/tim.h \
- Inc/main.h Inc/gpio.h
+ Inc/main.h Inc/gpio.h Src/hcsr04.h
 Inc/main.h:
 Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 Inc/stm32f4xx_hal_conf.h:
@@ -56,3 +56,4 @@ Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 Inc/tim.h:
 Inc/main.h:
 Inc/gpio.h:
+Src/hcsr04.h:

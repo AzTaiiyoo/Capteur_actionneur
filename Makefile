@@ -56,7 +56,8 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c \
 Src/system_stm32f4xx.c \
 Src/tim.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c \
-Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c
+Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c \
+Src/module/hcsr04.c \
 
 # ASM sources
 ASM_SOURCES =  \
@@ -117,6 +118,8 @@ AS_INCLUDES =
 # C includes
 C_INCLUDES =  \
 -IInc \
+-ISrc \
+-ISrc/module \
 -IDrivers/STM32F4xx_HAL_Driver/Inc \
 -IDrivers/STM32F4xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32F4xx/Include \
