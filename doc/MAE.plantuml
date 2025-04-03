@@ -1,0 +1,52 @@
+@startuml
+' Définition du style
+skinparam StateBackgroundColor LightBlue
+skinparam StateBorderColor Blue
+skinparam StateArrowColor Black
+skinparam StateFontStyle bold
+
+' États du système
+state "IDLE" as idle {
+  state "LEDs éteintes" as idle_leds
+  state "Servo en position centrale" as idle_servo
+  idle_leds --> idle_servo
+}
+
+state "MODE1" as mode1 {
+  state "LED bleue allumée" as mode1_led
+  state "Servo suit capteur HC-SR04" as mode1_servo
+  note right of mode1_servo : Position basée sur\ndistance entre 5-25cm
+  mode1_led --> mode1_servo
+}
+
+state "MODE2" as mode2 {
+  state "LED verte allumée" as mode2_led
+  state "Servo suit consigne série" as mode2_servo
+  note right of mode2_servo : Position basée sur\nvaleur reçue (1-12)
+  mode2_led --> mode2_servo
+}
+
+' Transitions
+[*] --> idle : Initialisation
+
+idle --> mode1 : Commande "mode1"
+idle --> mode2 : Commande "mode2"
+
+mode1 --> idle : Commande "quit"
+mode1 --> mode2 : Commande "mode2"
+
+mode2 --> idle : Commande "quit" 
+mode2 --> mode1 : Commande "mode1"
+mode2 --> mode2 : Commande valeur 1-12
+
+note bottom of mode2
+  En mode2, une valeur numérique 
+  entre 1 et 12 modifie la 
+  position du servo sans 
+  changer d'état
+end note
+
+' Gestion particulière hors plage
+mode1 --> mode1 : Capteur hors plage\n(retour position centrale)
+
+@enduml
