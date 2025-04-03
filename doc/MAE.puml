@@ -1,0 +1,42 @@
+@startuml
+' Point de départ
+[*] -down-> idle
+
+' État IDLE
+state "IDLE" as idle {
+  state "LEDs éteintes" as idle_leds
+  state "Servo en position centrale" as idle_servo
+  idle_leds -down-> idle_servo
+}
+
+' État MODE2
+state "MODE2" as mode2 {
+  state "LED verte allumée" as mode2_led
+  state "Servo suit consigne série" as mode2_servo
+  mode2_led -down-> mode2_servo
+  
+  state value_choice <<choice>>
+  mode2_servo -down-> value_choice : Commande\nreçue
+  value_choice -up-> mode2_servo : [Valeur 1-12]
+}
+
+' État MODE1
+state "MODE1" as mode1 {
+  state "LED bleue allumée" as mode1_led
+  state "Servo suit capteur HC-SR04" as mode1_servo
+  mode1_led -down-> mode1_servo
+  
+  state mode1_choice <<choice>>
+  mode1_servo -down-> mode1_choice : Valeur\ndétectée
+  mode1_choice -up-> mode1_servo : [Distance 5-25cm]
+  mode1_choice -right-> idle_servo : [Distance hors plage]
+}
+
+' Transitions entre états principaux
+idle -down-> mode1 : Commande <mode1>
+idle -down-> mode2 : Commande <mode2>
+mode1 -up-> idle : Commande <quit>
+mode2 -up-> idle : Commande <quit>
+mode1 -right-> mode2 : Commande <mode2>
+mode2 -left-> mode1 : Commande <mode1>
+@enduml

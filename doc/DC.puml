@@ -1,0 +1,118 @@
+@startuml
+' Style du diagramme
+skinparam classAttributeIconSize 0
+
+
+' Définition des classes
+class Main {
+  - currentState: SystemState
+  - servoPosition: uint8_t
+  - mode: int
+  + main(): int
+  - handleSerialCommunication(): void
+  - parseCommand(command: char): Command
+  - processCommand(command: char): void
+  - updateSystem(): void
+  - SystemClock_Config(): void
+  - Error_Handler(): void
+}
+
+class HC_SR04 {
+  - trigger_port: GPIO_TypeDef
+  - trigger_pin: uint16_t
+  - echo_port: GPIO_TypeDef
+  - echo_pin: uint16_t
+  - timer: TIM_HandleTypeDef
+  + distance: float
+  +  get_instance(): HC_SR04
+  + init(): void
+  + get_distance(): float
+  + update(mode: int): void
+  - Delay_Microseconds(us: uint32_t): void
+}
+
+class HC_SR04_Constants <<utility>> {
+  +  TRIGGER_PIN: uint16_t = GPIO_PIN_8
+  +  ECHO_PIN: uint16_t = GPIO_PIN_9
+  +  GPIO_PORT: GPIO_TypeDef = GPIOA
+}
+
+class Servo {
+  + init(): void
+  + setPosition(position: uint32_t): void
+  + setToMiddle(): void
+  + distanceToPosition(distance: float): uint32_t
+  + valueToPosition(value: uint8_t): uint32_t
+}
+
+class ServoConstants <<utility>> {
+  +  MIN_POSITION: uint32_t = 1000
+  +  MID_POSITION: uint32_t = 1500
+  +  MAX_POSITION: uint32_t = 2000
+  +  MIN_DISTANCE: float = 5.0f
+  +  MAX_DISTANCE: float = 25.0f
+  +  MIN_VALUE: uint8_t = 1
+  +  MAX_VALUE: uint8_t = 12
+}
+
+class USART_COMM {
+  - rxBuffer: uint8_t[]
+  - txBuffer: uint8_t[]
+  + sendMessage(message: char): void
+  + receiveMessage(buffer: char, maxSize: size_t): int
+}
+
+class USART_Constants <<utility>> {
+  +  TIMEOUT: uint32_t = 1000
+  +  BUFFER_SIZE: size_t = 256
+}
+
+' Énumérations
+enum SystemState {
+  STATE_IDLE
+  STATE_MODE1
+  STATE_MODE2
+}
+
+enum Command {
+  CMD_NONE
+  CMD_MODE1
+  CMD_MODE2
+  CMD_QUIT
+  CMD_VALUE
+}
+
+' Hardware interfaces
+class TIM {
+  + TIM1
+  + TIM3
+}
+
+class GPIO {
+  + GPIOA
+  + GPIOD
+}
+
+class UART {
+  +  huart2
+}
+
+' Relations
+Main "1" --> "1" SystemState : utilise
+Main "1" --> "1" Command : utilise
+Main "1" --> "1" HC_SR04 : utilise
+Main "1" --> "1" Servo : utilise
+Main "1" --> "1" USART_COMM : utilise
+
+HC_SR04 ..> HC_SR04_Constants : utilise
+HC_SR04 ..> TIM : utilise
+HC_SR04 ..> GPIO : utilise
+HC_SR04 ..> USART_COMM : utilise pour logging
+
+Servo ..> ServoConstants : utilise
+Servo ..> TIM : utilise
+
+USART_COMM ..> USART_Constants : utilise
+USART_COMM ..> UART : utilise
+
+@enduml

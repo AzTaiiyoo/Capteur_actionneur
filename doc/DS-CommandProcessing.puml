@@ -1,0 +1,40 @@
+@startuml
+' Participants (modules)
+actor "User" as User
+participant "Main" as Main
+participant "HCSR04" as HCSR04
+participant "Servo" as Servo
+participant "USART_COMM" as USART
+
+title Traitement des commandes utilisateur
+
+' Mise à jour initiale
+Main -> HCSR04: HC_SR04_update(sensor, mode)
+
+' Communication série avec l'utilisateur
+alt message reçu de l'utilisateur
+  User -> USART: envoi commande
+  USART -> Main: receiveMessage() retourne message complet
+  Main -> Main: parseCommand() analyse la commande
+  
+  alt commande = "mode1"
+    Main -> Main: currentState = STATE_MODE1, mode = 1
+    Main -> USART: sendMessage("Mode 1 activated...")
+  else commande = "mode2"
+    Main -> Main: currentState = STATE_MODE2, mode = 2
+    Main -> USART: sendMessage("Mode 2 activated...")
+  else commande = "quit"
+    Main -> Main: currentState = STATE_IDLE
+    Main -> USART: sendMessage("Returned to idle state")
+  else commande = valeur entre 1-12
+    alt si en MODE2
+      Main -> Main: servoPosition = value
+      Main -> USART: sendMessage("Servo position set...")
+    else
+      Main -> USART: sendMessage("Error: Can only set...")
+    end
+  else
+    Main -> USART: sendMessage("Unknown command...")
+  end
+end
+@enduml

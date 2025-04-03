@@ -1,0 +1,29 @@
+@startuml
+' Participants (modules)
+participant "Main" as Main
+participant "HCSR04" as HCSR04
+participant "Servo" as Servo
+
+title Mise à jour du système selon l'état
+
+Main -> Main: updateSystem()
+
+alt currentState == STATE_IDLE
+  Main -> Servo: Servo_SetToMiddle()
+  Main -> Main: Éteindre les LEDs (LED_BLEU_Pin et LED_VERT_Pin)
+else currentState == STATE_MODE1
+  Main -> Main: Allumer LED_BLEU_Pin, éteindre LED_VERT_Pin
+  Main -> HCSR04: récupérer distance actuelle
+  
+  alt distance dans la plage valide (5-25 cm)
+    Main -> Servo: Servo_DistanceToPosition(distance)
+    Main -> Servo: Servo_SetPosition(position)
+  else
+    Main -> Servo: Servo_SetToMiddle()
+  end
+else currentState == STATE_MODE2
+  Main -> Main: Allumer LED_VERT_Pin, éteindre LED_BLEU_Pin
+  Main -> Servo: Servo_ValueToPosition(servoPosition)
+  Main -> Servo: Servo_SetPosition(position)
+end
+@enduml

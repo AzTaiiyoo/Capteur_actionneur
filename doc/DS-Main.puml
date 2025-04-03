@@ -1,0 +1,39 @@
+@startuml
+' Participants (modules)
+actor "User" as User
+participant "Main" as Main
+participant "HCSR04" as HCSR04
+participant "Servo" as Servo
+participant "USART_COMM" as USART
+
+' Initialisation
+== Initialisation ==
+Main -> HCSR04: HC_SR04_init()
+Main -> Servo: Servo_Init()
+Main -> Servo: Servo_SetToMiddle()
+Main -> USART: sendMessage("System ready...")
+
+' Boucle principale avec référence
+== Boucle Principale ==
+loop à chaque itération
+  ref over User, Main, HCSR04, Servo, USART
+    Traitement des commandes utilisateur
+  end ref
+  
+  ref over Main, HCSR04, Servo
+    Mise à jour du système selon l'état
+  end ref
+  
+  Main -> Main: HAL_Delay(10)
+end
+
+' Scénarios de cas d'utilisation typiques
+== Scénarios types ==
+ref over User, Main, HCSR04, Servo, USART
+  Scénario: Mode 1 - Suivi de distance
+end ref
+
+ref over User, Main, Servo, USART
+  Scénario: Mode 2 - Consigne utilisateur
+end ref
+@enduml

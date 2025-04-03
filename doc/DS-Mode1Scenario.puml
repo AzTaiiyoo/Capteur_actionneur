@@ -1,0 +1,23 @@
+@startuml
+' Participants (modules)
+actor "User" as User
+participant "Main" as Main
+participant "HCSR04" as HCSR04
+participant "Servo" as Servo
+participant "USART_COMM" as USART
+
+title Scénario: Mode 1 - Suivi de distance
+
+User -> USART: Envoie "mode1"
+USART -> Main: Notification de commande
+Main -> Main: Passe en MODE1
+Main -> USART: sendMessage("Mode 1 activated...")
+Main -> Main: Allume LED_BLEU_Pin
+
+loop tant que mode = 1
+  HCSR04 -> HCSR04: Mesure distance
+  HCSR04 -> Main: Retourne distance
+  Main -> Servo: Ajuste position selon distance
+  HCSR04 -> USART: Envoie "Distance: XX.XX cm"
+end
+@enduml
