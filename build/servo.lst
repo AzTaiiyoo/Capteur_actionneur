@@ -1,0 +1,356 @@
+ARM GAS  /tmp/ccUDW8Sl.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"servo.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Src/module/servo.c"
+  20              		.section	.text.Servo_Init,"ax",%progbits
+  21              		.align	1
+  22              		.global	Servo_Init
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	Servo_Init:
+  28              	.LFB134:
+   1:Src/module/servo.c **** 
+   2:Src/module/servo.c **** /**
+   3:Src/module/servo.c ****  * @file servo.c
+   4:Src/module/servo.c ****  * @brief Implémentation des fonctions de contrôle du servo-moteur
+   5:Src/module/servo.c ****  */
+   6:Src/module/servo.c **** 
+   7:Src/module/servo.c ****  #include "servo.h"
+   8:Src/module/servo.c ****  #include "tim.h"
+   9:Src/module/servo.c ****  
+  10:Src/module/servo.c ****  /**
+  11:Src/module/servo.c ****   * @brief Initialise le servo-moteur
+  12:Src/module/servo.c ****   * @details Démarre la génération du signal PWM sur TIM3 Channel 1
+  13:Src/module/servo.c ****   */
+  14:Src/module/servo.c ****  void Servo_Init(void) {
+  29              		.loc 1 14 24 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  15:Src/module/servo.c ****      // Démarrer la PWM sur TIM3 Channel 1
+  16:Src/module/servo.c ****      HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+  38              		.loc 1 16 6 view .LVU1
+  39 0002 0021     		movs	r1, #0
+  40 0004 0148     		ldr	r0, .L3
+  41 0006 FFF7FEFF 		bl	HAL_TIM_PWM_Start
+  42              	.LVL0:
+ARM GAS  /tmp/ccUDW8Sl.s 			page 2
+
+
+  17:Src/module/servo.c ****  }
+  43              		.loc 1 17 2 is_stmt 0 view .LVU2
+  44 000a 08BD     		pop	{r3, pc}
+  45              	.L4:
+  46              		.align	2
+  47              	.L3:
+  48 000c 00000000 		.word	htim3
+  49              		.cfi_endproc
+  50              	.LFE134:
+  52              		.section	.text.Servo_SetPosition,"ax",%progbits
+  53              		.align	1
+  54              		.global	Servo_SetPosition
+  55              		.syntax unified
+  56              		.thumb
+  57              		.thumb_func
+  59              	Servo_SetPosition:
+  60              	.LVL1:
+  61              	.LFB135:
+  18:Src/module/servo.c ****  
+  19:Src/module/servo.c ****  /**
+  20:Src/module/servo.c ****   * @brief Positionne le servo à une position spécifique
+  21:Src/module/servo.c ****   * @param position Valeur de comparaison PWM (entre SERVO_MIN_POSITION et SERVO_MAX_POSITION)
+  22:Src/module/servo.c ****   * @details La valeur est automatiquement limitée aux bornes valides
+  23:Src/module/servo.c ****   */
+  24:Src/module/servo.c ****  void Servo_SetPosition(uint32_t position) {
+  62              		.loc 1 24 44 is_stmt 1 view -0
+  63              		.cfi_startproc
+  64              		@ args = 0, pretend = 0, frame = 0
+  65              		@ frame_needed = 0, uses_anonymous_args = 0
+  66              		@ link register save eliminated.
+  25:Src/module/servo.c ****      // Limiter la position aux bornes valides
+  26:Src/module/servo.c ****      if (position < SERVO_MIN_POSITION) position = SERVO_MIN_POSITION;
+  67              		.loc 1 26 6 view .LVU4
+  68              		.loc 1 26 9 is_stmt 0 view .LVU5
+  69 0000 B0F57A7F 		cmp	r0, #1000
+  70 0004 05D3     		bcc	.L7
+  27:Src/module/servo.c ****      if (position > SERVO_MAX_POSITION) position = SERVO_MAX_POSITION;
+  71              		.loc 1 27 6 is_stmt 1 view .LVU6
+  72              		.loc 1 27 9 is_stmt 0 view .LVU7
+  73 0006 B0F5FA6F 		cmp	r0, #2000
+  74 000a 04D9     		bls	.L6
+  75              		.loc 1 27 50 discriminator 1 view .LVU8
+  76 000c 4FF4FA60 		mov	r0, #2000
+  77              	.LVL2:
+  78              		.loc 1 27 50 discriminator 1 view .LVU9
+  79 0010 01E0     		b	.L6
+  80              	.LVL3:
+  81              	.L7:
+  26:Src/module/servo.c ****      if (position > SERVO_MAX_POSITION) position = SERVO_MAX_POSITION;
+  82              		.loc 1 26 50 discriminator 1 view .LVU10
+  83 0012 4FF47A70 		mov	r0, #1000
+  84              	.LVL4:
+  85              	.L6:
+  28:Src/module/servo.c ****      
+  29:Src/module/servo.c ****      // Définir la valeur de comparaison pour la PWM
+  30:Src/module/servo.c ****      __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, position);
+  86              		.loc 1 30 6 is_stmt 1 view .LVU11
+ARM GAS  /tmp/ccUDW8Sl.s 			page 3
+
+
+  87 0016 024B     		ldr	r3, .L9
+  88 0018 1B68     		ldr	r3, [r3]
+  89 001a 5863     		str	r0, [r3, #52]
+  31:Src/module/servo.c ****  }
+  90              		.loc 1 31 2 is_stmt 0 view .LVU12
+  91 001c 7047     		bx	lr
+  92              	.L10:
+  93 001e 00BF     		.align	2
+  94              	.L9:
+  95 0020 00000000 		.word	htim3
+  96              		.cfi_endproc
+  97              	.LFE135:
+  99              		.section	.text.Servo_SetToMiddle,"ax",%progbits
+ 100              		.align	1
+ 101              		.global	Servo_SetToMiddle
+ 102              		.syntax unified
+ 103              		.thumb
+ 104              		.thumb_func
+ 106              	Servo_SetToMiddle:
+ 107              	.LFB136:
+  32:Src/module/servo.c ****  
+  33:Src/module/servo.c ****  /**
+  34:Src/module/servo.c ****   * @brief Positionne le servo au milieu de sa plage de mouvement (90°)
+  35:Src/module/servo.c ****   */
+  36:Src/module/servo.c ****  void Servo_SetToMiddle(void) {
+ 108              		.loc 1 36 31 is_stmt 1 view -0
+ 109              		.cfi_startproc
+ 110              		@ args = 0, pretend = 0, frame = 0
+ 111              		@ frame_needed = 0, uses_anonymous_args = 0
+ 112 0000 08B5     		push	{r3, lr}
+ 113              	.LCFI1:
+ 114              		.cfi_def_cfa_offset 8
+ 115              		.cfi_offset 3, -8
+ 116              		.cfi_offset 14, -4
+  37:Src/module/servo.c ****      Servo_SetPosition(SERVO_MID_POSITION);
+ 117              		.loc 1 37 6 view .LVU14
+ 118 0002 40F2DC50 		movw	r0, #1500
+ 119 0006 FFF7FEFF 		bl	Servo_SetPosition
+ 120              	.LVL5:
+  38:Src/module/servo.c ****  }
+ 121              		.loc 1 38 2 is_stmt 0 view .LVU15
+ 122 000a 08BD     		pop	{r3, pc}
+ 123              		.cfi_endproc
+ 124              	.LFE136:
+ 126              		.section	.text.Servo_DistanceToPosition,"ax",%progbits
+ 127              		.align	1
+ 128              		.global	Servo_DistanceToPosition
+ 129              		.syntax unified
+ 130              		.thumb
+ 131              		.thumb_func
+ 133              	Servo_DistanceToPosition:
+ 134              	.LVL6:
+ 135              	.LFB137:
+  39:Src/module/servo.c ****  
+  40:Src/module/servo.c ****  /**
+  41:Src/module/servo.c ****   * @brief Convertit une distance en position du servo
+  42:Src/module/servo.c ****   * @param distance Distance mesurée en cm (entre SERVO_MIN_DISTANCE et SERVO_MAX_DISTANCE)
+ARM GAS  /tmp/ccUDW8Sl.s 			page 4
+
+
+  43:Src/module/servo.c ****   * @return Valeur de comparaison PWM correspondante pour le servo
+  44:Src/module/servo.c ****   * @details La distance est automatiquement limitée aux bornes valides
+  45:Src/module/servo.c ****   */
+  46:Src/module/servo.c ****  uint32_t Servo_DistanceToPosition(float distance) {
+ 136              		.loc 1 46 52 is_stmt 1 view -0
+ 137              		.cfi_startproc
+ 138              		@ args = 0, pretend = 0, frame = 0
+ 139              		@ frame_needed = 0, uses_anonymous_args = 0
+ 140              		@ link register save eliminated.
+  47:Src/module/servo.c ****      // Limiter la distance aux bornes valides
+  48:Src/module/servo.c ****      if (distance < SERVO_MIN_DISTANCE) distance = SERVO_MIN_DISTANCE;
+ 141              		.loc 1 48 6 view .LVU17
+ 142              		.loc 1 48 9 is_stmt 0 view .LVU18
+ 143 0000 F1EE047A 		vmov.f32	s15, #5.0e+0
+ 144 0004 B4EEE70A 		vcmpe.f32	s0, s15
+ 145 0008 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 146 000c 09D4     		bmi	.L15
+  49:Src/module/servo.c ****      if (distance > SERVO_MAX_DISTANCE) distance = SERVO_MAX_DISTANCE;
+ 147              		.loc 1 49 6 is_stmt 1 view .LVU19
+ 148              		.loc 1 49 9 is_stmt 0 view .LVU20
+ 149 000e F3EE097A 		vmov.f32	s15, #2.5e+1
+ 150 0012 B4EEE70A 		vcmpe.f32	s0, s15
+ 151 0016 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 152 001a 04DD     		ble	.L14
+ 153              		.loc 1 49 50 discriminator 1 view .LVU21
+ 154 001c B3EE090A 		vmov.f32	s0, #2.5e+1
+ 155              	.LVL7:
+ 156              		.loc 1 49 50 discriminator 1 view .LVU22
+ 157 0020 01E0     		b	.L14
+ 158              	.LVL8:
+ 159              	.L15:
+  48:Src/module/servo.c ****      if (distance > SERVO_MAX_DISTANCE) distance = SERVO_MAX_DISTANCE;
+ 160              		.loc 1 48 50 discriminator 1 view .LVU23
+ 161 0022 B1EE040A 		vmov.f32	s0, #5.0e+0
+ 162              	.LVL9:
+ 163              	.L14:
+  50:Src/module/servo.c ****      
+  51:Src/module/servo.c ****      // Conversion linéaire: min_distance->min_position, max_distance->max_position
+  52:Src/module/servo.c ****      return SERVO_MIN_POSITION + (uint32_t)((distance - SERVO_MIN_DISTANCE) * 
+ 164              		.loc 1 52 6 is_stmt 1 view .LVU24
+ 165              		.loc 1 52 55 is_stmt 0 view .LVU25
+ 166 0026 F1EE047A 		vmov.f32	s15, #5.0e+0
+ 167 002a 30EE670A 		vsub.f32	s0, s0, s15
+ 168              	.LVL10:
+ 169              		.loc 1 52 77 view .LVU26
+ 170 002e DFED077A 		vldr.32	s15, .L17
+ 171 0032 20EE270A 		vmul.f32	s0, s0, s15
+  53:Src/module/servo.c ****             (SERVO_MAX_POSITION - SERVO_MIN_POSITION) / 
+ 172              		.loc 1 53 55 view .LVU27
+ 173 0036 B3EE047A 		vmov.f32	s14, #2.0e+1
+ 174 003a C0EE077A 		vdiv.f32	s15, s0, s14
+  52:Src/module/servo.c ****             (SERVO_MAX_POSITION - SERVO_MIN_POSITION) / 
+ 175              		.loc 1 52 34 view .LVU28
+ 176 003e FCEEE77A 		vcvt.u32.f32	s15, s15
+ 177 0042 17EE900A 		vmov	r0, s15	@ int
+  54:Src/module/servo.c ****             (SERVO_MAX_DISTANCE - SERVO_MIN_DISTANCE));
+  55:Src/module/servo.c ****  }
+ARM GAS  /tmp/ccUDW8Sl.s 			page 5
+
+
+ 178              		.loc 1 55 2 view .LVU29
+ 179 0046 00F57A70 		add	r0, r0, #1000
+ 180 004a 7047     		bx	lr
+ 181              	.L18:
+ 182              		.align	2
+ 183              	.L17:
+ 184 004c 00007A44 		.word	1148846080
+ 185              		.cfi_endproc
+ 186              	.LFE137:
+ 188              		.section	.text.Servo_ValueToPosition,"ax",%progbits
+ 189              		.align	1
+ 190              		.global	Servo_ValueToPosition
+ 191              		.syntax unified
+ 192              		.thumb
+ 193              		.thumb_func
+ 195              	Servo_ValueToPosition:
+ 196              	.LVL11:
+ 197              	.LFB138:
+  56:Src/module/servo.c ****  
+  57:Src/module/servo.c ****  /**
+  58:Src/module/servo.c ****   * @brief Convertit une valeur utilisateur en position du servo
+  59:Src/module/servo.c ****   * @param value Valeur utilisateur (entre SERVO_MIN_VALUE et SERVO_MAX_VALUE)
+  60:Src/module/servo.c ****   * @return Valeur de comparaison PWM correspondante pour le servo
+  61:Src/module/servo.c ****   * @details La valeur est automatiquement limitée aux bornes valides
+  62:Src/module/servo.c ****   */
+  63:Src/module/servo.c ****  uint32_t Servo_ValueToPosition(uint8_t value) {
+ 198              		.loc 1 63 48 is_stmt 1 view -0
+ 199              		.cfi_startproc
+ 200              		@ args = 0, pretend = 0, frame = 0
+ 201              		@ frame_needed = 0, uses_anonymous_args = 0
+ 202              		@ link register save eliminated.
+  64:Src/module/servo.c ****      // Limiter la valeur aux bornes valides
+  65:Src/module/servo.c ****      if (value < SERVO_MIN_VALUE) value = SERVO_MIN_VALUE;
+ 203              		.loc 1 65 6 view .LVU31
+ 204              		.loc 1 65 9 is_stmt 0 view .LVU32
+ 205 0000 0346     		mov	r3, r0
+ 206 0002 18B1     		cbz	r0, .L21
+  66:Src/module/servo.c ****      if (value > SERVO_MAX_VALUE) value = SERVO_MAX_VALUE;
+ 207              		.loc 1 66 6 is_stmt 1 view .LVU33
+ 208              		.loc 1 66 9 is_stmt 0 view .LVU34
+ 209 0004 0C28     		cmp	r0, #12
+ 210 0006 02D9     		bls	.L20
+ 211              		.loc 1 66 41 discriminator 1 view .LVU35
+ 212 0008 0C23     		movs	r3, #12
+ 213 000a 00E0     		b	.L20
+ 214              	.L21:
+  65:Src/module/servo.c ****      if (value > SERVO_MAX_VALUE) value = SERVO_MAX_VALUE;
+ 215              		.loc 1 65 41 discriminator 1 view .LVU36
+ 216 000c 0123     		movs	r3, #1
+ 217              	.L20:
+ 218              	.LVL12:
+  67:Src/module/servo.c ****      
+  68:Src/module/servo.c ****      // Conversion linéaire: min_value->min_position, max_value->max_position
+  69:Src/module/servo.c ****      return SERVO_MIN_POSITION + (uint32_t)((value - SERVO_MIN_VALUE) * 
+ 219              		.loc 1 69 6 is_stmt 1 view .LVU37
+ 220              		.loc 1 69 52 is_stmt 0 view .LVU38
+ 221 000e 013B     		subs	r3, r3, #1
+ARM GAS  /tmp/ccUDW8Sl.s 			page 6
+
+
+ 222              	.LVL13:
+ 223              		.loc 1 69 71 view .LVU39
+ 224 0010 4FF47A72 		mov	r2, #1000
+ 225 0014 02FB03F3 		mul	r3, r2, r3
+ 226              	.LVL14:
+  70:Src/module/servo.c ****             (SERVO_MAX_POSITION - SERVO_MIN_POSITION) / 
+ 227              		.loc 1 70 55 view .LVU40
+ 228 0018 044A     		ldr	r2, .L23
+ 229 001a 82FB0312 		smull	r1, r2, r2, r3
+ 230 001e DB17     		asrs	r3, r3, #31
+ 231 0020 C3EB6200 		rsb	r0, r3, r2, asr #1
+  71:Src/module/servo.c ****             (SERVO_MAX_VALUE - SERVO_MIN_VALUE));
+  72:Src/module/servo.c ****  }...
+ 232              		.loc 1 72 2 view .LVU41
+ 233 0024 00F57A70 		add	r0, r0, #1000
+ 234 0028 7047     		bx	lr
+ 235              	.L24:
+ 236 002a 00BF     		.align	2
+ 237              	.L23:
+ 238 002c E9A28B2E 		.word	780903145
+ 239              		.cfi_endproc
+ 240              	.LFE138:
+ 242              		.text
+ 243              	.Letext0:
+ 244              		.file 2 "/usr/lib/gcc/arm-none-eabi/13.2.1/include/stdint.h"
+ 245              		.file 3 "Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h"
+ 246              		.file 4 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 247              		.file 5 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 248              		.file 6 "Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h"
+ 249              		.file 7 "Inc/tim.h"
+ARM GAS  /tmp/ccUDW8Sl.s 			page 7
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 servo.c
+     /tmp/ccUDW8Sl.s:21     .text.Servo_Init:00000000 $t
+     /tmp/ccUDW8Sl.s:27     .text.Servo_Init:00000000 Servo_Init
+     /tmp/ccUDW8Sl.s:48     .text.Servo_Init:0000000c $d
+     /tmp/ccUDW8Sl.s:53     .text.Servo_SetPosition:00000000 $t
+     /tmp/ccUDW8Sl.s:59     .text.Servo_SetPosition:00000000 Servo_SetPosition
+     /tmp/ccUDW8Sl.s:95     .text.Servo_SetPosition:00000020 $d
+     /tmp/ccUDW8Sl.s:100    .text.Servo_SetToMiddle:00000000 $t
+     /tmp/ccUDW8Sl.s:106    .text.Servo_SetToMiddle:00000000 Servo_SetToMiddle
+     /tmp/ccUDW8Sl.s:127    .text.Servo_DistanceToPosition:00000000 $t
+     /tmp/ccUDW8Sl.s:133    .text.Servo_DistanceToPosition:00000000 Servo_DistanceToPosition
+     /tmp/ccUDW8Sl.s:184    .text.Servo_DistanceToPosition:0000004c $d
+     /tmp/ccUDW8Sl.s:189    .text.Servo_ValueToPosition:00000000 $t
+     /tmp/ccUDW8Sl.s:195    .text.Servo_ValueToPosition:00000000 Servo_ValueToPosition
+     /tmp/ccUDW8Sl.s:238    .text.Servo_ValueToPosition:0000002c $d
+
+UNDEFINED SYMBOLS
+HAL_TIM_PWM_Start
+htim3
