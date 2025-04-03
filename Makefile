@@ -60,6 +60,7 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c \
 Src/usart.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c \
 Src/module/usart_comm.c \
+Src/module/hcsr04.c \
 
 # ASM sources
 ASM_SOURCES =  \

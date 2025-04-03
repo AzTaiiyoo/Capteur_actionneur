@@ -23,10 +23,15 @@ build/main.o: Src/main.c Inc/main.h \
  Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h \
  Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
+<<<<<<< HEAD
  Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h Inc/tim.h \
  Inc/main.h Inc/usart.h Inc/gpio.h Src/module/usart_comm.h \
  Src/module/hcsr04.h
+=======
+ Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h Inc/tim.h \
+ Inc/main.h Inc/gpio.h Src/hcsr04.h
+>>>>>>> origin/gestion_du_capteur_HC-SR04
 Inc/main.h:
 Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 Inc/stm32f4xx_hal_conf.h:
@@ -60,5 +65,9 @@ Inc/tim.h:
 Inc/main.h:
 Inc/usart.h:
 Inc/gpio.h:
+<<<<<<< HEAD
 Src/module/usart_comm.h:
 Src/module/hcsr04.h:
+=======
+Src/hcsr04.h:
+>>>>>>> origin/gestion_du_capteur_HC-SR04

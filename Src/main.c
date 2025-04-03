@@ -28,6 +28,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include "hcsr04.h"  // Inclusion du header pour HC-SR04
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -67,9 +68,8 @@ void handleSerialCommunication(void);
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-
 /* USER CODE BEGIN PV */
-// TIM_HandleTypeDef htim1;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -89,9 +89,15 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
-
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
+  
+  // Initialisation du capteur HC-SR04
+  HC_SR04* sensor = HC_SR04_get_instance();  // Obtenir l'instance du capteur HC-SR04
+  if (!sensor) {
+    Error_Handler();  // Si l'initialisation échoue, appeler Error_Handler
+  }
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -100,7 +106,6 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  /* Configure the system clock */
 
   /* USER CODE END Init */
 
@@ -108,12 +113,11 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-  
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_TIM6_Init();
   MX_TIM1_Init();
   MX_UART4_Init();
   MX_USART2_UART_Init();
@@ -124,12 +128,20 @@ int main(void)
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0); // Set initial duty cycle to 0%
 
   sendMessage("System ready. Available commands: mode1, mode2, quit");
+
+  /* USER CODE BEGIN 2 */
+  HC_SR04_init(); // Initialisation du capteur HC-SR04
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    // Mettre à jour la distance et contrôler les LEDs
+    HC_SR04_update(sensor);
+
+    // Attendre 250 ms avant la prochaine mise à jour
+    // HAL_Delay(250);
     /* USER CODE END WHILE */
      // Gestion de la communication série
      handleSerialCommunication();
