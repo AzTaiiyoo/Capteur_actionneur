@@ -1,3 +1,13 @@
+/**
+ * @file main.c
+ * @brief Programme principal pour le système de positionnement servo par distance et commande série
+ * @details Ce fichier contient le programme principal qui contrôle un servo-moteur selon deux
+ * modes d'opération: un mode basé sur la distance mesurée par un capteur HC-SR04 et
+ * un mode basé sur des commandes reçues via la liaison série.
+ * @author STM32 Team
+ * @date 2025
+ */
+
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
@@ -21,19 +31,84 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+#include "module/hcsr04.h"
+#include "module/servo.h"
+#include "module/usart_comm.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+/**
+ * @typedef SystemState
+ * @brief Énumération des états possibles du système
+ */
+typedef enum {
+  STATE_IDLE,    /**< État initial/neutre */
+  STATE_MODE1,   /**< Mode 1: LED bleue + servo positionné selon distance HCSR04 */
+  STATE_MODE2    /**< Mode 2: LED verte + servo positionné selon consigne série */
+} SystemState;
 
+/**
+ * @typedef Command
+ * @brief Énumération des commandes reconnues par le système
+ */
+typedef enum {
+  CMD_NONE,     /**< Aucune commande ou commande non reconnue */
+  CMD_MODE1,    /**< Commande pour activer le mode 1 */
+  CMD_MODE2,    /**< Commande pour activer le mode 2 */
+  CMD_QUIT,     /**< Commande pour revenir à l'état IDLE */
+  CMD_VALUE     /**< Valeur numérique pour positionner le servo en mode 2 */
+} Command;
+
+/**
+ * @var currentState
+ * @brief État actuel du système
+ */
+SystemState currentState = STATE_IDLE;
+
+/**
+ * @var servoPosition
+ * @brief Position actuelle demandée pour le servo (de 1 à 12)
+ */
+uint8_t servoPosition = 6;  // Position par défaut (milieu)
+
+/**
+ * @var mode
+ * @brief Mode de fonctionnement actuel (0 = IDLE, 1 = MODE1, 2 = MODE2)
+ */
+static int mode; 
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+/**
+ * @brief Traite une commande reçue via la communication série
+ * @param command Chaîne de caractères contenant la commande à traiter
+ */
+void processCommand(char* command);
+
+/**
+ * @brief Analyse une chaîne de caractères pour identifier la commande
+ * @param command Chaîne de caractères à analyser
+ * @return Type de commande identifiée
+ */
+Command parseCommand(char* command);
+
+/**
+ * @brief Met à jour l'état du système en fonction du mode actuel
+ */
+void updateSystem(void);
+
+/**
+ * @brief Gère la réception des commandes via la liaison série
+ */
+void handleSerialCommunication(void);
 
 /* USER CODE END PD */
 
@@ -49,6 +124,9 @@
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
+/**
+ * @brief Configure l'horloge système
+ */
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
@@ -60,14 +138,21 @@ void SystemClock_Config(void);
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
+  * @brief  Point d'entrée principal du programme
+  * @retval int Valeur de retour (normalement jamais atteinte)
   */
 int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
+  
+  // Initialisation du capteur HC-SR04
+  HC_SR04* sensor = HC_SR04_get_instance();  // Obtenir l'instance du capteur HC-SR04
+  if (!sensor) {
+    Error_Handler();  // Si l'initialisation échoue, appeler Error_Handler
+  }
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -88,21 +173,56 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  // MX_TIM6_Init();
   MX_TIM1_Init();
-  MX_TIM3_Init();
+  // MX_UART4_Init();
   MX_USART2_UART_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+  
+  // Lancement de la PWM sur le canal 1 de TIM1
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1); // Start PWM on TIM1 Channel 1
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0); // Set initial duty cycle to 0%
+
+  // Démarrer la PWM pour le servo-moteur
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+  __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 1500); // Position initiale au centre
+  
+  /* USER CODE BEGIN 2 */
+  HC_SR04_init(); // Initialisation du capteur HC-SR04
+
+    // Initialiser le servo
+  Servo_Init();
+  Servo_SetToMiddle(); // Mettre en position neutre au démarrage
+
+  sendMessage("System ready. Available commands: mode1, mode2, quit");
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {
-    /* USER CODE END WHILE */
+{
+  // Obtenir l'instance du capteur
+  HC_SR04* sensor = HC_SR04_get_instance();
+  
+  // Mettre à jour la distance et contrôler les LEDs
+  HC_SR04_update(sensor, mode);
+  
+  // Gérer la communication série pour les commandes
+  handleSerialCommunication();
+  
+  // Mettre à jour l'état du système en fonction du mode
+  updateSystem();
+  
+  // Petite pause pour éviter de surcharger le CPU
+  HAL_Delay(10);
+}
+  /* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
-  }
+  /* USER CODE BEGIN 3 */
+  // Ne devrait jamais arriver
+  // Error_Handler();
   /* USER CODE END 3 */
 }
 
@@ -148,11 +268,161 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+/**
+ * @brief Gère la réception des commandes via la liaison série
+ * @details Cette fonction attend de façon non-bloquante une commande sur la 
+ * liaison série. Lorsqu'une commande complète est reçue, elle est passée
+ * à la fonction processCommand pour traitement.
+ */
+void handleSerialCommunication(void) {
+  char cmdBuffer[32];
+  
+  // Essayer de recevoir une commande (non-bloquant maintenant)
+  int result = receiveMessage(cmdBuffer, sizeof(cmdBuffer));
+  
+  if (result >= 0) {
+      // Commande complète reçue, la traiter
+      processCommand(cmdBuffer);
+  }
+  // Si result < 0, aucune commande complète n'a été reçue, on continue l'exécution
+}
 
+/**
+ * @brief Analyse la commande reçue
+ * @param command Chaîne de caractères contenant la commande
+ * @return Type de commande identifiée
+ * @details Reconnaît les commandes "mode1", "mode2", "quit" et les valeurs numériques
+ * entre 1 et 12 pour le positionnement du servo en mode 2
+ */
+Command parseCommand(char* command)
+{
+  if (strcmp(command, "mode1") == 0) {
+    return CMD_MODE1;
+  }
+  else if (strcmp(command, "mode2") == 0) {
+    return CMD_MODE2;
+  }
+  else if (strcmp(command, "quit") == 0) {
+    return CMD_QUIT;
+  }
+  else {
+    // Vérifier si c'est une valeur numérique (pour le mode 2)
+    int value;
+    if (sscanf(command, "%d", &value) == 1) {
+      if (value >= 1 && value <= 12) {
+        servoPosition = value;
+        return CMD_VALUE;
+      }
+    }
+  }
+  
+  return CMD_NONE;
+}
+
+/**
+ * @brief Traite la commande reçue et met à jour l'état du système
+ * @param command Chaîne de caractères contenant la commande
+ * @details Selon la commande identifiée, change l'état du système et
+ * envoie un message de confirmation ou d'erreur
+ */
+void processCommand(char* command)
+{
+  Command cmd = parseCommand(command);
+  
+  switch (cmd) {
+    case CMD_MODE1:
+      if (currentState != STATE_MODE1) {
+        currentState = STATE_MODE1;
+        mode = 1;
+        sendMessage("Mode 1 activated: LED blue + servo follows ultrasonic sensor");
+      } else {
+        sendMessage("Already in Mode 1");
+      }
+      break;
+      
+    case CMD_MODE2:
+      if (currentState != STATE_MODE2) {
+        currentState = STATE_MODE2;
+        mode = 2;
+        sendMessage("Mode 2 activated: LED green + servo follows serial input (1-12)");
+      } else {
+        sendMessage("Already in Mode 2");
+      }
+      break;
+      
+    case CMD_QUIT:
+      if (currentState != STATE_IDLE) {
+        currentState = STATE_IDLE;
+        sendMessage("Returned to idle state");
+      } else {
+        sendMessage("Already in idle state");
+      }
+      break;
+      
+    case CMD_VALUE:
+      if (currentState == STATE_MODE2) {
+        char response[50];
+        sprintf(response, "Servo position set to %d", servoPosition);
+        sendMessage(response);
+      } else {
+        sendMessage("Error: Can only set servo position in Mode 2");
+      }
+      break;
+      
+    case CMD_NONE:
+      sendMessage("Unknown command. Available: mode1, mode2, quit, or value (1-12) in Mode 2");
+      break;
+  }
+}
+
+/**
+ * @brief Met à jour l'état du système en fonction du mode actuel
+ * @details Exécutée périodiquement dans la boucle principale, cette fonction
+ * met à jour les LEDs et la position du servo selon l'état actuel du système
+ */
+void updateSystem(void)
+{
+  static uint32_t lastUpdate = 0;
+  uint32_t currentTime = HAL_GetTick();
+  
+  if (currentTime - lastUpdate >= 100) {
+    lastUpdate = currentTime;
+    
+    HC_SR04* sensor = HC_SR04_get_instance();
+    
+    switch (currentState) {
+      case STATE_IDLE:
+        HAL_GPIO_WritePin(GPIOD, LED_BLEU_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(GPIOD, LED_VERT_Pin, GPIO_PIN_RESET);
+        Servo_SetToMiddle();
+        break;
+        
+      case STATE_MODE1:
+        HAL_GPIO_WritePin(GPIOD, LED_BLEU_Pin, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(GPIOD, LED_VERT_Pin, GPIO_PIN_RESET);
+        
+        if (sensor->distance >= SERVO_MIN_DISTANCE && sensor->distance <= SERVO_MAX_DISTANCE) {
+          uint32_t position = Servo_DistanceToPosition(sensor->distance);
+          Servo_SetPosition(position);
+        } else {
+          Servo_SetToMiddle();
+        }
+        break;
+        
+      case STATE_MODE2:
+        HAL_GPIO_WritePin(GPIOD, LED_VERT_Pin, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(GPIOD, LED_BLEU_Pin, GPIO_PIN_RESET);
+        
+        uint32_t position = Servo_ValueToPosition(servoPosition);
+        Servo_SetPosition(position);
+        break;
+    }
+  }
+}
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
+  * @brief  Cette fonction est exécutée en cas d'erreur.
   * @retval None
   */
 void Error_Handler(void)
