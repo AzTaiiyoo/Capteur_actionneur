@@ -325,11 +325,11 @@ Pour valider le bon fonctionnement des différents modules, nous avons implémen
 
 Voici un résumé des fonctions de démonstration et des indicateurs de bon fonctionnement associés :
 
-| **Module**      | **Fonction de démonstration** | **Indicateur de bon fonctionnement**                                                                                  |
-| --------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Capteur HC-SR04 | `HC_SR04_Demo`                | Affichage de LED indicatives : <br> • LED orange : distance valide <br> • LED rouge : distance hors plage ou erreur   |
-| Servo-moteur    | `Servo_Demo`                  | Déplacement fluide entre les positions : <br> • minimale, <br> • centrale, <br> • maximale.                           |
-| UART            | `USART_Demo`                  | Affichage de message : <br> • fghjkl <br> • écho des messages reçus avec le préfixe "Message reçu :" dans le terminal |
+| **Module**      | **Fonction de démonstration** | **Indicateur de bon fonctionnement**                                                                                                                                                                                                |
+| --------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Capteur HC-SR04 | `HC_SR04_Demo`                | Affichage de LED indicatives : <br> • LED orange : distance valide (5-25 cm) <br> • LED rouge : distance hors plage ou erreur                                                                                                       |
+| Servo-moteur    | `Servo_Demo`                  | Déplacement fluide entre les positions : <br> • minimale (0°), <br> • centrale (90°), <br> • maximale (180°).                                                                                                                       |
+| UART            | `USART_Demo`                  | Test interactif : <br> • Envoi d'un message de test : "Testing USART communication... Please respond with <response> to continue." <br> • Réception et validation de la réponse utilisateur : "Response received: continuing demo." |
 
 ### 3.5. Application principale
 
