@@ -33,7 +33,8 @@
   - [3.3. Module UART](#33-module-uart)
     - [Fonctionnalités principales](#fonctionnalités-principales-2)
     - [Protocole de communication](#protocole-de-communication)
-  - [3.4. Application principale](#34-application-principale)
+  - [3.4. Fonctions de démonstration](#34-fonctions-de-démonstration)
+  - [3.5. Application principale](#35-application-principale)
     - [Fonctionnalités principales](#fonctionnalités-principales-3)
     - [Stratégie de conception](#stratégie-de-conception)
 - [4. Difficultés rencontrées et solutions](#4-difficultés-rencontrées-et-solutions)
@@ -316,7 +317,19 @@ Commandes reconnues :
 - `quit` : Retourne au mode IDLE
 - `1` à `12` : Valeurs pour positionner le servo en Mode 2
 
-### 3.4. Application principale
+### 3.4. Fonctions de démonstration
+
+Pour valider le bon fonctionnement des différents modules, nous avons implémenté des fonctions de démonstration. Elles permettent de tester individuellement chaque composant (capteur HC-SR04, servo-moteur, UART) sans dépendre des autres parties du système.
+
+Voici un résumé des fonctions de démonstration et des indicateurs de bon fonctionnement associés :
+
+| **Module**      | **Fonction de démonstration** | **Indicateur de bon fonctionnement**                                                              |
+| --------------- | ----------------------------- | ------------------------------------------------------------------------------------------------- |
+| Capteur HC-SR04 | `HC_SR04_Demo`                | LED orange (distance valide) ou LED rouge (distance hors plage ou erreur)                         |
+| Servo-moteur    | `Servo_Demo`                  | Déplacement fluide entre les positions minimale, centrale et maximale                             |
+| UART            | `USART_Demo`                  | Message de bienvenue et écho des messages reçus avec le préfixe "Message reçu :" dans le terminal |
+
+### 3.5. Application principale
 
 L'application principale orchestre tous les modules et implémente la machine à états qui gère le comportement du système.
 
@@ -337,11 +350,12 @@ L'application principale orchestre tous les modules et implémente la machine à
 
 ## 4. Difficultés rencontrées et solutions
 
-| Problème                          | Description                                                                                               | Solution mise en œuvre                                                                                                                                                                           |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Précision des mesures**         | Fluctuations importantes dans les mesures du capteur HC-SR04, rendant le positionnement du servo instable | • Ajout d'un pull-down sur la broche Echo<br>• Utilisation de TIM1 pour mesurer avec une résolution de 1µs<br>• Implémentation de timeouts (10ms)<br>• Filtrage des valeurs hors plage (5-25 cm) |
-| **Communication série bloquante** | Les premières implémentations de la communication série bloquaient l'exécution principale                 | • Réception non-bloquante des caractères<br>• Gestion d'état pour reconstituer les commandes<br>• Utilisation de délimiteurs '<' et '>'<br>• Buffer statique pour conserver l'état entre appels  |
-| **Stabilité du servo**            | Servo instable lors de petits changements de distance                                                     | • Limitation de la fréquence de mise à jour (100ms)<br>• Filtrage des mesures aberrantes<br>• Position centrale par défaut en cas d'erreur                                                       |
+| Problème                              | Description                                                                                               | Solution mise en œuvre                                                                                                                                                                           |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Précision des mesures**             | Fluctuations importantes dans les mesures du capteur HC-SR04, rendant le positionnement du servo instable | • Ajout d'un pull-down sur la broche Echo<br>• Utilisation de TIM1 pour mesurer avec une résolution de 1µs<br>• Implémentation de timeouts (10ms)<br>• Filtrage des valeurs hors plage (5-25 cm) |
+| **Communication série bloquante**     | Les premières implémentations de la communication série bloquaient l'exécution principale                 | • Réception non-bloquante des caractères<br>• Gestion d'état pour reconstituer les commandes<br>• Utilisation de délimiteurs '<' et '>'<br>• Buffer statique pour conserver l'état entre appels  |
+| **Stabilité du servo**                | Servo instable lors de petits changements de distance                                                     | • Limitation de la fréquence de mise à jour (100ms)<br>• Position centrale par défaut en cas d'erreur                                                                                            |
+| **Dysfonctionnement du servo-moteur** | Après plusieurs essais, le servo-moteur a cessé de répondre correctement aux commandes                    | • Test valide avec un autre servo-moteur <br>• Vérification de la connexion électrique<br>• Changement d'un fil de connexion<br>                                                                 |
 
 ## 5. Conclusion
 

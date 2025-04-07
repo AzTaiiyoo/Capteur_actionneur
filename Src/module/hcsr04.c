@@ -148,3 +148,30 @@
          }
      }
  }
+
+  /**
+ * @brief Fonction de démonstration simple pour tester le capteur HC-SR04
+ * @details Cette fonction mesure la distance et utilise les LEDs pour indiquer
+ *          si la distance est valide ou hors plage.
+ */
+void HC_SR04_Demo(void) {
+    HC_SR04* sensor = HC_SR04_get_instance(); // Obtenir l'instance du capteur
+    HC_SR04_init(); // Initialiser le capteur
+
+    while (1) {
+        // Mesurer la distance
+        float distance = HC_SR04_get_distance(sensor);
+
+        // Vérifier si la distance est valide
+        if (distance >= 5.0f && distance <= 25.0f) {
+            // Distance valide : LED Orange ON, LED Rouge OFF
+            HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);   
+            HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET); 
+        } else {
+            // Distance hors plage ou erreur : LED Rouge ON, LED Orange OFF
+            HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET); 
+            HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET); 
+        }
+        HAL_Delay(250);
+    }
+}

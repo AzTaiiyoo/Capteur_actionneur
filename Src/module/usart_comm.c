@@ -140,3 +140,26 @@ int receiveMessage(char* buffer, size_t maxSize) {
     // Aucune commande complète n'a été reçue
     return -1;
 }
+
+/**
+ * @brief Fonction de démonstration pour tester la communication UART
+ * @details Cette fonction envoie un message via UART et attend une réponse.
+ * Si une réponse est reçue, elle est retransmise sur le terminal.
+ */
+void USART_Demo(void) {
+    char receiveBuffer[32]; // Buffer pour stocker les messages reçus
+    const char* demoMessage = "Bonjour, bienvenu dans ce projet !";
+    Send_Message((char*)demoMessage);
+
+    // Boucle pour attendre une réponse
+    while (1) {
+        int receivedLength = Receive_Message(receiveBuffer, sizeof(receiveBuffer));
+        
+        if (receivedLength > 0) {
+            Send_Message("Message reçu :");
+            Send_Message(receiveBuffer);
+        }
+
+        HAL_Delay(100);
+    }
+}

@@ -70,3 +70,27 @@
             (SERVO_MAX_POSITION - SERVO_MIN_POSITION) / 
             (SERVO_MAX_VALUE - SERVO_MIN_VALUE));
  }
+
+  /**
+ * @brief Fonction de démonstration pour tester le contrôle du servo-moteur
+ * @details Cette fonction déplace le servo à différentes positions en fonction
+ *          de distances simulées ou de valeurs utilisateur.
+ */
+void Servo_Demo(void) {
+    Servo_Init();
+
+    // Déplacer le servo à la position minimale
+    Servo_SetPosition(SERVO_MIN_POSITION);
+    HAL_Delay(1000); // Attendre 1 seconde
+
+    // Déplacer le servo à la position centrale
+    Servo_SetToMiddle();
+    HAL_Delay(1000); // Attendre 1 seconde
+
+    // Déplacer le servo à la position maximale
+    Servo_SetPosition(SERVO_MAX_POSITION);
+    HAL_Delay(1000); // Attendre 1 seconde
+
+    // Revenir à la position centrale
+    Servo_SetToMiddle();
+}
