@@ -24,7 +24,7 @@ class HC_SR04 {
   - echo_pin: uint16_t
   - timer: TIM_HandleTypeDef
   + distance: float
-  +  get_instance(): HC_SR04
+  + get_instance(): HC_SR04
   + init(): void
   + get_distance(): float
   + update(mode: int): void
