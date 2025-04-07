@@ -9,6 +9,7 @@
 #include "stm32f4xx_hal.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "usart.h"
 #include <stdbool.h>
 #include "usart_comm.h"
@@ -142,24 +143,35 @@ int receiveMessage(char* buffer, size_t maxSize) {
 }
 
 /**
- * @brief Fonction de démonstration pour tester la communication UART
- * @details Cette fonction envoie un message via UART et attend une réponse.
- * Si une réponse est reçue, elle est retransmise sur le terminal.
+ * @brief Version simplifiée de la fonction de démonstration USART
+ * @details Cette fonction envoie un message et attend une réponse spécifique
+ * @return 1 si la réponse attendue a été reçue, 0 sinon
  */
-void USART_Demo(void) {
+int USART_Demo(void) {
     char receiveBuffer[32]; // Buffer pour stocker les messages reçus
-    const char* demoMessage = "Bonjour, bienvenu dans ce projet !";
-    Send_Message((char*)demoMessage);
-
-    // Boucle pour attendre une réponse
-    while (1) {
-        int receivedLength = Receive_Message(receiveBuffer, sizeof(receiveBuffer));
+    
+    sendMessage("Testing USART communication... Please respond with <response> to continue.");
+    
+    // Attendre la réponse pendant 30 secondes maximum
+    uint32_t startTime = HAL_GetTick();
+    
+    while (HAL_GetTick() - startTime < 30000) { // 30 secondes max
+        int receivedLength = receiveMessage(receiveBuffer, sizeof(receiveBuffer));
         
         if (receivedLength > 0) {
-            Send_Message("Message reçu :");
-            Send_Message(receiveBuffer);
+            if (strcmp(receiveBuffer, "response") == 0) {
+                sendMessage("Response received: continuing demo.");
+                return 1;
+            } else {
+                char message[50];
+                sprintf(message, "Received: %.20s, expected: reponse", receiveBuffer);
+                sendMessage(message);
+            }
         }
-
+        
         HAL_Delay(100);
     }
+    
+    sendMessage("Timeout: no response received in delimited time.");
+    return 0;
 }

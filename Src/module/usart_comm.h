@@ -28,6 +28,12 @@
   * complet (délimité par '<' et '>') n'a été reçu.
   */
  int receiveMessage(char* buffer, size_t maxSize);
+
+/**
+* @brief Fonction de démonstration pour tester la communication USART
+* @details Envoie un message de démonstration via USART
+*/
+int USART_Demo(void);
  
  #endif /* USART_COMM_H */
  

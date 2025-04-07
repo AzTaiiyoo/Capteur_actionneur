@@ -154,13 +154,28 @@
  * @details Cette fonction mesure la distance et utilise les LEDs pour indiquer
  *          si la distance est valide ou hors plage.
  */
+/**
+ * @brief Fonction de démonstration pour tester le capteur HC-SR04
+ * @details Cette fonction mesure la distance pendant quelques secondes et utilise les LEDs pour indiquer
+ *          si la distance est valide ou hors plage.
+ */
 void HC_SR04_Demo(void) {
     HC_SR04* sensor = HC_SR04_get_instance(); // Obtenir l'instance du capteur
-    HC_SR04_init(); // Initialiser le capteur
-
-    while (1) {
+    
+    // Afficher un message d'information
+    sendMessage("Testing HC-SR04 sensor... for 5 seconds");
+    
+    // Mesurer la distance pendant 5 secondes (5000ms / 250ms = 20 mesures)
+    uint32_t endTime = HAL_GetTick() + 5000;
+    
+    while (HAL_GetTick() < endTime) {
         // Mesurer la distance
         float distance = HC_SR04_get_distance(sensor);
+        
+        // Afficher la distance
+        char message[32];
+        sprintf(message, "Distance: %.2f cm", distance);
+        sendMessage(message);
 
         // Vérifier si la distance est valide
         if (distance >= 5.0f && distance <= 25.0f) {
@@ -174,4 +189,6 @@ void HC_SR04_Demo(void) {
         }
         HAL_Delay(250);
     }
+    
+    sendMessage("HC-SR04 Demo ended perfectly.");
 }

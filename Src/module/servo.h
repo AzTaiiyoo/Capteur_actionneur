@@ -91,6 +91,12 @@
   * @details La valeur est automatiquement limitée aux bornes valides
   */
  uint32_t Servo_ValueToPosition(uint8_t value);
- 
+
+/**
+* @brief Fonction de démonstration pour le servo-moteur
+* @details Cette fonction effectue une série de mouvements pour tester le servo
+*/
+void Servo_Demo(void);
+
  #endif /* SERVO_H */
  

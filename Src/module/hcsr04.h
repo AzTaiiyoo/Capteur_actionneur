@@ -73,6 +73,12 @@
   * met à jour les LEDs d'état et envoie la distance via UART
   */
  void HC_SR04_update(HC_SR04* sensor, int mode);
+
+/**
+* @brief Fonction de démonstration pour le capteur HC-SR04
+* @details Affiche la distance mesurée sur le terminal série
+*/
+void HC_SR04_Demo(void);
  
  #endif /* HC_SR04_H */
  

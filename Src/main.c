@@ -41,7 +41,8 @@
 typedef enum {
   STATE_IDLE,    /**< État initial/neutre */
   STATE_MODE1,   /**< Mode 1: LED bleue + servo positionné selon distance HCSR04 */
-  STATE_MODE2    /**< Mode 2: LED verte + servo positionné selon consigne série */
+  STATE_MODE2,
+  STATE_DEMO    /**< Mode 2: LED verte + servo positionné selon consigne série */
 } SystemState;
 
 /**
@@ -53,6 +54,7 @@ typedef enum {
   CMD_MODE1,    /**< Commande pour activer le mode 1 */
   CMD_MODE2,    /**< Commande pour activer le mode 2 */
   CMD_QUIT,     /**< Commande pour revenir à l'état IDLE */
+  CMD_DEMO,
   CMD_VALUE     /**< Valeur numérique pour positionner le servo en mode 2 */
 } Command;
 
@@ -176,7 +178,7 @@ int main(void)
   Servo_Init();
   Servo_SetToMiddle(); // Mettre en position neutre au démarrage
 
-  sendMessage("System ready. Available commands: mode1, mode2, quit");
+  sendMessage("System ready. Available commands: mode1, mode2, quit, demo");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -285,6 +287,9 @@ Command parseCommand(char* command)
   else if (strcmp(command, "quit") == 0) {
     return CMD_QUIT;
   }
+  else if (strcmp(command, "demo") == 0){
+    return CMD_DEMO;
+  }
   else {
     // Vérifier si c'est une valeur numérique (pour le mode 2)
     int value;
@@ -338,7 +343,14 @@ void processCommand(char* command)
         sendMessage("Already in idle state");
       }
       break;
-      
+    case CMD_DEMO:
+      if (currentState != STATE_DEMO) {
+        currentState = STATE_DEMO;
+        sendMessage("Demo mode activated: LED blue + servo follows ultrasonic sensor");
+      } else {
+        sendMessage("Already in demo mode");
+      }
+      break;
     case CMD_VALUE:
       if (currentState == STATE_MODE2) {
         char response[50];
@@ -364,6 +376,8 @@ void updateSystem(void)
 {
   static uint32_t lastUpdate = 0;
   uint32_t currentTime = HAL_GetTick();
+  static uint8_t demoState = 0;  // État de la démo (0: initial, 1: USART, 2: HC-SR04, 3: Servo)
+  static uint32_t demoStateStartTime = 0;  // Temps de début de l'état actuel de la démo
   
   if (currentTime - lastUpdate >= 100) {
     lastUpdate = currentTime;
@@ -375,6 +389,8 @@ void updateSystem(void)
         HAL_GPIO_WritePin(GPIOD, LED_BLEU_Pin, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(GPIOD, LED_VERT_Pin, GPIO_PIN_RESET);
         Servo_SetToMiddle();
+        // Réinitialiser l'état de la démo
+        demoState = 0;
         break;
         
       case STATE_MODE1:
@@ -395,6 +411,43 @@ void updateSystem(void)
         
         uint32_t position = Servo_ValueToPosition(servoPosition);
         Servo_SetPosition(position);
+        break;
+
+      case STATE_DEMO:
+        // Gestion d'une séquence de démonstration
+        switch(demoState) {
+          case 0: // État initial: démarrer la démo USART
+            HAL_GPIO_WritePin(GPIOD, LED_BLEU_Pin, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOD, LED_VERT_Pin, GPIO_PIN_SET);
+            demoState = 1; // Passer à l'état USART
+            demoStateStartTime = HAL_GetTick();
+            sendMessage("Starting Demo mode");
+            break;
+            
+          case 1: // USART: attendre une réponse
+            if (USART_Demo()) {
+              demoState = 2; // Passer à l'état HC-SR04
+              demoStateStartTime = HAL_GetTick();
+            } else {
+              // En cas d'échec, revenir à l'état IDLE
+              currentState = STATE_IDLE;
+              sendMessage("Demo cancelled - returning to IDLE state");
+            }
+            break;
+            
+          case 2: // HC-SR04: test du capteur
+            HC_SR04_Demo();
+            demoState = 3; // Passer à l'état Servo
+            demoStateStartTime = HAL_GetTick();
+            break;
+            
+          case 3: // Servo: test du servo
+            Servo_Demo();
+            // Fin de la démo
+            sendMessage("Demo completed. Returning to IDLE state.");
+            currentState = STATE_IDLE;
+            break;
+        }
         break;
     }
   }
