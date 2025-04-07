@@ -39,4 +39,8 @@ mode1 -up-> idle : Commande <quit>
 mode2 -up-> idle : Commande <quit>
 mode1 -right-> mode2 : Commande <mode2>
 mode2 -left-> mode1 : Commande <mode1>
+
+title  Machine à Etat du projet global
+footer Projet Capteur à Actionneur – Avril 2025
+
 @enduml

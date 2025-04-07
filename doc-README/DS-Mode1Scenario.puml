@@ -6,8 +6,6 @@ participant "HCSR04" as HCSR04
 participant "Servo" as Servo
 participant "USART_COMM" as USART
 
-title Scénario: Mode 1 - Suivi de distance
-
 User -> USART: Envoie "mode1"
 USART -> Main: Notification de commande
 Main -> Main: Passe en MODE1
@@ -20,4 +18,8 @@ loop tant que mode = 1
   Main -> Servo: Ajuste position selon distance
   HCSR04 -> USART: Envoie "Distance: XX.XX cm"
 end
+
+title Diagramme de séquence représentant le Mode 1 - Suivi de distance
+footer Projet Capteur à Actionneur – Avril 2025
+
 @enduml

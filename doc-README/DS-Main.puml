@@ -1,7 +1,5 @@
 @startuml
 
-title Diagramme de séquence du projet global
-
 ' Participants (modules)
 actor "User" as User
 participant "Main" as Main
@@ -39,4 +37,8 @@ end ref
 ref over User, Main, Servo, USART
   Scénario: Mode 2 - Consigne utilisateur
 end ref
+
+title Diagramme de séquence du projet global
+footer Projet Capteur à Actionneur – Avril 2025
+
 @enduml

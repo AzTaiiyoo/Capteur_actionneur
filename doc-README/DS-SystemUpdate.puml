@@ -4,8 +4,6 @@ participant "Main" as Main
 participant "HCSR04" as HCSR04
 participant "Servo" as Servo
 
-title Mise à jour du système selon l'état
-
 Main -> Main: updateSystem()
 
 alt currentState == STATE_IDLE
@@ -26,4 +24,8 @@ else currentState == STATE_MODE2
   Main -> Servo: Servo_ValueToPosition(servoPosition)
   Main -> Servo: Servo_SetPosition(position)
 end
+
+title Diagramme de séquence représentant la mise à jour du système selon l'état
+footer Projet Capteur à Actionneur – Avril 2025
+
 @enduml

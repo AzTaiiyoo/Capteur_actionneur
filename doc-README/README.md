@@ -1,44 +1,75 @@
-<h1 style="font-size: 24px;">Rapport de Projet : Du Capteur à l'Actionneur</h1>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rapport - Du Capteur à l'Actionneur</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      color: #333;
+      background: #f4f4f4;
+    }
 
-<h2 style="font-size: 18px;">Sommaire</h2>
+  </style>
+</head>
+<body>
 
-- [1. Introduction](#1-introduction)
-  - [1.1 Objectif du projet](#11-objectif-du-projet)
-  - [1.2 Modes de fonctionnement](#12-modes-de-fonctionnement)
-  - [1.3 Machine à état](#13-machine-à-état)
-  - [1.4 Comportements supplémentaires](#14-comportements-supplémentaires)
-- [2. Conception](#2-conception)
-  - [2.1 Diagramme de classe](#21-diagramme-de-classe)
-  - [2.2 Diagrammes de séquence](#22-diagrammes-de-séquence)
-    - [Diagramme de séquence principal](#diagramme-de-séquence-principal)
-    - [Traitement des commandes utilisateur](#traitement-des-commandes-utilisateur)
-    - [Mise à jour du système selon l'état](#mise-à-jour-du-système-selon-létat)
-    - [Mode 1 - Suivi de distance](#mode-1---suivi-de-distance)
-    - [Mode 2 - Consigne utilisateur](#mode-2---consigne-utilisateur)
-  - [2.4 Brochage des différents éléments](#24-brochage-des-différents-éléments)
-    - [Brochage du capteur HC-SR04](#brochage-du-capteur-hc-sr04)
-    - [Brochage du servo-moteur](#brochage-du-servo-moteur)
-    - [Brochage des LEDs](#brochage-des-leds)
-    - [Brochage de la Communication série](#brochage-de-la-communication-série)
-  - [2.4 Configuration des différents éléments](#24-configuration-des-différents-éléments)
-    - [Configuration du servo-moteur](#configuration-du-servo-moteur)
-    - [Configuration du capteur HC-SR04](#configuration-du-capteur-hc-sr04)
-    - [Configuration de la communication série](#configuration-de-la-communication-série)
-- [3. Modules développés](#3-modules-développés)
-  - [3.1. Module HC-SR04](#31-module-hc-sr04)
-    - [Fonctionnalités principales](#fonctionnalités-principales)
-  - [3.2. Module Servo-moteur](#32-module-servo-moteur)
-    - [Fonctionnalités principales](#fonctionnalités-principales-1)
-    - [Détails techniques](#détails-techniques)
-  - [3.3. Module UART](#33-module-uart)
-    - [Fonctionnalités principales](#fonctionnalités-principales-2)
-    - [Protocole de communication](#protocole-de-communication)
-  - [3.4. Fonctions de démonstration](#34-fonctions-de-démonstration)
-  - [3.5. Application principale](#35-application-principale)
-    - [Fonctionnalités principales](#fonctionnalités-principales-3)
-    - [Stratégie de conception](#stratégie-de-conception)
-- [4. Difficultés rencontrées et solutions](#4-difficultés-rencontrées-et-solutions)
-- [5. Conclusion](#5-conclusion)
+<div class="cover">
+  <div class="cover-content">
+    <h1>Du Capteur à l'Actionneur</h1>
+    <h2>Rapport de Projet - 2025</h2>
+    <div class="authors">
+      <p><strong>Kiran BONHOMME</strong></p>
+      <p><strong>Anaïs DIGOUT</strong></p>
+    </div>
+    <p class="promo">Promotion E4e - SE</p>
+  </div>
+</div>
+
+<div class="container">
+  <h2 id="sommaire">Sommaire</h2>
+  <ul class="toc">
+    <li><a href="#1-introduction">1. Introduction</a></li>
+    <ul>
+      <li><a href="#11-objectif-du-projet">1.1 Objectif du projet</a></li>
+      <li><a href="#12-modes-de-fonctionnement">1.2 Modes de fonctionnement</a></li>
+      <li><a href="#13-machine-a-etat">1.3 Machine à état</a></li>
+      <li><a href="#14-comportements-supplementaires">1.4 Comportements supplémentaires</a></li>
+    </ul>
+    <li><a href="#2-conception">2. Conception</a></li>
+    <ul>
+      <li><a href="#21-diagramme-de-classe">2.1 Diagramme de classe</a></li>
+      <li><a href="#22-diagrammes-de-sequence">2.2 Diagrammes de séquence</a></li>
+      <ul>
+        <li><a href="#diagramme-de-sequence-principal">Diagramme de séquence principal</a></li>
+        <li><a href="#traitement-des-commandes-utilisateur">Traitement des commandes utilisateur</a></li>
+        <li><a href="#mise-a-jour-du-systeme-selon-letat">Mise à jour du système selon l'état</a></li>
+        <li><a href="#mode-1-suivi-de-distance">Mode 1 - Suivi de distance</a></li>
+        <li><a href="#mode-2-consigne-utilisateur">Mode 2 - Consigne utilisateur</a></li>
+      </ul>
+      <li><a href="#24-brochage-des-differents-elements">2.4 Brochage des différents éléments</a></li>
+      <ul>
+        <li><a href="#brochage-du-capteur-hc-sr04">Brochage du capteur HC-SR04</a></li>
+        <li><a href="#brochage-du-servo-moteur">Brochage du servo-moteur</a></li>
+        <li><a href="#brochage-des-leds">Brochage des LEDs</a></li>
+        <li><a href="#brochage-de-la-communication-serie">Brochage de la Communication série</a></li>
+      </ul>
+    </ul>
+    <li><a href="#3-modules-developpes">3. Modules développés</a></li>
+    <ul>
+      <li><a href="#31-module-hc-sr04">3.1 Module HC-SR04</a></li>
+      <li><a href="#32-module-servo-moteur">3.2 Module Servo-moteur</a></li>
+      <li><a href="#33-module-uart">3.3 Module UART</a></li>
+      <li><a href="#34-fonctions-de-demonstration">3.4 Fonctions de démonstration</a></li>
+      <li><a href="#35-application-principale">3.5 Application principale</a></li>
+    </ul>
+    <li><a href="#4-difficultes-rencontrees-et-solutions">4. Difficultés rencontrées et solutions</a></li>
+    <li><a href="#5-conclusion">5. Conclusion</a></li>
+  </ul>
+</div>
 
 ## 1. Introduction
 
@@ -363,7 +394,10 @@ L'application principale orchestre tous les modules et implémente la machine à
 
 Ce projet a permis de développer un système complet intégrant capteur et actionneur, avec une interface utilisateur série. Les principales réalisations sont :
 
-1. **Architecture modulaire** : Le système est divisé en modules réutilisables avec des interfaces claires
-2. **Machine à états robuste** : La gestion explicite des états simplifie la logique et rend le comportement prévisible
-3. **Interface utilisateur intuitive** : Les commandes simples et le retour d'information constant facilitent l'utilisation
-4. **Fiabilité** : La gestion des erreurs, les timeouts et les vérifications de plages assurent un fonctionnement robuste
+1. **Architecture modulaire** : Le système est divisé en modules réutilisables avec des interfaces claires.
+2. **Machine à états robuste** : La gestion explicite des états simplifie la logique et rend le comportement prévisible.
+3. **Interface utilisateur intuitive** : Les commandes simples et le retour d'information constant facilitent l'utilisation.
+4. **Fiabilité** : La gestion des erreurs, les timeouts et les vérifications de plages assurent un fonctionnement robuste.
+
+</body>
+</html>

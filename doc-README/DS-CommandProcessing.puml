@@ -6,8 +6,6 @@ participant "HCSR04" as HCSR04
 participant "Servo" as Servo
 participant "USART_COMM" as USART
 
-title Traitement des commandes utilisateur
-
 ' Mise à jour initiale
 Main -> HCSR04: HC_SR04_update(sensor, mode)
 
@@ -37,4 +35,8 @@ alt message reçu de l'utilisateur
     Main -> USART: sendMessage("Unknown command...")
   end
 end
+
+title Diagramme de séquence représentant le traitement des commandes utilisateur
+footer Projet Capteur à Actionneur – Avril 2025
+
 @enduml

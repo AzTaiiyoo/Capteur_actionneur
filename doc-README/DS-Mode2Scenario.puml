@@ -5,8 +5,6 @@ participant "Main" as Main
 participant "Servo" as Servo
 participant "USART_COMM" as USART
 
-title Scénario: Mode 2 - Consigne utilisateur
-
 User -> USART: Envoie "mode2"
 USART -> Main: Notification de commande
 Main -> Main: Passe en MODE2
@@ -19,4 +17,8 @@ Main -> Main: servoPosition = 8
 Main -> USART: sendMessage("Servo position set to 8")
 Main -> Servo: Servo_ValueToPosition(8)
 Main -> Servo: Servo_SetPosition(position)
+
+title Diagramme de séquence représentant le Mode 2 - Consigne utilisateur
+footer Projet Capteur à Actionneur – Avril 2025
+
 @enduml
