@@ -1,1035 +1,1205 @@
 <!DOCTYPE html>
-<html>
-<head>
-<title>README.md</title>
-<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-
-<style>
-/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-body {
-	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
-	font-size: var(--vscode-markdown-font-size, 14px);
-	padding: 0 26px;
-	line-height: var(--vscode-markdown-line-height, 22px);
-	word-wrap: break-word;
-}
-
-#code-csp-warning {
-	position: fixed;
-	top: 0;
-	right: 0;
-	color: white;
-	margin: 16px;
-	text-align: center;
-	font-size: 12px;
-	font-family: sans-serif;
-	background-color:#444444;
-	cursor: pointer;
-	padding: 6px;
-	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
-}
-
-#code-csp-warning:hover {
-	text-decoration: none;
-	background-color:#007acc;
-	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
-}
-
-body.scrollBeyondLastLine {
-	margin-bottom: calc(100vh - 22px);
-}
-
-body.showEditorSelection .code-line {
-	position: relative;
-}
-
-body.showEditorSelection .code-active-line:before,
-body.showEditorSelection .code-line:hover:before {
-	content: "";
-	display: block;
-	position: absolute;
-	top: 0;
-	left: -12px;
-	height: 100%;
-}
-
-body.showEditorSelection li.code-active-line:before,
-body.showEditorSelection li.code-line:hover:before {
-	left: -30px;
-}
-
-.vscode-light.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(0, 0, 0, 0.15);
-}
-
-.vscode-light.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(0, 0, 0, 0.40);
-}
-
-.vscode-light.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-.vscode-dark.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(255, 255, 255, 0.4);
-}
-
-.vscode-dark.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(255, 255, 255, 0.60);
-}
-
-.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-.vscode-high-contrast.showEditorSelection .code-active-line:before {
-	border-left: 3px solid rgba(255, 160, 0, 0.7);
-}
-
-.vscode-high-contrast.showEditorSelection .code-line:hover:before {
-	border-left: 3px solid rgba(255, 160, 0, 1);
-}
-
-.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
-	border-left: none;
-}
-
-img {
-	max-width: 100%;
-	max-height: 100%;
-}
-
-a {
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-a:focus,
-input:focus,
-select:focus,
-textarea:focus {
-	outline: 1px solid -webkit-focus-ring-color;
-	outline-offset: -1px;
-}
-
-hr {
-	border: 0;
-	height: 2px;
-	border-bottom: 2px solid;
-}
-
-h1 {
-	padding-bottom: 0.3em;
-	line-height: 1.2;
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
-}
-
-h1, h2, h3 {
-	font-weight: normal;
-}
-
-table {
-	border-collapse: collapse;
-}
-
-table > thead > tr > th {
-	text-align: left;
-	border-bottom: 1px solid;
-}
-
-table > thead > tr > th,
-table > thead > tr > td,
-table > tbody > tr > th,
-table > tbody > tr > td {
-	padding: 5px 10px;
-}
-
-table > tbody > tr + tr > td {
-	border-top: 1px solid;
-}
-
-blockquote {
-	margin: 0 7px 0 5px;
-	padding: 0 16px 0 10px;
-	border-left-width: 5px;
-	border-left-style: solid;
-}
-
-code {
-	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
-	font-size: 1em;
-	line-height: 1.357em;
-}
-
-body.wordWrap pre {
-	white-space: pre-wrap;
-}
-
-pre:not(.hljs),
-pre.hljs code > div {
-	padding: 16px;
-	border-radius: 3px;
-	overflow: auto;
-}
-
-pre code {
-	color: var(--vscode-editor-foreground);
-	tab-size: 4;
-}
-
-/** Theming */
-
-.vscode-light pre {
-	background-color: rgba(220, 220, 220, 0.4);
-}
-
-.vscode-dark pre {
-	background-color: rgba(10, 10, 10, 0.4);
-}
-
-.vscode-high-contrast pre {
-	background-color: rgb(0, 0, 0);
-}
-
-.vscode-high-contrast h1 {
-	border-color: rgb(0, 0, 0);
-}
-
-.vscode-light table > thead > tr > th {
-	border-color: rgba(0, 0, 0, 0.69);
-}
-
-.vscode-dark table > thead > tr > th {
-	border-color: rgba(255, 255, 255, 0.69);
-}
-
-.vscode-light h1,
-.vscode-light hr,
-.vscode-light table > tbody > tr + tr > td {
-	border-color: rgba(0, 0, 0, 0.18);
-}
-
-.vscode-dark h1,
-.vscode-dark hr,
-.vscode-dark table > tbody > tr + tr > td {
-	border-color: rgba(255, 255, 255, 0.18);
-}
-
-</style>
-
-<style>
-/* Tomorrow Theme */
-/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
-/* Original theme - https://github.com/chriskempson/tomorrow-theme */
-
-/* Tomorrow Comment */
-.hljs-comment,
-.hljs-quote {
-	color: #8e908c;
-}
-
-/* Tomorrow Red */
-.hljs-variable,
-.hljs-template-variable,
-.hljs-tag,
-.hljs-name,
-.hljs-selector-id,
-.hljs-selector-class,
-.hljs-regexp,
-.hljs-deletion {
-	color: #c82829;
-}
-
-/* Tomorrow Orange */
-.hljs-number,
-.hljs-built_in,
-.hljs-builtin-name,
-.hljs-literal,
-.hljs-type,
-.hljs-params,
-.hljs-meta,
-.hljs-link {
-	color: #f5871f;
-}
-
-/* Tomorrow Yellow */
-.hljs-attribute {
-	color: #eab700;
-}
-
-/* Tomorrow Green */
-.hljs-string,
-.hljs-symbol,
-.hljs-bullet,
-.hljs-addition {
-	color: #718c00;
-}
-
-/* Tomorrow Blue */
-.hljs-title,
-.hljs-section {
-	color: #4271ae;
-}
-
-/* Tomorrow Purple */
-.hljs-keyword,
-.hljs-selector-tag {
-	color: #8959a8;
-}
-
-.hljs {
-	display: block;
-	overflow-x: auto;
-	color: #4d4d4c;
-	padding: 0.5em;
-}
-
-.hljs-emphasis {
-	font-style: italic;
-}
-
-.hljs-strong {
-	font-weight: bold;
-}
-</style>
-
-<style>
-/*
- * Markdown PDF CSS
- */
-
- body {
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
-	padding: 0 12px;
-}
-
-pre {
-	background-color: #f8f8f8;
-	border: 1px solid #cccccc;
-	border-radius: 3px;
-	overflow-x: auto;
-	white-space: pre-wrap;
-	overflow-wrap: break-word;
-}
-
-pre:not(.hljs) {
-	padding: 23px;
-	line-height: 19px;
-}
-
-blockquote {
-	background: rgba(127, 127, 127, 0.1);
-	border-color: rgba(0, 122, 204, 0.5);
-}
-
-.emoji {
-	height: 1.4em;
-}
-
-code {
-	font-size: 14px;
-	line-height: 19px;
-}
-
-/* for inline code */
-:not(pre):not(.hljs) > code {
-	color: #C9AE75; /* Change the old color so it seems less like an error */
-	font-size: inherit;
-}
-
-/* Page Break : use <div class="page"/> to insert page break
--------------------------------------------------------- */
-.page {
-	page-break-after: always;
-}
-
-</style>
-
-<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
-</head>
-<body>
-  <script>
-    mermaid.initialize({
-      startOnLoad: true,
-      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
-          ? 'dark'
-          : 'default'
-    });
-  </script>
-<div class="cover">
-  <div class="cover-content">
-    <h1>Du Capteur à l'Actionneur</h1>
-    <h2>Rapport de Projet - 2025</h2>
-    <div class="authors">
-      <p><strong>Kiran BONHOMME</strong></p>
-      <p><strong>Anaïs DIGOUT</strong></p>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Rapport - Du Capteur à l'Actionneur</title>
+    <style>
+      /* Styles de base */
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        color: #333;
+        background: #f4f4f4;
+      }
+
+      /* Page de garde */
+      .cover {
+        min-height: 100vh;
+        background-color: #0d47a1;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        box-sizing: border-box;
+      }
+
+      .cover-content {
+        max-width: 800px;
+        padding: 3rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .cover-content h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .cover-content h2 {
+        font-size: 1.5rem;
+        margin: 2rem 0;
+        font-weight: 400;
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+        margin: 1rem 0 2rem;
+        font-style: italic;
+        opacity: 0.9;
+      }
+
+      /* Séparateur au format texte - sera toujours bien rendu */
+      .text-separator {
+        margin: 2rem auto;
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.3);
+        width: 70%;
+      }
+
+      .authors {
+        margin: 2rem 0;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 3rem;
+      }
+
+      .author {
+        text-align: center;
+      }
+
+      .author .name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+      }
+
+      .author .role {
+        font-size: 0.9rem;
+        font-style: italic;
+        opacity: 0.8;
+      }
+
+      .logo {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        padding: 0.6rem 1rem;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 4px;
+        font-weight: bold;
+      }
+
+      .promo {
+        display: inline-block;
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 0.5rem 1.5rem;
+        border-radius: 30px;
+        margin-top: 2rem;
+      }
+
+      .date {
+        margin-top: 1rem;
+        opacity: 0.7;
+      }
+
+      /* Style du contenu */
+      .container {
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 30px;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+
+      .container h2 {
+        color: #0d47a1;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #0d47a1;
+        margin-bottom: 25px;
+      }
+
+      .container h3 {
+        color: #1976d2;
+        margin-top: 30px;
+        margin-bottom: 15px;
+      }
+
+      .container h4 {
+        color: #2196f3;
+        margin-top: 25px;
+        margin-bottom: 10px;
+      }
+
+      /* Style du sommaire */
+      .toc {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .toc ul {
+        list-style-type: none;
+        padding-left: 25px;
+      }
+
+      .toc li {
+        margin: 8px 0;
+      }
+
+      .toc a {
+        color: #333;
+        text-decoration: none;
+        display: block;
+        padding: 3px 5px;
+      }
+
+      .toc a:hover {
+        color: #0d47a1;
+        background-color: #f5f5f5;
+      }
+
+      .toc li a::before {
+        content: "•";
+        display: inline-block;
+        color: #0d47a1;
+        width: 15px;
+        margin-right: 5px;
+      }
+
+      .toc ul li a::before {
+        content: "◦";
+        color: #555;
+      }
+
+      .toc ul ul li a::before {
+        content: "-";
+        color: #777;
+      }
+
+      /* Styles des tableaux */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #f5f5f5;
+        font-weight: 600;
+        text-align: left;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      /* Styles pour les images */
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 20px auto;
+        border-radius: 4px;
+      }
+
+      /* Styles pour les blocs de code et les citations */
+      pre,
+      code {
+        background-color: #f5f5f5;
+        border-radius: 4px;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      code {
+        padding: 2px 5px;
+      }
+
+      pre {
+        padding: 15px;
+        overflow-x: auto;
+      }
+
+      blockquote {
+        border-left: 4px solid #0d47a1;
+        padding-left: 15px;
+        margin-left: 0;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cover">
+      <span class="logo">STM32F4</span>
+
+      <div class="cover-content">
+        <h1>Du Capteur à l'Actionneur</h1>
+        <p class="subtitle">
+          Système embarqué avec capteur ultrasonique et servo-moteur
+        </p>
+
+        <div class="text-separator"></div>
+
+        <h2>Rapport de Projet - 2025</h2>
+
+        <div class="authors">
+          <div class="author">
+            <p class="name">Kiran BONHOMME</p>
+            <p class="role">Développement Embarqué</p>
+          </div>
+          <div class="author">
+            <p class="name">Anaïs DIGOUT</p>
+            <p class="role">Intégration Système</p>
+          </div>
+        </div>
+
+        <div class="text-separator"></div>
+
+        <p class="promo">Promotion E4e - SE</p>
+        <p class="date">Avril 2025</p>
+      </div>
     </div>
-    <p class="promo">Promotion E4e - SE</p>
-  </div>
-</div>
-<style>
-  body, html {
-    height: 100%;
-    margin: 0;
-    background-color: #ffffff; /* Fond blanc pour le corps */
-  }
 
-  .cover {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    height: 100vh; /* Utilisation de toute la hauteur de la page */
-    padding: 60px 20px;
-  }
-
-  .cover-content {
-    max-width: 800px;
-    width: 100%;
-    padding: 40px 20px;
-    background-color: #ffffff; /* Fond blanc pour le contenu */
-    border-radius: 16px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .cover h1 {
-    font-size: 48px;
-    margin-bottom: 10px;
-    color: #00796B;
-    font-weight: bold;
-  }
-
-  .cover h2 {
-    font-size: 28px;
-    margin-bottom: 30px;
-    color: #004D40;
-    font-weight: bold;
-  }
-
-  .authors p {
-    font-size: 22px;
-    margin: 5px 0;
-    color: #00796B;
-  }
-
-  .promo {
-    font-size: 20px;
-    margin-top: 20px;
-    color: #00796B;
-    font-style: italic;
-  }
-
-  @media (max-width: 768px) {
-    .cover h1 {
-      font-size: 36px;
-    }
-
-    .cover h2 {
-      font-size: 24px;
-    }
-
-    .authors p {
-      font-size: 20px;
-    }
-
-    .promo {
-      font-size: 18px;
-    }
-  }
-</style>
-<div class="container">
-  <h2 id="sommaire">Sommaire</h2>
-  <ul class="toc">
-    <li><a href="#1-introduction">1. Introduction</a></li>
-    <ul>
-      <li><a href="#11-objectif-du-projet">1.1 Objectif du projet</a></li>
-      <li><a href="#12-modes-de-fonctionnement">1.2 Modes de fonctionnement</a></li>
-      <li><a href="#13-machine-a-etat">1.3 Machine à état</a></li>
-      <li><a href="#14-comportements-supplementaires">1.4 Comportements supplémentaires</a></li>
-    </ul>
-    <li><a href="#2-conception">2. Conception</a></li>
-    <ul>
-      <li><a href="#21-diagramme-de-classe">2.1 Diagramme de classe</a></li>
-      <li><a href="#22-diagrammes-de-sequence">2.2 Diagrammes de séquence</a></li>
-      <ul>
-        <li><a href="#diagramme-de-sequence-principal">Diagramme de séquence principal</a></li>
-        <li><a href="#traitement-des-commandes-utilisateur">Traitement des commandes utilisateur</a></li>
-        <li><a href="#mise-a-jour-du-systeme-selon-letat">Mise à jour du système selon l'état</a></li>
-        <li><a href="#mode-1-suivi-de-distance">Mode 1 - Suivi de distance</a></li>
-        <li><a href="#mode-2-consigne-utilisateur">Mode 2 - Consigne utilisateur</a></li>
+    <div class="container">
+      <h2 id="sommaire">Sommaire</h2>
+      <ul class="toc">
+        <li>
+          <a href="#1-introduction">1. Introduction</a>
+          <ul>
+            <li><a href="#11-objectif-du-projet">1.1 Objectif du projet</a></li>
+            <li>
+              <a href="#12-modes-de-fonctionnement"
+                >1.2 Modes de fonctionnement</a
+              >
+            </li>
+            <li><a href="#13-machine-a-etat">1.3 Machine à état</a></li>
+            <li>
+              <a href="#14-comportements-supplementaires"
+                >1.4 Comportements supplémentaires</a
+              >
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#2-conception">2. Conception</a>
+          <ul>
+            <li>
+              <a href="#21-diagramme-de-classe">2.1 Diagramme de classe</a>
+            </li>
+            <li>
+              <a href="#22-diagrammes-de-sequence"
+                >2.2 Diagrammes de séquence</a
+              >
+              <ul>
+                <li>
+                  <a href="#diagramme-de-sequence-principal"
+                    >Diagramme de séquence principal</a
+                  >
+                </li>
+                <li>
+                  <a href="#traitement-des-commandes-utilisateur"
+                    >Traitement des commandes utilisateur</a
+                  >
+                </li>
+                <li>
+                  <a href="#mise-a-jour-du-systeme-selon-letat"
+                    >Mise à jour du système selon l'état</a
+                  >
+                </li>
+                <li>
+                  <a href="#mode-1-suivi-de-distance"
+                    >Mode 1 - Suivi de distance</a
+                  >
+                </li>
+                <li>
+                  <a href="#mode-2-consigne-utilisateur"
+                    >Mode 2 - Consigne utilisateur</a
+                  >
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="#24-brochage-des-differents-elements"
+                >2.4 Brochage des différents éléments</a
+              >
+              <ul>
+                <li>
+                  <a href="#brochage-du-capteur-hc-sr04"
+                    >Brochage du capteur HC-SR04</a
+                  >
+                </li>
+                <li>
+                  <a href="#brochage-du-servo-moteur"
+                    >Brochage du servo-moteur</a
+                  >
+                </li>
+                <li><a href="#brochage-des-leds">Brochage des LEDs</a></li>
+                <li>
+                  <a href="#brochage-de-la-communication-serie"
+                    >Brochage de la Communication série</a
+                  >
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#3-modules-developpes">3. Modules développés</a>
+          <ul>
+            <li><a href="#31-module-hc-sr04">3.1 Module HC-SR04</a></li>
+            <li>
+              <a href="#32-module-servo-moteur">3.2 Module Servo-moteur</a>
+            </li>
+            <li><a href="#33-module-uart">3.3 Module UART</a></li>
+            <li>
+              <a href="#34-fonctions-de-demonstration"
+                >3.4 Fonctions de démonstration</a
+              >
+            </li>
+            <li>
+              <a href="#35-application-principale"
+                >3.5 Application principale</a
+              >
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#4-difficultes-rencontrees-et-solutions"
+            >4. Difficultés rencontrées et solutions</a
+          >
+        </li>
+        <li><a href="#5-conclusion">5. Conclusion</a></li>
       </ul>
-      <li><a href="#24-brochage-des-differents-elements">2.4 Brochage des différents éléments</a></li>
-      <ul>
-        <li><a href="#brochage-du-capteur-hc-sr04">Brochage du capteur HC-SR04</a></li>
-        <li><a href="#brochage-du-servo-moteur">Brochage du servo-moteur</a></li>
-        <li><a href="#brochage-des-leds">Brochage des LEDs</a></li>
-        <li><a href="#brochage-de-la-communication-serie">Brochage de la Communication série</a></li>
-      </ul>
-    </ul>
-    <li><a href="#3-modules-developpes">3. Modules développés</a></li>
-    <ul>
-      <li><a href="#31-module-hc-sr04">3.1 Module HC-SR04</a></li>
-      <li><a href="#32-module-servo-moteur">3.2 Module Servo-moteur</a></li>
-      <li><a href="#33-module-uart">3.3 Module UART</a></li>
-      <li><a href="#34-fonctions-de-demonstration">3.4 Fonctions de démonstration</a></li>
-      <li><a href="#35-application-principale">3.5 Application principale</a></li>
-    </ul>
-    <li><a href="#4-difficultes-rencontrees-et-solutions">4. Difficultés rencontrées et solutions</a></li>
-    <li><a href="#5-conclusion">5. Conclusion</a></li>
-  </ul>
-</div>
-<h2 id="1-introduction">1. Introduction</h2>
-<h3 id="11-objectif-du-projet">1.1 Objectif du projet</h3>
-<p>Ce projet vise à développer un système embarqué sur microcontrôleur STM32F4 permettant d'interfacer un capteur de distance à ultrasons (HC-SR04) avec un servo-moteur. L'objectif principal est de créer un système capable de réagir à l'environnement (mesure de distance) ou à des commandes utilisateur (via liaison série) pour positionner précisément un servo-moteur.</p>
-<p>Le système met en œuvre différentes technologies et compétences en développement embarqué :</p>
-<ul>
-<li>Mesure de distance par ultrasons</li>
-<li>Génération de signaux PWM pour contrôler un servo-moteur</li>
-<li>Communication série formatée</li>
-<li>Gestion d'une machine à états</li>
-<li>Développement modulaire avec séparation des responsabilités</li>
-</ul>
-<h3 id="12-modes-de-fonctionnement">1.2 Modes de fonctionnement</h3>
-<p>Le système propose trois modes de fonctionnement distincts :</p>
-<ol>
-<li>
-<p><strong>Mode IDLE (repos)</strong> :</p>
-<ul>
-<li>Les LEDs sont éteintes</li>
-<li>Le servo-moteur est positionné au centre (position neutre)</li>
-<li>Le système attend une commande utilisateur</li>
-</ul>
-</li>
-<li>
-<p><strong>Mode 1 (asservissement par capteur)</strong> :</p>
-<ul>
-<li>La LED bleue est allumée pour indiquer ce mode</li>
-<li>Le servo-moteur se positionne proportionnellement à la distance mesurée par le capteur HC-SR04</li>
-<li>Plage de mesure valide : 5 à 25 cm</li>
-<li>Si la distance est hors de cette plage, le servo-moteur revient en position centrale</li>
-</ul>
-</li>
-<li>
-<p><strong>Mode 2 (contrôle par commande série)</strong> :</p>
-<ul>
-<li>La LED verte est allumée pour indiquer ce mode</li>
-<li>Le servo-moteur se positionne selon une valeur envoyée par l'utilisateur via UART</li>
-<li>Plage de valeurs acceptées : 1 à 12 (correspondant à différentes positions angulaires)</li>
-</ul>
-</li>
-</ol>
-<h3 id="13-machine-%C3%A0-%C3%A9tat">1.3 Machine à état</h3>
-<p>Le système est géré par une machine à états dont les transitions sont déclenchées par les commandes utilisateur. Voici le diagramme d'états correspondant :</p>
-<p><img src="MAE.png" alt="Machine à états"></p>
-<p>Ce diagramme illustre :</p>
-<ul>
-<li>Les trois états principaux du système (IDLE, MODE1, MODE2)</li>
-<li>Les transitions entre états déclenchées par les commandes utilisateur</li>
-<li>Les comportements spécifiques à chaque état</li>
-<li>La gestion des cas particuliers comme les mesures hors plage</li>
-</ul>
-<h3 id="14-comportements-suppl%C3%A9mentaires">1.4 Comportements supplémentaires</h3>
-<p>En plus des modes de fonctionnement principaux, le système offre les caractéristiques suivantes :</p>
-<ul>
-<li>
-<p><strong>Protocole de communication série structuré</strong> :</p>
-<ul>
-<li>Les messages sont encapsulés entre délimiteurs '&lt;' et '&gt;'</li>
-<li>Écho des caractères reçus pour confirmer la réception</li>
-<li>Messages d'état et d'erreur formatés</li>
-</ul>
-</li>
-<li>
-<p><strong>Gestion des erreurs</strong> :</p>
-<ul>
-<li>Détection des valeurs hors plage pour le capteur</li>
-<li>Vérification de la validité des commandes série</li>
-<li>Messages d'erreur explicites pour guider l'utilisateur</li>
-</ul>
-</li>
-<li>
-<p><strong>Retour d'information</strong> :</p>
-<ul>
-<li>Affichage régulier de la distance mesurée en Mode 1</li>
-<li>Confirmation des commandes reçues</li>
-<li>Indication visuelle du mode actif par LEDs</li>
-</ul>
-</li>
-</ul>
-<h2 id="2-conception">2. Conception</h2>
-<h3 id="21-diagramme-de-classe">2.1 Diagramme de classe</h3>
-<p>Le diagramme suivant illustre la structure du code et les relations entre les différents modules du système :</p>
-<p><img src="DC.png" alt="Diagramme de classe"></p>
-<p>Ce diagramme met en évidence :</p>
-<ul>
-<li>La structure modulaire du système avec une séparation claire des responsabilités</li>
-<li>L'implémentation du pattern Singleton pour le capteur HC-SR04</li>
-<li>Les interfaces entre le contrôleur principal et les différents modules périphériques</li>
-<li>Les constantes et limitations définies pour chaque sous-système</li>
-</ul>
-<h3 id="22-diagrammes-de-s%C3%A9quence">2.2 Diagrammes de séquence</h3>
-<p>Les diagrammes de séquence suivants montrent les interactions entre les différents modules du système :</p>
-<h4 id="diagramme-de-s%C3%A9quence-principal">Diagramme de séquence principal</h4>
-<p>Le diagramme principal présente une vue d'ensemble des interactions du système avec des références vers les diagrammes détaillés :</p>
-<p><img src="DS-Main.png" alt="Diagramme de séquence principal"></p>
-<p>Ce diagramme montre :</p>
-<ul>
-<li>La séquence d'initialisation</li>
-<li>La structure de la boucle principale</li>
-<li>Les références vers les diagrammes plus détaillés</li>
-</ul>
-<h4 id="traitement-des-commandes-utilisateur">Traitement des commandes utilisateur</h4>
-<p>Ce diagramme détaille le processus de réception et de traitement des commandes utilisateur :</p>
-<p><img src="DS-CommandProcessing.png" alt="Traitement des commandes utilisateur"></p>
-<p>Il montre :</p>
-<ul>
-<li>La réception des commandes via l'interface UART</li>
-<li>L'analyse et l'interprétation des commandes</li>
-<li>Les différentes actions selon le type de commande reçue</li>
-</ul>
-<h4 id="mise-%C3%A0-jour-du-syst%C3%A8me-selon-l%C3%A9tat">Mise à jour du système selon l'état</h4>
-<p>Ce diagramme illustre comment le système réagit en fonction de son état actuel :</p>
-<p><img src="DS-SystemUpdate.png" alt="Mise à jour du système selon l'état"></p>
-<p>Il montre :</p>
-<ul>
-<li>Les actions spécifiques pour chaque état (IDLE, MODE1, MODE2)</li>
-<li>Le traitement des mesures de distance en MODE1</li>
-<li>La gestion des positions du servo-moteur</li>
-</ul>
-<h4 id="mode-1---suivi-de-distance">Mode 1 - Suivi de distance</h4>
-<p>Le diagramme suivant spécifie comment fonctionne le Mode 1 :</p>
-<p><img src="DS-Mode1Scenario.png" alt="Scénario: Mode 1"></p>
-<p>Ce scénario montre :</p>
-<ul>
-<li>L'activation du Mode 1 par l'utilisateur</li>
-<li>La mesure continue de la distance</li>
-<li>L'ajustement du servo en fonction de la distance mesurée</li>
-</ul>
-<h4 id="mode-2---consigne-utilisateur">Mode 2 - Consigne utilisateur</h4>
-<p>Le diagramme suivant spécifie comment fonctionne le Mode 2 :</p>
-<p><img src="DS-Mode2Scenario.png" alt="Scénario: Mode 2"></p>
-<p>Ce scénario montre :</p>
-<ul>
-<li>L'activation du Mode 2 par l'utilisateur</li>
-<li>L'envoi d'une valeur de position</li>
-<li>Le positionnement du servo selon la consigne reçue</li>
-</ul>
-<h3 id="24-brochage-des-diff%C3%A9rents-%C3%A9l%C3%A9ments">2.4 Brochage des différents éléments</h3>
-<h4 id="brochage-du-capteur-hc-sr04">Brochage du capteur HC-SR04</h4>
-<table>
-<thead>
-<tr>
-<th>Broche</th>
-<th>Connexion</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>VCC</td>
-<td>Alimentation 5V</td>
-<td>Alimentation du capteur</td>
-</tr>
-<tr>
-<td>GND</td>
-<td>Masse</td>
-<td>Référence de masse</td>
-</tr>
-<tr>
-<td>Trig</td>
-<td>PA8 (GPIO)</td>
-<td>Signal de déclenchement de la mesure (sortie STM32)</td>
-</tr>
-<tr>
-<td>Echo</td>
-<td>PA9 (GPIO)</td>
-<td>Signal de retour de l'écho (entrée STM32)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="brochage-du-servo-moteur">Brochage du servo-moteur</h4>
-<table>
-<thead>
-<tr>
-<th>Broche</th>
-<th>Connexion</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>VCC</td>
-<td>Alimentation 5V</td>
-<td>Alimentation du servo</td>
-</tr>
-<tr>
-<td>GND</td>
-<td>Masse</td>
-<td>Référence de masse</td>
-</tr>
-<tr>
-<td>Signal</td>
-<td>PC6 (TIM3_CH1)</td>
-<td>Signal PWM pour le contrôle de position</td>
-</tr>
-</tbody>
-</table>
-<h4 id="brochage-des-leds">Brochage des LEDs</h4>
-<table>
-<thead>
-<tr>
-<th>LED</th>
-<th>Broche</th>
-<th>Mode associé</th>
-<th>Signification</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>LED Bleue</td>
-<td>PD15</td>
-<td>MODE1</td>
-<td>Mode capteur actif</td>
-</tr>
-<tr>
-<td>LED Verte</td>
-<td>PD12</td>
-<td>MODE2</td>
-<td>Mode commande série actif</td>
-</tr>
-<tr>
-<td>LED Orange</td>
-<td>PD13</td>
-<td>Indication</td>
-<td>Mesure valide (5-25 cm)</td>
-</tr>
-<tr>
-<td>LED Rouge</td>
-<td>PD14</td>
-<td>Indication d'erreur</td>
-<td>Mesure hors plage</td>
-</tr>
-</tbody>
-</table>
-<h4 id="brochage-de-la-communication-s%C3%A9rie">Brochage de la Communication série</h4>
-<table>
-<thead>
-<tr>
-<th>Broche</th>
-<th>Connexion</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>TX</td>
-<td>PA2</td>
-<td>Transmission de données</td>
-</tr>
-<tr>
-<td>RX</td>
-<td>PA3</td>
-<td>Réception de données</td>
-</tr>
-</tbody>
-</table>
-<h3 id="24-configuration-des-diff%C3%A9rents-%C3%A9l%C3%A9ments">2.4 Configuration des différents éléments</h3>
-<h4 id="configuration-du-servo-moteur">Configuration du servo-moteur</h4>
-<table>
-<thead>
-<tr>
-<th>Paramètre</th>
-<th>Valeur</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Fréquence PWM</td>
-<td>50 Hz</td>
-<td>Fréquence du signal de contrôle (période 20ms)</td>
-</tr>
-<tr>
-<td>Position minimale</td>
-<td>1000 µs</td>
-<td>Largeur d'impulsion pour 0°</td>
-</tr>
-<tr>
-<td>Position centrale</td>
-<td>1500 µs</td>
-<td>Largeur d'impulsion pour 90°</td>
-</tr>
-<tr>
-<td>Position maximale</td>
-<td>2000 µs</td>
-<td>Largeur d'impulsion pour 180°</td>
-</tr>
-<tr>
-<td>Résolution</td>
-<td>1 µs</td>
-<td>Résolution du positionnement</td>
-</tr>
-</tbody>
-</table>
-<h4 id="configuration-du-capteur-hc-sr04">Configuration du capteur HC-SR04</h4>
-<table>
-<thead>
-<tr>
-<th>Paramètre</th>
-<th>Valeur</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Durée trigger</td>
-<td>10 µs</td>
-<td>Durée de l'impulsion de déclenchement</td>
-</tr>
-<tr>
-<td>Plage de mesure</td>
-<td>5-25 cm</td>
-<td>Plage de distance valide pour l'application</td>
-</tr>
-<tr>
-<td>Timeout</td>
-<td>10 ms</td>
-<td>Délai maximum d'attente pour l'écho</td>
-</tr>
-<tr>
-<td>Timer utilisé</td>
-<td>TIM1</td>
-<td>Timer haute résolution pour la mesure temporelle</td>
-</tr>
-<tr>
-<td>Pull-down</td>
-<td>Activé</td>
-<td>Sur la broche Echo pour stabiliser le signal</td>
-</tr>
-</tbody>
-</table>
-<h4 id="configuration-de-la-communication-s%C3%A9rie">Configuration de la communication série</h4>
-<table>
-<thead>
-<tr>
-<th>Paramètre</th>
-<th>Valeur</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Interface</td>
-<td>USART2</td>
-<td>Interface série utilisée</td>
-</tr>
-<tr>
-<td>Vitesse</td>
-<td>115200 bauds</td>
-<td>Débit de transmission</td>
-</tr>
-<tr>
-<td>Format de trame</td>
-<td>8N1</td>
-<td>8 bits de données, pas de parité, 1 bit de stop</td>
-</tr>
-<tr>
-<td>Délimiteurs</td>
-<td>'&lt;', '&gt;'</td>
-<td>Caractères d'encapsulation des messages</td>
-</tr>
-<tr>
-<td>Timeout UART</td>
-<td>1000 ms</td>
-<td>Timeout pour les opérations de transmission</td>
-</tr>
-<tr>
-<td>Taille buffer</td>
-<td>256 octets</td>
-<td>Taille des buffers de réception et transmission</td>
-</tr>
-</tbody>
-</table>
-<h2 id="3-modules-d%C3%A9velopp%C3%A9s">3. Modules développés</h2>
-<h3 id="31-module-hc-sr04">3.1. Module HC-SR04</h3>
-<p>Le module HC-SR04 gère l'interfaçage avec le capteur ultrasonique pour mesurer la distance.</p>
-<h4 id="fonctionnalit%C3%A9s-principales">Fonctionnalités principales</h4>
-<ul>
-<li>Initialisation des broches GPIO et du timer</li>
-<li>Génération d'impulsions précises de 10µs pour le trigger</li>
-<li>Mesure du temps d'écho avec une résolution microseconde</li>
-<li>Conversion du temps d'écho en distance (cm)</li>
-<li>Filtrage des mesures hors plage (5-25 cm)</li>
-<li>Mise à jour périodique des mesures en Mode 1</li>
-</ul>
-<h3 id="32-module-servo-moteur">3.2. Module Servo-moteur</h3>
-<p>Le module servo-moteur permet de contrôler la position angulaire d'un servo standard via un signal PWM.</p>
-<h4 id="fonctionnalit%C3%A9s-principales">Fonctionnalités principales</h4>
-<ul>
-<li>Initialisation du timer PWM (TIM3)</li>
-<li>Positionnement précis du servo à une valeur spécifiée</li>
-<li>Conversion de distances (5-25 cm) en positions servo (1000-2000 µs)</li>
-<li>Conversion de valeurs utilisateur (1-12) en positions servo</li>
-<li>Position centrale par défaut (1500 µs, 90°)</li>
-</ul>
-<h4 id="d%C3%A9tails-techniques">Détails techniques</h4>
-<ul>
-<li>Signal PWM généré à 50Hz (période de 20ms)</li>
-<li>Largeur d'impulsion variable entre 1ms (0°) et 2ms (180°)</li>
-<li>Position centrale à 1.5ms (90°)</li>
-<li>Résolution temporelle de 1µs</li>
-</ul>
-<h3 id="33-module-uart">3.3. Module UART</h3>
-<p>Le module UART gère la communication série avec l'utilisateur, offrant une interface formatée pour les commandes et les messages d'état.</p>
-<h4 id="fonctionnalit%C3%A9s-principales">Fonctionnalités principales</h4>
-<ul>
-<li>Envoi de messages formatés avec délimiteurs</li>
-<li>Réception non-bloquante de commandes</li>
-<li>Écho des caractères reçus</li>
-<li>Gestion des dépassements de buffer</li>
-<li>Support pour les commandes textuelles et numériques</li>
-</ul>
-<h4 id="protocole-de-communication">Protocole de communication</h4>
-<table>
-<thead>
-<tr>
-<th>Type de message</th>
-<th>Format</th>
-<th>Exemple</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Commande mode</td>
-<td><code>&lt;commande&gt;</code></td>
-<td><code>&lt;mode1&gt;</code></td>
-<td>Change le mode de fonctionnement</td>
-</tr>
-<tr>
-<td>Valeur servo</td>
-<td><code>&lt;valeur&gt;</code></td>
-<td><code>&lt;8&gt;</code></td>
-<td>Positionne le servo en Mode 2</td>
-</tr>
-<tr>
-<td>Information</td>
-<td><code>&lt;message&gt;</code></td>
-<td><code>&lt;Distance: 15.32 cm&gt;</code></td>
-<td>Retour d'information</td>
-</tr>
-<tr>
-<td>Erreur</td>
-<td><code>&lt;message d'erreur&gt;</code></td>
-<td><code>&lt;Error: Message too long&gt;</code></td>
-<td>Indication d'une erreur</td>
-</tr>
-</tbody>
-</table>
-<p>Commandes reconnues :</p>
-<ul>
-<li><code>mode1</code> : Active le Mode 1 (suivi par capteur)</li>
-<li><code>mode2</code> : Active le Mode 2 (commande manuelle)</li>
-<li><code>quit</code> : Retourne au mode IDLE</li>
-<li><code>1</code> à <code>12</code> : Valeurs pour positionner le servo en Mode 2</li>
-</ul>
-<h3 id="34-fonctions-de-d%C3%A9monstration">3.4. Fonctions de démonstration</h3>
-<p>Pour valider le bon fonctionnement des différents modules, nous avons implémenté des fonctions de démonstration. Elles permettent de tester individuellement chaque composant (capteur HC-SR04, servo-moteur, UART) sans dépendre des autres parties du système.</p>
-<p>Voici un résumé des fonctions de démonstration et des indicateurs de bon fonctionnement associés :</p>
-<table>
-<thead>
-<tr>
-<th><strong>Module</strong></th>
-<th><strong>Fonction de démonstration</strong></th>
-<th><strong>Indicateur de bon fonctionnement</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Capteur HC-SR04</td>
-<td><code>HC_SR04_Demo</code></td>
-<td>Affichage de LED indicatives : <br> • LED orange : distance valide (5-25 cm) <br> • LED rouge : distance hors plage ou erreur</td>
-</tr>
-<tr>
-<td>Servo-moteur</td>
-<td><code>Servo_Demo</code></td>
-<td>Déplacement fluide entre les positions : <br> • minimale (0°), <br> • centrale (90°), <br> • maximale (180°).</td>
-</tr>
-<tr>
-<td>UART</td>
-<td><code>USART_Demo</code></td>
-<td>Test interactif : <br> • Envoi d'un message de test : &quot;Testing USART communication... Please respond with <response> to continue.&quot; <br> • Réception et validation de la réponse utilisateur : &quot;Response received: continuing demo.&quot;</td>
-</tr>
-</tbody>
-</table>
-<h3 id="35-application-principale">3.5. Application principale</h3>
-<p>L'application principale orchestre tous les modules et implémente la machine à états qui gère le comportement du système.</p>
-<h4 id="fonctionnalit%C3%A9s-principales">Fonctionnalités principales</h4>
-<ul>
-<li>Initialisation de tous les périphériques</li>
-<li>Boucle principale non-bloquante</li>
-<li>Traitement des commandes utilisateur</li>
-<li>Gestion des transitions entre états</li>
-<li>Mise à jour périodique de l'état du système</li>
-</ul>
-<h4 id="strat%C3%A9gie-de-conception">Stratégie de conception</h4>
-<ul>
-<li><strong>Architecture modulaire</strong> : Chaque module a une responsabilité claire et bien définie</li>
-<li><strong>Machine à états</strong> : Gestion explicite des états et transitions pour simplifier la logique</li>
-<li><strong>Gestion non-bloquante</strong> : Aucune fonction ne bloque l'exécution, permettant au système de réagir en temps réel</li>
-<li><strong>Extensibilité</strong> : Facilité d'ajout de nouveaux modes ou comportements</li>
-</ul>
-<h2 id="4-difficult%C3%A9s-rencontr%C3%A9es-et-solutions">4. Difficultés rencontrées et solutions</h2>
-<table>
-<thead>
-<tr>
-<th>Problème</th>
-<th>Description</th>
-<th>Solution mise en œuvre</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Précision des mesures</strong></td>
-<td>Fluctuations importantes dans les mesures du capteur HC-SR04, rendant le positionnement du servo instable</td>
-<td>• Ajout d'un pull-down sur la broche Echo<br>• Utilisation de TIM1 pour mesurer avec une résolution de 1µs<br>• Implémentation de timeouts (10ms)<br>• Filtrage des valeurs hors plage (5-25 cm)</td>
-</tr>
-<tr>
-<td><strong>Communication série bloquante</strong></td>
-<td>Les premières implémentations de la communication série bloquaient l'exécution principale</td>
-<td>• Réception non-bloquante des caractères<br>• Gestion d'état pour reconstituer les commandes<br>• Utilisation de délimiteurs '&lt;' et '&gt;'<br>• Buffer statique pour conserver l'état entre appels</td>
-</tr>
-<tr>
-<td><strong>Stabilité du servo</strong></td>
-<td>Servo instable lors de petits changements de distance</td>
-<td>• Limitation de la fréquence de mise à jour (100ms)<br>• Position centrale par défaut en cas d'erreur</td>
-</tr>
-<tr>
-<td><strong>Dysfonctionnement du servo-moteur</strong></td>
-<td>Après plusieurs essais, le servo-moteur a cessé de répondre correctement aux commandes</td>
-<td>• Test valide avec un autre servo-moteur <br>• Vérification de la connexion électrique<br>• Changement d'un fil de connexion<br></td>
-</tr>
-</tbody>
-</table>
-<h2 id="5-conclusion">5. Conclusion</h2>
-<p>Ce projet a permis de développer un système complet intégrant capteur et actionneur, avec une interface utilisateur série. Les principales réalisations sont :</p>
-<ol>
-<li><strong>Architecture modulaire</strong> : Le système est divisé en modules réutilisables avec des interfaces claires.</li>
-<li><strong>Machine à états robuste</strong> : La gestion explicite des états simplifie la logique et rend le comportement prévisible.</li>
-<li><strong>Interface utilisateur intuitive</strong> : Les commandes simples et le retour d'information constant facilitent l'utilisation.</li>
-<li><strong>Fiabilité</strong> : La gestion des erreurs, les timeouts et les vérifications de plages assurent un fonctionnement robuste.</li>
-</ol>
-</body>
-</html>
+    </div>
 
-</body>
+    <div class="container">
+      <h2 id="1-introduction">1. Introduction</h2>
+
+      <h3 id="11-objectif-du-projet">1.1 Objectif du projet</h3>
+
+      <p>
+        Ce projet vise à développer un système embarqué sur microcontrôleur
+        STM32F4 permettant d'interfacer un capteur de distance à ultrasons
+        (HC-SR04) avec un servo-moteur. L'objectif principal est de créer un
+        système capable de réagir à l'environnement (mesure de distance) ou à
+        des commandes utilisateur (via liaison série) pour positionner
+        précisément un servo-moteur.
+      </p>
+
+      <p>
+        Le système met en œuvre différentes technologies et compétences en
+        développement embarqué :
+      </p>
+
+      <ul>
+        <li>Mesure de distance par ultrasons</li>
+        <li>Génération de signaux PWM pour contrôler un servo-moteur</li>
+        <li>Communication série formatée</li>
+        <li>Gestion d'une machine à états</li>
+        <li>Développement modulaire avec séparation des responsabilités</li>
+      </ul>
+
+      <h3 id="12-modes-de-fonctionnement">1.2 Modes de fonctionnement</h3>
+
+      <p>Le système propose trois modes de fonctionnement distincts :</p>
+
+      <ol>
+        <li>
+          <strong>Mode IDLE (repos)</strong> :
+          <ul>
+            <li>Les LEDs sont éteintes</li>
+            <li>Le servo-moteur est positionné au centre (position neutre)</li>
+            <li>Le système attend une commande utilisateur</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Mode 1 (asservissement par capteur)</strong> :
+          <ul>
+            <li>La LED bleue est allumée pour indiquer ce mode</li>
+            <li>
+              Le servo-moteur se positionne proportionnellement à la distance
+              mesurée par le capteur HC-SR04
+            </li>
+            <li>Plage de mesure valide : 5 à 25 cm</li>
+            <li>
+              Si la distance est hors de cette plage, le servo-moteur revient en
+              position centrale
+            </li>
+          </ul>
+        </li>
+        <li>
+          <strong>Mode 2 (contrôle par commande série)</strong> :
+          <ul>
+            <li>La LED verte est allumée pour indiquer ce mode</li>
+            <li>
+              Le servo-moteur se positionne selon une valeur envoyée par
+              l'utilisateur via UART
+            </li>
+            <li>
+              Plage de valeurs acceptées : 1 à 12 (correspondant à différentes
+              positions angulaires)
+            </li>
+          </ul>
+        </li>
+      </ol>
+
+      <h3 id="13-machine-a-etat">1.3 Machine à état</h3>
+
+      <p>
+        Le système est géré par une machine à états dont les transitions sont
+        déclenchées par les commandes utilisateur. Voici le diagramme d'états
+        correspondant :
+      </p>
+
+      <img src="MAE.png" alt="Machine à états" />
+
+      <p>Ce diagramme illustre :</p>
+
+      <ul>
+        <li>Les trois états principaux du système (IDLE, MODE1, MODE2)</li>
+        <li>
+          Les transitions entre états déclenchées par les commandes utilisateur
+        </li>
+        <li>Les comportements spécifiques à chaque état</li>
+        <li>La gestion des cas particuliers comme les mesures hors plage</li>
+      </ul>
+
+      <h3 id="14-comportements-supplementaires">
+        1.4 Comportements supplémentaires
+      </h3>
+
+      <p>
+        En plus des modes de fonctionnement principaux, le système offre les
+        caractéristiques suivantes :
+      </p>
+
+      <ul>
+        <li>
+          <strong>Protocole de communication série structuré</strong> :
+          <ul>
+            <li>
+              Les messages sont encapsulés entre délimiteurs '&lt;' et '&gt;'
+            </li>
+            <li>Écho des caractères reçus pour confirmer la réception</li>
+            <li>Messages d'état et d'erreur formatés</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Gestion des erreurs</strong> :
+          <ul>
+            <li>Détection des valeurs hors plage pour le capteur</li>
+            <li>Vérification de la validité des commandes série</li>
+            <li>Messages d'erreur explicites pour guider l'utilisateur</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Retour d'information</strong> :
+          <ul>
+            <li>Affichage régulier de la distance mesurée en Mode 1</li>
+            <li>Confirmation des commandes reçues</li>
+            <li>Indication visuelle du mode actif par LEDs</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h2 id="2-conception">2. Conception</h2>
+
+      <h3 id="21-diagramme-de-classe">2.1 Diagramme de classe</h3>
+
+      <p>
+        Le diagramme suivant illustre la structure du code et les relations
+        entre les différents modules du système :
+      </p>
+
+      <img src="DC.png" alt="Diagramme de classe" />
+
+      <p>Ce diagramme met en évidence :</p>
+
+      <ul>
+        <li>
+          La structure modulaire du système avec une séparation claire des
+          responsabilités
+        </li>
+        <li>L'implémentation du pattern Singleton pour le capteur HC-SR04</li>
+        <li>
+          Les interfaces entre le contrôleur principal et les différents modules
+          périphériques
+        </li>
+        <li>Les constantes et limitations définies pour chaque sous-système</li>
+      </ul>
+
+      <h3 id="22-diagrammes-de-sequence">2.2 Diagrammes de séquence</h3>
+
+      <p>
+        Les diagrammes de séquence suivants montrent les interactions entre les
+        différents modules du système :
+      </p>
+
+      <h4 id="diagramme-de-sequence-principal">
+        Diagramme de séquence principal
+      </h4>
+
+      <p>
+        Le diagramme principal présente une vue d'ensemble des interactions du
+        système avec des références vers les diagrammes détaillés :
+      </p>
+
+      <img src="DS-Main.png" alt="Diagramme de séquence principal" />
+
+      <p>Ce diagramme montre :</p>
+
+      <ul>
+        <li>La séquence d'initialisation</li>
+        <li>La structure de la boucle principale</li>
+        <li>Les références vers les diagrammes plus détaillés</li>
+      </ul>
+
+      <h4 id="traitement-des-commandes-utilisateur">
+        Traitement des commandes utilisateur
+      </h4>
+
+      <p>
+        Ce diagramme détaille le processus de réception et de traitement des
+        commandes utilisateur :
+      </p>
+
+      <img
+        src="DS-CommandProcessing.png"
+        alt="Traitement des commandes utilisateur"
+      />
+
+      <p>Il montre :</p>
+
+      <ul>
+        <li>La réception des commandes via l'interface UART</li>
+        <li>L'analyse et l'interprétation des commandes</li>
+        <li>Les différentes actions selon le type de commande reçue</li>
+      </ul>
+
+      <h4 id="mise-a-jour-du-systeme-selon-letat">
+        Mise à jour du système selon l'état
+      </h4>
+
+      <p>
+        Ce diagramme illustre comment le système réagit en fonction de son état
+        actuel :
+      </p>
+
+      <img
+        src="DS-SystemUpdate.png"
+        alt="Mise à jour du système selon l'état"
+      />
+
+      <p>Il montre :</p>
+
+      <ul>
+        <li>Les actions spécifiques pour chaque état (IDLE, MODE1, MODE2)</li>
+        <li>Le traitement des mesures de distance en MODE1</li>
+        <li>La gestion des positions du servo-moteur</li>
+      </ul>
+
+      <h4 id="mode-1-suivi-de-distance">Mode 1 - Suivi de distance</h4>
+
+      <p>Le diagramme suivant spécifie comment fonctionne le Mode 1 :</p>
+
+      <img src="DS-Mode1Scenario.png" alt="Scénario: Mode 1" />
+
+      <p>Ce scénario montre :</p>
+
+      <ul>
+        <li>L'activation du Mode 1 par l'utilisateur</li>
+        <li>La mesure continue de la distance</li>
+        <li>L'ajustement du servo en fonction de la distance mesurée</li>
+      </ul>
+
+      <h4 id="mode-2-consigne-utilisateur">Mode 2 - Consigne utilisateur</h4>
+
+      <p>Le diagramme suivant spécifie comment fonctionne le Mode 2 :</p>
+
+      <img src="DS-Mode2Scenario.png" alt="Scénario: Mode 2" />
+
+      <p>Ce scénario montre :</p>
+
+      <ul>
+        <li>L'activation du Mode 2 par l'utilisateur</li>
+        <li>L'envoi d'une valeur de position</li>
+        <li>Le positionnement du servo selon la consigne reçue</li>
+      </ul>
+
+      <h3 id="24-brochage-des-differents-elements">
+        2.4 Brochage des différents éléments
+      </h3>
+
+      <h4 id="brochage-du-capteur-hc-sr04">Brochage du capteur HC-SR04</h4>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Broche</th>
+            <th>Connexion</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>VCC</td>
+            <td>Alimentation 5V</td>
+            <td>Alimentation du capteur</td>
+          </tr>
+          <tr>
+            <td>GND</td>
+            <td>Masse</td>
+            <td>Référence de masse</td>
+          </tr>
+          <tr>
+            <td>Trig</td>
+            <td>PA8 (GPIO)</td>
+            <td>Signal de déclenchement de la mesure (sortie STM32)</td>
+          </tr>
+          <tr>
+            <td>Echo</td>
+            <td>PA9 (GPIO)</td>
+            <td>Signal de retour de l'écho (entrée STM32)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4 id="brochage-du-servo-moteur">Brochage du servo-moteur</h4>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Broche</th>
+            <th>Connexion</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>VCC</td>
+            <td>Alimentation 5V</td>
+            <td>Alimentation du servo</td>
+          </tr>
+          <tr>
+            <td>GND</td>
+            <td>Masse</td>
+            <td>Référence de masse</td>
+          </tr>
+          <tr>
+            <td>Signal</td>
+            <td>PC6 (TIM3_CH1)</td>
+            <td>Signal PWM pour le contrôle de position</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4 id="brochage-des-leds">Brochage des LEDs</h4>
+
+      <table>
+        <thead>
+          <tr>
+            <th>LED</th>
+            <th>Broche</th>
+            <th>Mode associé</th>
+            <th>Signification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>LED Bleue</td>
+            <td>PD15</td>
+            <td>MODE1</td>
+            <td>Mode capteur actif</td>
+          </tr>
+          <tr>
+            <td>LED Verte</td>
+            <td>PD12</td>
+            <td>MODE2</td>
+            <td>Mode commande série actif</td>
+          </tr>
+          <tr>
+            <td>LED Orange</td>
+            <td>PD13</td>
+            <td>Indication</td>
+            <td>Mesure valide (5-25 cm)</td>
+          </tr>
+          <tr>
+            <td>LED Rouge</td>
+            <td>PD14</td>
+            <td>Indication d'erreur</td>
+            <td>Mesure hors plage</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4 id="brochage-de-la-communication-serie">
+        Brochage de la Communication série
+      </h4>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Broche</th>
+            <th>Connexion</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TX</td>
+            <td>PA2</td>
+            <td>Transmission de données</td>
+          </tr>
+          <tr>
+            <td>RX</td>
+            <td>PA3</td>
+            <td>Réception de données</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 id="24-configuration-des-differents-elements">
+        2.4 Configuration des différents éléments
+      </h3>
+
+      <h4 id="configuration-du-servo-moteur">Configuration du servo-moteur</h4>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Paramètre</th>
+            <th>Valeur</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Fréquence PWM</td>
+            <td>50 Hz</td>
+            <td>Fréquence du signal de contrôle (période 20ms)</td>
+          </tr>
+          <tr>
+            <td>Position minimale</td>
+            <td>1000 µs</td>
+            <td>Largeur d'impulsion pour 0°</td>
+          </tr>
+          <tr>
+            <td>Position centrale</td>
+            <td>1500 µs</td>
+            <td>Largeur d'impulsion pour 90°</td>
+          </tr>
+          <tr>
+            <td>Position maximale</td>
+            <td>2000 µs</td>
+            <td>Largeur d'impulsion pour 180°</td>
+          </tr>
+          <tr>
+            <td>Résolution</td>
+            <td>1 µs</td>
+            <td>Résolution du positionnement</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4 id="configuration-du-capteur-hc-sr04">
+        Configuration du capteur HC-SR04
+      </h4>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Paramètre</th>
+            <th>Valeur</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Durée trigger</td>
+            <td>10 µs</td>
+            <td>Durée de l'impulsion de déclenchement</td>
+          </tr>
+          <tr>
+            <td>Plage de mesure</td>
+            <td>5-25 cm</td>
+            <td>Plage de distance valide pour l'application</td>
+          </tr>
+          <tr>
+            <td>Timeout</td>
+            <td>10 ms</td>
+            <td>Délai maximum d'attente pour l'écho</td>
+          </tr>
+          <tr>
+            <td>Timer utilisé</td>
+            <td>TIM1</td>
+            <td>Timer haute résolution pour la mesure temporelle</td>
+          </tr>
+          <tr>
+            <td>Pull-down</td>
+            <td>Activé</td>
+            <td>Sur la broche Echo pour stabiliser le signal</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4 id="configuration-de-la-communication-serie">
+        Configuration de la communication série
+      </h4>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Paramètre</th>
+            <th>Valeur</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Interface</td>
+            <td>USART2</td>
+            <td>Interface série utilisée</td>
+          </tr>
+          <tr>
+            <td>Vitesse</td>
+            <td>115200 bauds</td>
+            <td>Débit de transmission</td>
+          </tr>
+          <tr>
+            <td>Format de trame</td>
+            <td>8N1</td>
+            <td>8 bits de données, pas de parité, 1 bit de stop</td>
+          </tr>
+          <tr>
+            <td>Délimiteurs</td>
+            <td>'&lt;', '&gt;'</td>
+            <td>Caractères d'encapsulation des messages</td>
+          </tr>
+          <tr>
+            <td>Timeout UART</td>
+            <td>1000 ms</td>
+            <td>Timeout pour les opérations de transmission</td>
+          </tr>
+          <tr>
+            <td>Taille buffer</td>
+            <td>256 octets</td>
+            <td>Taille des buffers de réception et transmission</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 id="3-modules-developpes">3. Modules développés</h2>
+
+      <h3 id="31-module-hc-sr04">3.1. Module HC-SR04</h3>
+
+      <p>
+        Le module HC-SR04 gère l'interfaçage avec le capteur ultrasonique pour
+        mesurer la distance.
+      </p>
+
+      <h4>Fonctionnalités principales</h4>
+
+      <ul>
+        <li>Initialisation des broches GPIO et du timer</li>
+        <li>Génération d'impulsions précises de 10µs pour le trigger</li>
+        <li>Mesure du temps d'écho avec une résolution microseconde</li>
+        <li>Conversion du temps d'écho en distance (cm)</li>
+        <li>Filtrage des mesures hors plage (5-25 cm)</li>
+        <li>Mise à jour périodique des mesures en Mode 1</li>
+      </ul>
+      <h3 id="32-module-servo-moteur">3.2. Module Servo-moteur</h3>
+
+      <p>
+        Le module servo-moteur permet de contrôler la position angulaire d'un
+        servo standard via un signal PWM.
+      </p>
+
+      <h4>Fonctionnalités principales</h4>
+
+      <ul>
+        <li>Initialisation du timer PWM (TIM3)</li>
+        <li>Positionnement précis du servo à une valeur spécifiée</li>
+        <li>
+          Conversion de distances (5-25 cm) en positions servo (1000-2000 µs)
+        </li>
+        <li>Conversion de valeurs utilisateur (1-12) en positions servo</li>
+        <li>Position centrale par défaut (1500 µs, 90°)</li>
+      </ul>
+
+      <h4>Détails techniques</h4>
+
+      <ul>
+        <li>Signal PWM généré à 50Hz (période de 20ms)</li>
+        <li>Largeur d'impulsion variable entre 1ms (0°) et 2ms (180°)</li>
+        <li>Position centrale à 1.5ms (90°)</li>
+        <li>Résolution temporelle de 1µs</li>
+      </ul>
+
+      <h3 id="33-module-uart">3.3. Module UART</h3>
+
+      <p>
+        Le module UART gère la communication série avec l'utilisateur, offrant
+        une interface formatée pour les commandes et les messages d'état.
+      </p>
+
+      <h4>Fonctionnalités principales</h4>
+
+      <ul>
+        <li>Envoi de messages formatés avec délimiteurs</li>
+        <li>Réception non-bloquante de commandes</li>
+        <li>Écho des caractères reçus</li>
+        <li>Gestion des dépassements de buffer</li>
+        <li>Support pour les commandes textuelles et numériques</li>
+      </ul>
+
+      <h4>Protocole de communication</h4>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Type de message</th>
+            <th>Format</th>
+            <th>Exemple</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Commande mode</td>
+            <td><code>&lt;commande&gt;</code></td>
+            <td><code>&lt;mode1&gt;</code></td>
+            <td>Change le mode de fonctionnement</td>
+          </tr>
+          <tr>
+            <td>Valeur servo</td>
+            <td><code>&lt;valeur&gt;</code></td>
+            <td><code>&lt;8&gt;</code></td>
+            <td>Positionne le servo en Mode 2</td>
+          </tr>
+          <tr>
+            <td>Information</td>
+            <td><code>&lt;message&gt;</code></td>
+            <td><code>&lt;Distance: 15.32 cm&gt;</code></td>
+            <td>Retour d'information</td>
+          </tr>
+          <tr>
+            <td>Erreur</td>
+            <td><code>&lt;message d'erreur&gt;</code></td>
+            <td><code>&lt;Error: Message too long&gt;</code></td>
+            <td>Indication d'une erreur</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>Commandes reconnues :</p>
+
+      <ul>
+        <li><code>mode1</code> : Active le Mode 1 (suivi par capteur)</li>
+        <li><code>mode2</code> : Active le Mode 2 (commande manuelle)</li>
+        <li><code>quit</code> : Retourne au mode IDLE</li>
+        <li>
+          <code>1</code> à <code>12</code> : Valeurs pour positionner le servo
+          en Mode 2
+        </li>
+      </ul>
+
+      <h3 id="34-fonctions-de-demonstration">
+        3.4. Fonctions de démonstration
+      </h3>
+
+      <p>
+        Pour valider le bon fonctionnement des différents modules, nous avons
+        implémenté des fonctions de démonstration. Elles permettent de tester
+        individuellement chaque composant (capteur HC-SR04, servo-moteur, UART)
+        sans dépendre des autres parties du système.
+      </p>
+
+      <p>
+        Voici un résumé des fonctions de démonstration et des indicateurs de bon
+        fonctionnement associés :
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Module</th>
+            <th>Fonction de démonstration</th>
+            <th>Indicateur de bon fonctionnement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Capteur HC-SR04</td>
+            <td><code>HC_SR04_Demo</code></td>
+            <td>
+              Affichage de LED indicatives : <br />
+              • LED orange : distance valide (5-25 cm) <br />
+              • LED rouge : distance hors plage ou erreur
+            </td>
+          </tr>
+          <tr>
+            <td>Servo-moteur</td>
+            <td><code>Servo_Demo</code></td>
+            <td>
+              Déplacement fluide entre les positions : <br />
+              • minimale (0°), <br />
+              • centrale (90°), <br />
+              • maximale (180°).
+            </td>
+          </tr>
+          <tr>
+            <td>UART</td>
+            <td><code>USART_Demo</code></td>
+            <td>
+              Test interactif : <br />
+              • Envoi d'un message de test : "Testing USART communication...
+              Please respond with &lt;response&gt; to continue." <br />
+              • Réception et validation de la réponse utilisateur : "Response
+              received: continuing demo."
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 id="35-application-principale">3.5. Application principale</h3>
+
+      <p>
+        L'application principale orchestre tous les modules et implémente la
+        machine à états qui gère le comportement du système.
+      </p>
+
+      <h4>Fonctionnalités principales</h4>
+
+      <ul>
+        <li>Initialisation de tous les périphériques</li>
+        <li>Boucle principale non-bloquante</li>
+        <li>Traitement des commandes utilisateur</li>
+        <li>Gestion des transitions entre états</li>
+        <li>Mise à jour périodique de l'état du système</li>
+      </ul>
+
+      <h4>Stratégie de conception</h4>
+
+      <ul>
+        <li>
+          <strong>Architecture modulaire</strong> : Chaque module a une
+          responsabilité claire et bien définie
+        </li>
+        <li>
+          <strong>Machine à états</strong> : Gestion explicite des états et
+          transitions pour simplifier la logique
+        </li>
+        <li>
+          <strong>Gestion non-bloquante</strong> : Aucune fonction ne bloque
+          l'exécution, permettant au système de réagir en temps réel
+        </li>
+        <li>
+          <strong>Extensibilité</strong> : Facilité d'ajout de nouveaux modes ou
+          comportements
+        </li>
+      </ul>
+
+      <h2 id="4-difficultes-rencontrees-et-solutions">
+        4. Difficultés rencontrées et solutions
+      </h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Problème</th>
+            <th>Description</th>
+            <th>Solution mise en œuvre</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Précision des mesures</strong></td>
+            <td>
+              Fluctuations importantes dans les mesures du capteur HC-SR04,
+              rendant le positionnement du servo instable
+            </td>
+            <td>
+              • Ajout d'un pull-down sur la broche Echo<br />• Utilisation de
+              TIM1 pour mesurer avec une résolution de 1µs<br />• Implémentation
+              de timeouts (10ms)<br />• Filtrage des valeurs hors plage (5-25
+              cm)
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Communication série bloquante</strong></td>
+            <td>
+              Les premières implémentations de la communication série bloquaient
+              l'exécution principale
+            </td>
+            <td>
+              • Réception non-bloquante des caractères<br />• Gestion d'état
+              pour reconstituer les commandes<br />• Utilisation de délimiteurs
+              '&lt;' et '&gt;'<br />• Buffer statique pour conserver l'état
+              entre appels
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Stabilité du servo</strong></td>
+            <td>Servo instable lors de petits changements de distance</td>
+            <td>
+              • Limitation de la fréquence de mise à jour (100ms)<br />•
+              Position centrale par défaut en cas d'erreur
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Dysfonctionnement du servo-moteur</strong></td>
+            <td>
+              Après plusieurs essais, le servo-moteur a cessé de répondre
+              correctement aux commandes
+            </td>
+            <td>
+              • Test valide avec un autre servo-moteur <br />• Vérification de
+              la connexion électrique<br />• Changement d'un fil de connexion<br />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 id="5-conclusion">5. Conclusion</h2>
+
+      <p>
+        Ce projet a permis de développer un système complet intégrant capteur et
+        actionneur, avec une interface utilisateur série. Les principales
+        réalisations sont :
+      </p>
+
+      <ol>
+        <li>
+          <strong>Architecture modulaire</strong> : Le système est divisé en
+          modules réutilisables avec des interfaces claires.
+        </li>
+        <li>
+          <strong>Machine à états robuste</strong> : La gestion explicite des
+          états simplifie la logique et rend le comportement prévisible.
+        </li>
+        <li>
+          <strong>Interface utilisateur intuitive</strong> : Les commandes
+          simples et le retour d'information constant facilitent l'utilisation.
+        </li>
+        <li>
+          <strong>Fiabilité</strong> : La gestion des erreurs, les timeouts et
+          les vérifications de plages assurent un fonctionnement robuste.
+        </li>
+      </ol>
+    </div>
+  </body>
 </html>
