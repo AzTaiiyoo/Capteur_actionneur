@@ -167,7 +167,7 @@ Il montre :
 
 #### Mode 1 - Suivi de distance
 
-Les diagrammes suivants présentent des scénarios complets d'utilisation du système :
+Le diagramme suivant spécifie comment fonctionne le Mode 1 :
 
 ![Scénario: Mode 1](DS-Mode1Scenario.png)
 
@@ -178,6 +178,8 @@ Ce scénario montre :
 - L'ajustement du servo en fonction de la distance mesurée
 
 #### Mode 2 - Consigne utilisateur
+
+Le diagramme suivant spécifie comment fonctionne le Mode 2 :
 
 ![Scénario: Mode 2](DS-Mode2Scenario.png)
 

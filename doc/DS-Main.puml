@@ -1,4 +1,7 @@
 @startuml
+
+title Diagramme de séquence du projet global
+
 ' Participants (modules)
 actor "User" as User
 participant "Main" as Main
