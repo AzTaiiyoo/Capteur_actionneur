@@ -1,4 +1,7 @@
 @startuml
+
+title  Machine à Etat du projet global
+
 ' Point de départ
 [*] -down-> idle
 
@@ -33,14 +36,13 @@ state "MODE1" as mode1 {
 }
 
 ' Transitions entre états principaux
-idle -down-> mode1 : Commande <mode1>
 idle -down-> mode2 : Commande <mode2>
 mode1 -up-> idle : Commande <quit>
+idle -down-> mode1 : Commande <mode1>
 mode2 -up-> idle : Commande <quit>
 mode1 -right-> mode2 : Commande <mode2>
 mode2 -left-> mode1 : Commande <mode1>
 
-title  Machine à Etat du projet global
 footer Projet Capteur à Actionneur – Avril 2025
 
 @enduml
