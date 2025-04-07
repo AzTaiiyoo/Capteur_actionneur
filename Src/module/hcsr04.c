@@ -50,7 +50,7 @@
      HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
  
      // Configuration Echo (PA9) en entrée avec pull-down
-     GPIO_InitStruct.Pin = GPIO_PIN_9;
+     GPIO_InitStruct.Pin = GPIO_PIN_10;
      GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
      GPIO_InitStruct.Pull = GPIO_PULLDOWN; // Ajout d'un pull-down pour stabiliser le signal
      HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -75,7 +75,7 @@
  
      // Attendre l'activation de Echo (avec timeout)
      uint32_t timeout = HAL_GetTick() + 10; // Timeout de 10 ms
-     while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9) == GPIO_PIN_RESET) {
+     while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_10) == GPIO_PIN_RESET) {
          if (HAL_GetTick() > timeout) {
              return -1.0f; // Timeout, retourner une erreur
          }
@@ -86,7 +86,7 @@
  
      // Attendre la fin de l'impulsion Echo (avec timeout)
      timeout = HAL_GetTick() + 10; // Timeout de 10 ms
-     while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9) == GPIO_PIN_SET) {
+     while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_10) == GPIO_PIN_SET) {
          if (HAL_GetTick() > timeout) {
              return -1.0f; // Timeout, retourner une erreur
          }
