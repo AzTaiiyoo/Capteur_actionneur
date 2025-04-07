@@ -1,13 +1,3 @@
-/**
- * @file main.c
- * @brief Programme principal pour le système de positionnement servo par distance et commande série
- * @details Ce fichier contient le programme principal qui contrôle un servo-moteur selon deux
- * modes d'opération: un mode basé sur la distance mesurée par un capteur HC-SR04 et
- * un mode basé sur des commandes reçues via la liaison série.
- * @author STM32 Team
- * @date 2025
- */
-
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
@@ -31,15 +21,15 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-#include "module/hcsr04.h"
-#include "module/servo.h"
-#include "module/usart_comm.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include "module/hcsr04.h"
+#include "module/servo.h"
+#include "module/usart_comm.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -109,7 +99,6 @@ void updateSystem(void);
  * @brief Gère la réception des commandes via la liaison série
  */
 void handleSerialCommunication(void);
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -124,9 +113,6 @@ void handleSerialCommunication(void);
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
-/**
- * @brief Configure l'horloge système
- */
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
@@ -138,21 +124,14 @@ void SystemClock_Config(void);
 /* USER CODE END 0 */
 
 /**
-  * @brief  Point d'entrée principal du programme
-  * @retval int Valeur de retour (normalement jamais atteinte)
+  * @brief  The application entry point.
+  * @retval int
   */
 int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);
   
-  // Initialisation du capteur HC-SR04
-  HC_SR04* sensor = HC_SR04_get_instance();  // Obtenir l'instance du capteur HC-SR04
-  if (!sensor) {
-    Error_Handler();  // Si l'initialisation échoue, appeler Error_Handler
-  }
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -173,54 +152,55 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  // MX_TIM6_Init();
   MX_TIM1_Init();
-  // MX_UART4_Init();
-  MX_USART2_UART_Init();
   MX_TIM3_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  // Initialisation du capteur HC-SR04
+  HC_SR04* sensor = HC_SR04_get_instance();  // Obtenir l'instance du capteur HC-SR04
+  if (!sensor) {
+    Error_Handler();  // Si l'initialisation échoue, appeler Error_Handler
+  }
   
   // Lancement de la PWM sur le canal 1 de TIM1
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1); // Start PWM on TIM1 Channel 1
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0); // Set initial duty cycle to 0%
+  // HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1); // Start PWM on TIM1 Channel 1
+  // __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 3); // Set initial duty cycle to 0%
 
   // Démarrer la PWM pour le servo-moteur
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
   __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, 1500); // Position initiale au centre
   
-  /* USER CODE BEGIN 2 */
   HC_SR04_init(); // Initialisation du capteur HC-SR04
 
-    // Initialiser le servo
+  // Initialiser le servo
   Servo_Init();
   Servo_SetToMiddle(); // Mettre en position neutre au démarrage
 
   sendMessage("System ready. Available commands: mode1, mode2, quit");
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-{
-  // Obtenir l'instance du capteur
-  HC_SR04* sensor = HC_SR04_get_instance();
-  
-  // Mettre à jour la distance et contrôler les LEDs
-  HC_SR04_update(sensor, mode);
-  
-  // Gérer la communication série pour les commandes
-  handleSerialCommunication();
-  
-  // Mettre à jour l'état du système en fonction du mode
-  updateSystem();
-  
-  // Petite pause pour éviter de surcharger le CPU
-  HAL_Delay(10);
-}
-  /* USER CODE END WHILE */
+  {
+    // Obtenir l'instance du capteur
+    HC_SR04* sensor = HC_SR04_get_instance();
+    
+    // Mettre à jour la distance et contrôler les LEDs
+    HC_SR04_update(sensor, mode);
+    
+    // Gérer la communication série pour les commandes
+    handleSerialCommunication();
+    
+    // Mettre à jour l'état du système en fonction du mode
+    updateSystem();
+    
+    // Petite pause pour éviter de surcharger le CPU
+    // HAL_Delay(10);
+    /* USER CODE END WHILE */
 
-  /* USER CODE BEGIN 3 */
+    /* USER CODE BEGIN 3 */
+  }
   // Ne devrait jamais arriver
   // Error_Handler();
   /* USER CODE END 3 */
@@ -422,7 +402,7 @@ void updateSystem(void)
 /* USER CODE END 4 */
 
 /**
-  * @brief  Cette fonction est exécutée en cas d'erreur.
+  * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
 void Error_Handler(void)
