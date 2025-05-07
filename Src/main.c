@@ -30,6 +30,7 @@
 #include "module/hcsr04.h"
 #include "module/servo.h"
 #include "module/usart_comm.h"
+#include "module/raspi_comm.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -157,6 +158,8 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM3_Init();
   MX_USART2_UART_Init();
+  MX_USART1_UART_Init();
+  RasPi_Init();
   /* USER CODE BEGIN 2 */
   // Initialisation du capteur HC-SR04
   HC_SR04* sensor = HC_SR04_get_instance();  // Obtenir l'instance du capteur HC-SR04
@@ -178,6 +181,7 @@ int main(void)
   Servo_Init();
   Servo_SetToMiddle(); // Mettre en position neutre au démarrage
 
+  RasPi_SendMessage("System ready. Available commands: mode1, mode2, quit, demo");
   sendMessage("System ready. Available commands: mode1, mode2, quit, demo");
   /* USER CODE END 2 */
 
@@ -193,6 +197,7 @@ int main(void)
     
     // Gérer la communication série pour les commandes
     handleSerialCommunication();
+    RasPi_HandleCommunication();
     
     // Mettre à jour l'état du système en fonction du mode
     updateSystem();
@@ -389,6 +394,7 @@ void updateSystem(void)
         HAL_GPIO_WritePin(GPIOD, LED_BLEU_Pin, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(GPIOD, LED_VERT_Pin, GPIO_PIN_RESET);
         Servo_SetToMiddle();
+        RasPi_SendMessage("State: IDLE");
         // Réinitialiser l'état de la démo
         demoState = 0;
         break;
@@ -403,6 +409,7 @@ void updateSystem(void)
         } else {
           Servo_SetToMiddle();
         }
+        RasPi_SendMessage("State: MODE1");
         break;
         
       case STATE_MODE2:
@@ -411,6 +418,7 @@ void updateSystem(void)
         
         uint32_t position = Servo_ValueToPosition(servoPosition);
         Servo_SetPosition(position);
+        RasPi_SendMessage("State: MODE2");
         break;
 
       case STATE_DEMO:

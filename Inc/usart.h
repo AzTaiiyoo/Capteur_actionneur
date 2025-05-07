@@ -35,7 +35,8 @@ extern "C" {
 extern UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN Private defines */
-
+extern UART_HandleTypeDef huart1;  // UART pour la communication avec la Raspberry Pi
+void MX_USART1_UART_Init(void);
 /* USER CODE END Private defines */
 
 void MX_USART2_UART_Init(void);

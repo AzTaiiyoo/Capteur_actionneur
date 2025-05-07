@@ -11,6 +11,7 @@
  #include <stdint.h>
  #include "tim.h"
  #include "usart_comm.h"
+ #include "module/raspi_comm.h"
  
  /**
   * @brief Instance statique du capteur HC-SR04 (singleton)
@@ -131,6 +132,7 @@
              if (sensor->distance >= 5 && sensor->distance <= 25) {
                  sprintf(message, "Distance: %.2f cm", sensor->distance);
                  sendMessage(message);
+                 RasPi_SendMessage(message);
                  
                  // Indiquer l'état avec les LEDs
                  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET);   // LED ORANGE ON

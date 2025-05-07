@@ -61,7 +61,8 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c \
 Src/system_stm32f4xx.c \
 Src/module/usart_comm.c \
 Src/module/hcsr04.c \
-Src/module/servo.c
+Src/module/servo.c \
+Src/module/raspi_comm.c
 
 # ASM sources
 ASM_SOURCES =  \
