@@ -240,6 +240,80 @@
         margin-left: 0;
         color: #555;
       }
+      
+      /* Style pour les diagrammes encadrés */
+      .diagram-container {
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin: 25px 0;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+      
+      .diagram-container h4 {
+        text-align: center;
+        margin-bottom: 15px;
+      }
+      
+      .diagram-description {
+        margin-top: 15px;
+        font-style: italic;
+        color: #555;
+      }
+      
+      /* Mise en évidence des points clés */
+      .key-point {
+        background-color: #e3f2fd;
+        padding: 15px;
+        border-left: 4px solid #2196f3;
+        margin: 20px 0;
+        border-radius: 0 4px 4px 0;
+      }
+      
+      /* Style pour le code source */
+      .code-sample {
+        margin: 20px 0;
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+        border: 1px solid #ddd;
+      }
+      
+      .code-sample pre {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+      }
+      
+      /* Style pour les étapes numérotées */
+      .steps {
+        counter-reset: step-counter;
+        list-style-type: none;
+        padding-left: 20px;
+      }
+      
+      .steps li {
+        position: relative;
+        padding-left: 40px;
+        margin-bottom: 20px;
+      }
+      
+      .steps li:before {
+        content: counter(step-counter);
+        counter-increment: step-counter;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background-color: #0d47a1;
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 28px;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
@@ -328,6 +402,11 @@
                     >Mode 2 - Consigne utilisateur</a
                   >
                 </li>
+                <li>
+                  <a href="#threads-raspberry-pi"
+                    >Gestion des threads sur Raspberry Pi</a
+                  >
+                </li>
               </ul>
             </li>
             <li>
@@ -373,6 +452,17 @@
                 >3.5 Application principale</a
               >
             </li>
+            <li>
+              <a href="#36-modules-raspberry-pi"
+                >3.6 Modules Raspberry Pi</a
+              >
+              <ul>
+                <li><a href="#361-module-gpio-raspberry">3.6.1 Module GPIO</a></li>
+                <li><a href="#362-module-serial-raspberry">3.6.2 Module Serial</a></li>
+                <li><a href="#363-module-servo-raspberry">3.6.3 Module Servo</a></li>
+                <li><a href="#364-module-main-raspberry">3.6.4 Module Main</a></li>
+              </ul>
+            </li>
           </ul>
         </li>
         <li>
@@ -405,6 +495,21 @@
                 >5.4 Modes de fonctionnement</a
               >
             </li>
+            <li>
+              <a href="#55-protocole-de-communication"
+                >5.5 Protocole de communication</a
+              >
+            </li>
+            <li>
+              <a href="#56-implementation-multi-thread"
+                >5.6 Implémentation multi-thread</a
+              >
+            </li>
+            <li>
+              <a href="#57-outils-de-diagnostic"
+                >5.7 Outils de diagnostic</a
+              >
+            </li>
           </ul>
         </li>
         <li>
@@ -429,13 +534,19 @@
       <h3 id="11-objectif-du-projet">1.1 Objectif du projet</h3>
 
       <p>
-        Ce projet vise à développer un système embarqué sur microcontrôleur
-        STM32F4 permettant d'interfacer un capteur de distance à ultrasons
-        (HC-SR04) avec un servo-moteur. L'objectif principal est de créer un
-        système capable de réagir à l'environnement (mesure de distance) ou à
-        des commandes utilisateur (via liaison série) pour positionner
-        précisément un servo-moteur.
+        Ce projet vise à développer un système embarqué distribué utilisant à la fois un microcontrôleur STM32F4 et une Raspberry Pi pour interfacer un capteur de distance à ultrasons (HC-SR04) avec deux servo-moteurs. L'objectif principal est de créer un système capable de réagir à l'environnement (mesure de distance) ou à des commandes utilisateur (via liaison série) pour positionner précisément les servo-moteurs.
       </p>
+
+      <div class="key-point">
+        <strong>Points clés du projet :</strong>
+        <ul>
+          <li>Système distribué entre STM32F4 et Raspberry Pi, communiquant via UART</li>
+          <li>Un servo-moteur connecté à chaque plateforme (STM32F4 et Raspberry Pi)</li>
+          <li>Capteur ultrason HC-SR04 connecté à la STM32F4</li>
+          <li>Interface utilisateur via console sur la Raspberry Pi</li>
+          <li>Plusieurs modes de fonctionnement configurables</li>
+        </ul>
+      </div>
 
       <p>
         Le système met en œuvre différentes technologies et compétences en
@@ -444,12 +555,13 @@
 
       <ul>
         <li>Mesure de distance par ultrasons</li>
-        <li>Génération de signaux PWM pour contrôler un servo-moteur</li>
-        <li>Communication série formatée</li>
+        <li>Génération de signaux PWM pour contrôler des servo-moteurs</li>
+        <li>Communication série formatée entre microcontrôleur et ordinateur</li>
+        <li>Programmation multi-thread sur Raspberry Pi</li>
         <li>Gestion d'une machine à états</li>
         <li>Développement modulaire avec séparation des responsabilités</li>
         <li>Communication entre STM32 et Raspberry Pi</li>
-        <li>Traitement parallèle avec plusieurs threads sur Raspberry Pi</li>
+        <li>Interface utilisateur en mode console</li>
       </ul>
 
       <h3 id="12-modes-de-fonctionnement">1.2 Modes de fonctionnement</h3>
@@ -460,38 +572,28 @@
         <li>
           <strong>Mode IDLE (repos)</strong> :
           <ul>
-            <li>Les LEDs sont éteintes</li>
-            <li>Le servo-moteur est positionné au centre (position neutre)</li>
+            <li>Les LEDs sont éteintes sur la STM32</li>
+            <li>Les deux servo-moteurs (STM32 et Raspberry Pi) sont positionnés au centre (position neutre)</li>
             <li>Le système attend une commande utilisateur</li>
           </ul>
         </li>
         <li>
           <strong>Mode 1 (asservissement par capteur)</strong> :
           <ul>
-            <li>La LED bleue est allumée pour indiquer ce mode</li>
-            <li>
-              Le servo-moteur se positionne proportionnellement à la distance
-              mesurée par le capteur HC-SR04
-            </li>
+            <li>La LED bleue est allumée sur la STM32 pour indiquer ce mode</li>
+            <li>Les deux servo-moteurs (STM32 et Raspberry Pi) se positionnent proportionnellement à la distance mesurée par le capteur HC-SR04</li>
             <li>Plage de mesure valide : 5 à 25 cm</li>
-            <li>
-              Si la distance est hors de cette plage, le servo-moteur revient en
-              position centrale
-            </li>
+            <li>Si la distance est hors de cette plage, les servo-moteurs reviennent en position centrale</li>
+            <li>La STM32 envoie régulièrement les mesures de distance à la Raspberry Pi</li>
           </ul>
         </li>
         <li>
           <strong>Mode 2 (contrôle par commande série)</strong> :
           <ul>
-            <li>La LED verte est allumée pour indiquer ce mode</li>
-            <li>
-              Le servo-moteur se positionne selon une valeur envoyée par
-              l'utilisateur via UART
-            </li>
-            <li>
-              Plage de valeurs acceptées : 1 à 12 (correspondant à différentes
-              positions angulaires)
-            </li>
+            <li>La LED verte est allumée sur la STM32 pour indiquer ce mode</li>
+            <li>Le servo-moteur de la STM32 se positionne selon une valeur envoyée par l'utilisateur via la console de la Raspberry Pi</li>
+            <li>Le servo-moteur de la Raspberry Pi continue de suivre la distance mesurée par le capteur</li>
+            <li>Plage de valeurs acceptées pour le servo STM32 : 1 à 12 (correspondant à différentes positions angulaires)</li>
           </ul>
         </li>
       </ol>
@@ -504,17 +606,24 @@
         correspondant :
       </p>
 
-      <img src="MAE.png" alt="Machine à états" />
+      <div class="diagram-container">
+        <h4>Machine à État du Système</h4>
+        <img src="MAE.png" alt="Machine à états" />
+        <p class="diagram-description">
+          Ce diagramme montre les trois états principaux (IDLE, MODE1, MODE2), leurs transitions et les comportements associés à chaque état.
+        </p>
+      </div>
 
       <p>Ce diagramme illustre :</p>
 
       <ul>
         <li>Les trois états principaux du système (IDLE, MODE1, MODE2)</li>
         <li>
-          Les transitions entre états déclenchées par les commandes utilisateur
+          Les transitions entre états déclenchées par les commandes utilisateur via la Raspberry Pi
         </li>
-        <li>Les comportements spécifiques à chaque état</li>
+        <li>Les comportements spécifiques à chaque état, y compris le comportement des LEDs et des servo-moteurs</li>
         <li>La gestion des cas particuliers comme les mesures hors plage</li>
+        <li>Les règles de positionnement des servo-moteurs selon le mode actif</li>
       </ul>
 
       <h3 id="14-comportements-supplementaires">
@@ -531,10 +640,29 @@
           <strong>Protocole de communication série structuré</strong> :
           <ul>
             <li>
-              Les messages sont encapsulés entre délimiteurs '&lt;' et '&gt;'
+              Les messages sont encapsulés entre délimiteurs '&lt;' et '&gt;' pour garantir l'intégrité des commandes
             </li>
             <li>Écho des caractères reçus pour confirmer la réception</li>
             <li>Messages d'état et d'erreur formatés</li>
+            <li>Transmission régulière des mesures de distance de la STM32 vers la Raspberry Pi</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Interface utilisateur sur Raspberry Pi</strong> :
+          <ul>
+            <li>Interface en ligne de commande pour contrôler le système</li>
+            <li>Affichage des informations de distance et d'état</li>
+            <li>Menu d'aide intégré pour guider l'utilisateur</li>
+            <li>Commandes intuitives pour sélectionner les modes et positionner les servo-moteurs</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Architecture multi-thread sur Raspberry Pi</strong> :
+          <ul>
+            <li>Thread dédié à la génération du signal PWM pour le servo-moteur</li>
+            <li>Thread pour recevoir les données du STM32 en temps réel</li>
+            <li>Thread pour contrôler le servo-moteur selon le mode sélectionné</li>
+            <li>Thread principal pour l'interface utilisateur</li>
           </ul>
         </li>
         <li>
@@ -543,14 +671,16 @@
             <li>Détection des valeurs hors plage pour le capteur</li>
             <li>Vérification de la validité des commandes série</li>
             <li>Messages d'erreur explicites pour guider l'utilisateur</li>
+            <li>Mécanismes de récupération en cas de déconnexion</li>
           </ul>
         </li>
         <li>
           <strong>Retour d'information</strong> :
           <ul>
-            <li>Affichage régulier de la distance mesurée en Mode 1</li>
+            <li>Affichage régulier de la distance mesurée</li>
             <li>Confirmation des commandes reçues</li>
-            <li>Indication visuelle du mode actif par LEDs</li>
+            <li>Indication visuelle du mode actif par LEDs sur la STM32</li>
+            <li>Messages d'état détaillés sur la console de la Raspberry Pi</li>
           </ul>
         </li>
       </ul>
@@ -564,7 +694,13 @@
         entre les différents modules du système :
       </p>
 
-      <img src="DC.png" alt="Diagramme de classe" />
+      <div class="diagram-container">
+        <h4>Diagramme de Classe du Système</h4>
+        <img src="DC.png" alt="Diagramme de classe" />
+        <p class="diagram-description">
+          Ce diagramme présente l'organisation modulaire du système, montrant les classes principales et leurs relations.
+        </p>
+      </div>
 
       <p>Ce diagramme met en évidence :</p>
 
@@ -573,13 +709,19 @@
           La structure modulaire du système avec une séparation claire des
           responsabilités
         </li>
+        <li>Les différentes classes et leurs méthodes principales</li>
         <li>L'implémentation du pattern Singleton pour le capteur HC-SR04</li>
         <li>
           Les interfaces entre le contrôleur principal et les différents modules
           périphériques
         </li>
         <li>Les constantes et limitations définies pour chaque sous-système</li>
+        <li>Les énumérations utilisées pour représenter les états et commandes</li>
       </ul>
+      
+      <p>
+        Bien que ce diagramme se concentre principalement sur la partie STM32, le système sur Raspberry Pi adopte également une approche modulaire avec des modules distincts pour la communication série, le contrôle du servo-moteur, et la gestion des GPIO.
+      </p>
 
       <h3 id="22-diagrammes-de-sequence">2.2 Diagrammes de séquence</h3>
 
@@ -592,91 +734,133 @@
         Diagramme de séquence principal
       </h4>
 
-      <p>
-        Le diagramme principal présente une vue d'ensemble des interactions du
-        système avec des références vers les diagrammes détaillés :
-      </p>
-
-      <img src="DS-Main.png" alt="Diagramme de séquence principal" />
+      <div class="diagram-container">
+        <h4>Diagramme de Séquence Principal</h4>
+        <img src="DS-Main.png" alt="Diagramme de séquence principal" />
+        <p class="diagram-description">
+          Vue d'ensemble des interactions dans le système avec références vers les diagrammes plus détaillés.
+        </p>
+      </div>
 
       <p>Ce diagramme montre :</p>
 
       <ul>
-        <li>La séquence d'initialisation</li>
-        <li>La structure de la boucle principale</li>
+        <li>La séquence d'initialisation des différents modules</li>
+        <li>La structure de la boucle principale du système</li>
         <li>Les références vers les diagrammes plus détaillés</li>
+        <li>L'interaction entre les acteurs principaux du système</li>
       </ul>
 
       <h4 id="traitement-des-commandes-utilisateur">
         Traitement des commandes utilisateur
       </h4>
 
-      <p>
-        Ce diagramme détaille le processus de réception et de traitement des
-        commandes utilisateur :
-      </p>
-
-      <img
-        src="DS-CommandProcessing.png"
-        alt="Traitement des commandes utilisateur"
-      />
+      <div class="diagram-container">
+        <h4>Traitement des Commandes Utilisateur</h4>
+        <img
+          src="DS-CommandProcessing.png"
+          alt="Traitement des commandes utilisateur"
+        />
+        <p class="diagram-description">
+          Processus de réception et traitement des commandes utilisateur envoyées via l'interface série.
+        </p>
+      </div>
 
       <p>Il montre :</p>
 
       <ul>
         <li>La réception des commandes via l'interface UART</li>
-        <li>L'analyse et l'interprétation des commandes</li>
+        <li>L'analyse et l'interprétation des commandes reçues</li>
         <li>Les différentes actions selon le type de commande reçue</li>
+        <li>Les messages de confirmation envoyés à l'utilisateur</li>
+        <li>La gestion des erreurs pour les commandes invalides</li>
       </ul>
 
       <h4 id="mise-a-jour-du-systeme-selon-letat">
         Mise à jour du système selon l'état
       </h4>
 
-      <p>
-        Ce diagramme illustre comment le système réagit en fonction de son état
-        actuel :
-      </p>
-
-      <img
-        src="DS-SystemUpdate.png"
-        alt="Mise à jour du système selon l'état"
-      />
+      <div class="diagram-container">
+        <h4>Mise à Jour du Système Selon l'État</h4>
+        <img
+          src="DS-SystemUpdate.png"
+          alt="Mise à jour du système selon l'état"
+        />
+        <p class="diagram-description">
+          Comportement du système en fonction de son état actuel (IDLE, MODE1, MODE2).
+        </p>
+      </div>
 
       <p>Il montre :</p>
 
       <ul>
         <li>Les actions spécifiques pour chaque état (IDLE, MODE1, MODE2)</li>
         <li>Le traitement des mesures de distance en MODE1</li>
-        <li>La gestion des positions du servo-moteur</li>
+        <li>La gestion des positions du servo-moteur selon le mode actif</li>
+        <li>Le contrôle des LEDs pour indiquer visuellement l'état du système</li>
+        <li>Les conditions de validation des distances mesurées</li>
       </ul>
 
       <h4 id="mode-1-suivi-de-distance">Mode 1 - Suivi de distance</h4>
 
-      <p>Le diagramme suivant spécifie comment fonctionne le Mode 1 :</p>
-
-      <img src="DS-Mode1Scenario.png" alt="Scénario: Mode 1" />
+      <div class="diagram-container">
+        <h4>Scénario : Mode 1 - Suivi de Distance</h4>
+        <img src="DS-Mode1Scenario.png" alt="Scénario: Mode 1" />
+        <p class="diagram-description">
+          Fonctionnement détaillé du Mode 1 où le servo-moteur suit la distance mesurée par le capteur.
+        </p>
+      </div>
 
       <p>Ce scénario montre :</p>
 
       <ul>
-        <li>L'activation du Mode 1 par l'utilisateur</li>
-        <li>La mesure continue de la distance</li>
+        <li>L'activation du Mode 1 par l'utilisateur via UART</li>
+        <li>La mesure continue de la distance par le capteur HC-SR04</li>
         <li>L'ajustement du servo en fonction de la distance mesurée</li>
+        <li>L'envoi régulier des informations de distance par UART</li>
+        <li>La gestion des valeurs hors plage (< 5 cm ou > 25 cm)</li>
       </ul>
 
       <h4 id="mode-2-consigne-utilisateur">Mode 2 - Consigne utilisateur</h4>
 
-      <p>Le diagramme suivant spécifie comment fonctionne le Mode 2 :</p>
-
-      <img src="DS-Mode2Scenario.png" alt="Scénario: Mode 2" />
+      <div class="diagram-container">
+        <h4>Scénario : Mode 2 - Consigne Utilisateur</h4>
+        <img src="DS-Mode2Scenario.png" alt="Scénario: Mode 2" />
+        <p class="diagram-description">
+          Fonctionnement détaillé du Mode 2 où le servo-moteur suit les consignes de l'utilisateur.
+        </p>
+      </div>
 
       <p>Ce scénario montre :</p>
 
       <ul>
         <li>L'activation du Mode 2 par l'utilisateur</li>
-        <li>L'envoi d'une valeur de position</li>
+        <li>L'envoi d'une valeur de position par l'utilisateur</li>
+        <li>Le processus de conversion de la valeur (1-12) en position servo</li>
         <li>Le positionnement du servo selon la consigne reçue</li>
+        <li>Les confirmations renvoyées à l'utilisateur</li>
+      </ul>
+
+      <h4 id="threads-raspberry-pi">Gestion des threads sur Raspberry Pi</h4>
+
+      <div class="diagram-container">
+        <h4>Architecture Multi-thread sur Raspberry Pi</h4>
+        <img src="DS-RaspberryThreads.png" alt="Threads sur Raspberry Pi" />
+        <p class="diagram-description">
+          Organisation des différents threads sur la Raspberry Pi et leurs interactions.
+        </p>
+      </div>
+
+      <p>Ce diagramme illustre :</p>
+
+      <ul>
+        <li>La création des différents threads au démarrage du programme</li>
+        <li>Le thread PWM dédié à la génération du signal pour le servo-moteur</li>
+        <li>Le thread de réception des données série provenant de la STM32</li>
+        <li>Le thread de contrôle du servo-moteur selon le mode et les données reçues</li>
+        <li>Le thread principal gérant l'interface utilisateur et l'envoi des commandes</li>
+        <li>L'utilisation des mutex pour la synchronisation des accès aux variables partagées</li>
+        <li>Les flux de communication entre la Raspberry Pi et la STM32</li>
       </ul>
 
       <h3 id="24-brochage-des-differents-elements">
@@ -882,10 +1066,7 @@
           </tr>
           <tr>
             <td colspan="4" style="text-align: center">
-              <em
-                >Note: Les masses (GND) des deux systèmes sont connectées
-                ensemble</em
-              >
+              <em>Note: Les masses (GND) des deux systèmes sont connectées ensemble pour garantir une référence commune</em>
             </td>
           </tr>
         </tbody>
@@ -989,9 +1170,14 @@
         </thead>
         <tbody>
           <tr>
-            <td>Interface</td>
+            <td>Interface STM32</td>
             <td>USART2</td>
-            <td>Interface série utilisée</td>
+            <td>Interface série utilisée sur le STM32</td>
+          </tr>
+          <tr>
+            <td>Interface Raspberry Pi</td>
+            <td>/dev/serial0</td>
+            <td>Port série de la Raspberry Pi</td>
           </tr>
           <tr>
             <td>Vitesse</td>
@@ -1134,6 +1320,8 @@
           <code>1</code> à <code>12</code> : Valeurs pour positionner le servo
           en Mode 2
         </li>
+        <li><code>getdistance</code> : Demande la dernière distance mesurée</li>
+        <li><code>demo</code> : Lance une séquence de démonstration</li>
       </ul>
 
       <h3 id="34-fonctions-de-demonstration">
@@ -1232,6 +1420,140 @@
         </li>
       </ul>
 
+      <h3 id="36-modules-raspberry-pi">3.6. Modules Raspberry Pi</h3>
+
+      <p>
+        La Raspberry Pi est organisée en plusieurs modules qui travaillent ensemble pour offrir les fonctionnalités requises.
+        Chaque module gère un aspect spécifique du système.
+      </p>
+
+      <h4 id="361-module-gpio-raspberry">3.6.1. Module GPIO</h4>
+
+      <p>
+        Ce module (fichiers gpio.c et gpio.h) gère l'accès aux broches GPIO de la Raspberry Pi en utilisant l'interface sysfs.
+      </p>
+
+      <div class="key-point">
+        <strong>Fonctionnalités principales :</strong>
+        <ul>
+          <li>Initialisation des broches GPIO et définition de leur direction (entrée/sortie)</li>
+          <li>Contrôle de l'état des broches (écriture de valeurs 0 ou 1)</li>
+          <li>Gestion du servo-moteur connecté au GPIO 18</li>
+          <li>Interface par fichiers système pour un contrôle précis des broches</li>
+        </ul>
+      </div>
+
+      <p>
+        Fonctions importantes :
+      </p>
+      <ul>
+        <li><code>setupGPIO()</code> : Configure la broche du servo-moteur en sortie</li>
+        <li><code>exportGPIO()</code> : Rend la broche accessible via l'interface sysfs</li>
+        <li><code>setGPIODirection()</code> : Définit si la broche est une entrée ou une sortie</li>
+        <li><code>writeGPIO()</code> : Écrit une valeur sur la broche (0 ou 1)</li>
+      </ul>
+
+      <h4 id="362-module-serial-raspberry">3.6.2. Module Serial</h4>
+
+      <p>
+        Ce module (fichiers serial.c et serial.h) gère la communication UART entre la Raspberry Pi et la STM32F4.
+      </p>
+
+      <div class="key-point">
+        <strong>Fonctionnalités principales :</strong>
+        <ul>
+          <li>Établissement de la connexion série à 115200 bauds, 8N1</li>
+          <li>Envoi de commandes formatées à la STM32 avec les délimiteurs &lt; et &gt;</li>
+          <li>Réception et interprétation des données de distance</li>
+          <li>Analyse des messages reçus pour extraire les informations pertinentes</li>
+        </ul>
+      </div>
+
+      <p>
+        Fonctions importantes :
+      </p>
+      <ul>
+        <li><code>openSerialConnection()</code> : Ouvre et configure le port série</li>
+        <li><code>sendCommand()</code> : Envoie une commande formatée à la STM32</li>
+        <li><code>receiveDataThread()</code> : Thread dédié à la réception des données</li>
+      </ul>
+
+      <p>
+        Le module serial inclut un thread dédié qui s'exécute en arrière-plan et analyse en continu les données reçues de la STM32. Il extrait notamment les informations de distance mesurées par le capteur à ultrasons et les met à disposition des autres modules via des variables partagées protégées par mutex.
+      </p>
+
+      <h4 id="363-module-servo-raspberry">3.6.3. Module Servo</h4>
+
+      <p>
+        Ce module (fichiers servo.c et servo.h) gère le contrôle du servo-moteur connecté à la Raspberry Pi.
+      </p>
+
+      <div class="key-point">
+        <strong>Fonctionnalités principales :</strong>
+        <ul>
+          <li>Génération de signaux PWM précis via GPIO logiciel</li>
+          <li>Conversion de distances mesurées en positions servo</li>
+          <li>Conversion de valeurs utilisateur en positions servo</li>
+          <li>Thread dédié à la génération du signal PWM</li>
+        </ul>
+      </div>
+
+      <p>
+        Fonctions importantes :
+      </p>
+      <ul>
+        <li><code>distanceToPosition()</code> : Convertit une distance mesurée en position du servo</li>
+        <li><code>valueToPosition()</code> : Convertit une valeur utilisateur en position du servo</li>
+        <li><code>pwmThread()</code> : Thread qui génère le signal PWM</li>
+        <li><code>servoControlThread()</code> : Thread qui contrôle le servo selon le mode actuel</li>
+      </ul>
+
+      <p>
+        Le module servo utilise deux threads distincts :
+      </p>
+      <ul>
+        <li>Un thread PWM qui génère précisément les impulsions pour le servo-moteur</li>
+        <li>Un thread de contrôle qui détermine la position du servo selon le mode et les données disponibles</li>
+      </ul>
+
+      <h4 id="364-module-main-raspberry">3.6.4. Module Main</h4>
+
+      <p>
+        Ce module (fichiers main.c et common.h) orchestre l'ensemble du système sur la Raspberry Pi.
+      </p>
+
+      <div class="key-point">
+        <strong>Fonctionnalités principales :</strong>
+        <ul>
+          <li>Initialisation de tous les modules</li>
+          <li>Création et gestion des threads</li>
+          <li>Interface utilisateur en ligne de commande</li>
+          <li>Traitement des commandes utilisateur</li>
+          <li>Gestion des modes de fonctionnement</li>
+          <li>Nettoyage des ressources à la fermeture</li>
+        </ul>
+      </div>
+
+      <p>
+        Fonctions importantes :
+      </p>
+      <ul>
+        <li><code>main()</code> : Point d'entrée du programme</li>
+        <li><code>handleUserInput()</code> : Gère l'interface utilisateur</li>
+        <li><code>printHelp()</code> : Affiche l'aide sur les commandes disponibles</li>
+        <li><code>cleanup()</code> : Libère les ressources et arrête proprement le système</li>
+      </ul>
+
+      <p>
+        Le fichier common.h définit les constantes partagées et les variables globales utilisées par tous les modules, notamment :
+      </p>
+      <ul>
+        <li>Numéros de broches GPIO</li>
+        <li>Limites de positions pour le servo-moteur</li>
+        <li>Limites de distances pour le capteur</li>
+        <li>Variables partagées comme le mode actuel, la distance mesurée, etc.</li>
+      </ul>
+
       <h2 id="4-difficultes-rencontrees-et-solutions">
         4. Difficultés rencontrées et solutions
       </h2>
@@ -1299,7 +1621,8 @@
             <td>
               • Utilisation d'un adaptateur de niveau logique<br />
               • Mise en place d'un protocole robuste avec délimiteurs<br />
-              • Gestion d'erreurs et retransmission en cas d'échec
+              • Gestion d'erreurs et retransmission en cas d'échec<br />
+              • Ajout d'un petit délai (1ms) entre l'envoi de chaque caractère pour éviter la perte de données
             </td>
           </tr>
           <tr>
@@ -1311,7 +1634,41 @@
             <td>
               • Implémentation d'un thread dédié au PWM<br />
               • Utilisation de timers logiciels avec usleep()<br />
-              • Compensation des délais d'exécution
+              • Compensation des délais d'exécution<br />
+              • Calcul précis des temps d'attente pour maintenir une période constante de 20ms
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Synchronisation multi-thread</strong></td>
+            <td>
+              Problèmes d'accès concurrent aux variables partagées entre les threads
+            </td>
+            <td>
+              • Utilisation de mutex pour protéger les accès aux données partagées<br />
+              • Isolation des fonctions critiques<br />
+              • Optimisation des sections critiques pour minimiser les temps de verrouillage
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Création de la machine à états</strong></td>
+            <td>
+              Implémentation de la logique de transition entre les différents modes
+            </td>
+            <td>
+              • Conception claire des états et transitions<br />
+              • Documentation détaillée avec diagrammes<br />
+              • Tests systématiques des transitions
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Configuration UART Raspberry Pi</strong></td>
+            <td>
+              Problèmes de configuration du port série sur la Raspberry Pi
+            </td>
+            <td>
+              • Suppression du paramétrage VMIN et VTIME qui causait des blocages<br />
+              • Évitement du mode non-bloquant qui engendrait des pertes de données<br />
+              • Utilisation de tcflush() pour vider les buffers avant utilisation
             </td>
           </tr>
         </tbody>
@@ -1322,40 +1679,59 @@
       </h2>
 
       <p>
-        En complément du système STM32, le projet utilise également une
-        Raspberry Pi pour communiquer avec le microcontrôleur via UART et pour
-        contrôler un second servo-moteur.
+        L'interaction entre la Raspberry Pi et le STM32 constitue un aspect essentiel de ce projet, permettant de créer un système distribué où chaque plateforme joue un rôle complémentaire.
       </p>
 
       <h3 id="51-architecture-du-systeme-global">
         5.1 Architecture du système global
       </h3>
 
-      <p>Le système global est construit selon l'architecture suivante :</p>
+      <p>Le système global suit une architecture maître-esclave où la Raspberry Pi agit comme maître et le STM32 comme esclave :</p>
+
+      <div class="key-point">
+        <strong>Composants principaux :</strong>
+        <ul>
+          <li><strong>STM32F4</strong> : Gère le capteur HC-SR04 et son propre servo-moteur</li>
+          <li><strong>Raspberry Pi</strong> : Contrôle un second servo-moteur et sert d'interface utilisateur</li>
+          <li><strong>Communication UART</strong> : Lien bidirectionnel entre les deux plateformes</li>
+          <li><strong>Interface utilisateur</strong> : Console en mode texte sur la Raspberry Pi</li>
+        </ul>
+      </div>
+
+      <p>
+        Cette architecture présente plusieurs avantages :
+      </p>
 
       <ul>
-        <li>STM32F4 avec capteur HC-SR04 et servo-moteur</li>
-        <li>Raspberry Pi avec son propre servo-moteur</li>
-        <li>Communication UART entre les deux systèmes</li>
-        <li>Interface utilisateur sur la Raspberry Pi</li>
+        <li><strong>Répartition des tâches</strong> : Le STM32 s'occupe de l'interfaçage avec le capteur à ultrasons, tandis que la Raspberry Pi gère l'interface utilisateur et le traitement de plus haut niveau</li>
+        <li><strong>Redondance</strong> : Si l'une des plateformes rencontre un problème, l'autre peut continuer à fonctionner partiellement</li>
+        <li><strong>Flexibilité</strong> : L'architecture permet d'ajouter facilement de nouvelles fonctionnalités sur l'une ou l'autre plateforme</li>
+        <li><strong>Apprentissage</strong> : Cette configuration permet d'explorer les contraintes et avantages des deux types de systèmes</li>
       </ul>
 
       <h3 id="52-fonctionnalites-de-la-raspberry-pi">
         5.2 Fonctionnalités de la Raspberry Pi
       </h3>
 
-      <p>La Raspberry Pi remplit les fonctions suivantes :</p>
-      <ul>
-        <li>Récupération des données de distance depuis la STM32</li>
-        <li>Envoi de commandes de contrôle vers la STM32</li>
+      <p>Dans ce système distribué, la Raspberry Pi remplit plusieurs rôles :</p>
+
+      <ol class="steps">
         <li>
-          Contrôle de son propre servo-moteur en fonction de la distance mesurée
+          <strong>Interface utilisateur</strong> : La Raspberry Pi fournit une interface en ligne de commande permettant à l'utilisateur de contrôler l'ensemble du système. Cette interface propose des commandes intuitives pour changer de mode, définir des positions ou récupérer des informations.
         </li>
         <li>
-          Interface utilisateur en mode texte pour la configuration et le
-          monitoring
+          <strong>Point de contrôle central</strong> : La Raspberry Pi sert de coordinateur pour l'ensemble du système, transmettant les commandes au STM32 et gérant les états globaux du système.
         </li>
-      </ul>
+        <li>
+          <strong>Contrôle du servo-moteur</strong> : La Raspberry Pi contrôle son propre servo-moteur qui réagit soit aux distances mesurées par le capteur (transmises par le STM32), soit aux commandes utilisateur selon le mode actif.
+        </li>
+        <li>
+          <strong>Traitement des données</strong> : La Raspberry Pi récupère les données de distance depuis le STM32, les traite et les affiche dans un format compréhensible pour l'utilisateur.
+        </li>
+        <li>
+          <strong>Diagnostic et débogage</strong> : La Raspberry Pi fournit des outils pour diagnostiquer le fonctionnement du système, comme la commande <code>getdistance</code> pour vérifier la dernière mesure ou le programme <code>minicom.c</code> pour tester la communication série.
+        </li>
+      </ol>
 
       <h3 id="53-modules-logiciels-raspberry-pi">
         5.3 Modules logiciels Raspberry Pi
@@ -1363,7 +1739,7 @@
 
       <p>
         L'application sur Raspberry Pi est développée en C et organisée en
-        plusieurs modules :
+        plusieurs modules fonctionnels :
       </p>
 
       <table>
@@ -1371,7 +1747,7 @@
           <tr>
             <th>Module</th>
             <th>Fichiers</th>
-            <th>Description</th>
+            <th>Responsabilités</th>
           </tr>
         </thead>
         <tbody>
@@ -1379,23 +1755,60 @@
             <td>Principal</td>
             <td>main.c, common.h</td>
             <td>
-              Coordination des différents modules et interface utilisateur
+              <ul>
+                <li>Initialisation du système</li>
+                <li>Création des threads</li>
+                <li>Interface utilisateur</li>
+                <li>Traitement des commandes</li>
+                <li>Définition des constantes et variables partagées</li>
+              </ul>
             </td>
           </tr>
           <tr>
             <td>Communication série</td>
             <td>serial.c, serial.h</td>
-            <td>Gestion de la communication UART avec la STM32</td>
+            <td>
+              <ul>
+                <li>Établissement de la connexion UART avec le STM32</li>
+                <li>Formatage et envoi des commandes</li>
+                <li>Réception et traitement des données</li>
+                <li>Extraction des informations de distance</li>
+              </ul>
+            </td>
           </tr>
           <tr>
             <td>Servo-moteur</td>
             <td>servo.c, servo.h</td>
-            <td>Contrôle du servo-moteur via PWM sur GPIO</td>
+            <td>
+              <ul>
+                <li>Génération du signal PWM pour le servo-moteur</li>
+                <li>Conversion des distances en positions</li>
+                <li>Conversion des valeurs utilisateur en positions</li>
+                <li>Synchronisation du servo selon le mode actif</li>
+              </ul>
+            </td>
           </tr>
           <tr>
             <td>GPIO</td>
             <td>gpio.c, gpio.h</td>
-            <td>Contrôle des broches GPIO de la Raspberry Pi</td>
+            <td>
+              <ul>
+                <li>Configuration des broches GPIO</li>
+                <li>Contrôle des broches de sortie</li>
+                <li>Gestion du servo-moteur via GPIO 18</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td>Utilitaires</td>
+            <td>test_uart.c, minicom.c</td>
+            <td>
+              <ul>
+                <li>Outils de test pour la communication UART</li>
+                <li>Diagnostics du système</li>
+                <li>Vérification des connexions matérielles</li>
+              </ul>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -1405,21 +1818,325 @@
       </h3>
 
       <p>
-        Le système Raspberry Pi propose les modes de fonctionnement suivants :
+        Le système sur Raspberry Pi supporte les mêmes modes que le STM32, mais avec quelques particularités :
       </p>
-      <ol>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Mode</th>
+            <th>Comportement STM32</th>
+            <th>Comportement Raspberry Pi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Mode IDLE</strong></td>
+            <td>
+              <ul>
+                <li>LEDs éteintes</li>
+                <li>Servo en position centrale</li>
+                <li>Mesure de distance inactive</li>
+              </ul>
+            </td>
+            <td>
+              <ul>
+                <li>Servo en position centrale</li>
+                <li>Interface utilisateur active</li>
+                <li>Attente de commandes</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Mode 1</strong></td>
+            <td>
+              <ul>
+                <li>LED bleue allumée</li>
+                <li>Servo suit la distance mesurée</li>
+                <li>Envoi régulier des mesures</li>
+              </ul>
+            </td>
+            <td>
+              <ul>
+                <li>Servo suit également la distance mesurée</li>
+                <li>Affichage des mesures reçues</li>
+                <li>Synchronisation avec le servo du STM32</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Mode 2</strong></td>
+            <td>
+              <ul>
+                <li>LED verte allumée</li>
+                <li>Servo suit les commandes utilisateur (1-12)</li>
+                <li>Continue de mesurer et envoyer les distances</li>
+              </ul>
+            </td>
+            <td>
+              <ul>
+                <li>Servo continue de suivre la distance mesurée</li>
+                <li>Transmet les commandes de position au STM32</li>
+                <li>Affiche les distances et confirmations</li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        Cette configuration crée un système où, en Mode 2, les deux servo-moteurs adoptent des comportements différents : le servo du STM32 suit les commandes manuelles, tandis que le servo de la Raspberry Pi continue de suivre les mesures de distance.
+      </p>
+
+      <h3 id="55-protocole-de-communication">
+        5.5 Protocole de communication
+      </h3>
+
+      <p>
+        La communication entre la Raspberry Pi et le STM32 utilise un protocole série simple mais robuste :
+      </p>
+
+      <div class="key-point">
+        <strong>Caractéristiques du protocole :</strong>
+        <ul>
+          <li>Messages encapsulés entre délimiteurs &lt; et &gt;</li>
+          <li>Format texte pour faciliter le débogage</li>
+          <li>Commandes courtes et explicites</li>
+          <li>Confirmations systématiques des commandes</li>
+          <li>Transmission régulière des mesures de distance</li>
+        </ul>
+      </div>
+
+      <p>
+        Types de messages échangés :
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Direction</th>
+            <th>Type de message</th>
+            <th>Exemple</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Raspberry Pi → STM32</td>
+            <td>Commande de mode</td>
+            <td><code>&lt;mode1&gt;</code></td>
+            <td>Change le mode de fonctionnement</td>
+          </tr>
+          <tr>
+            <td>Raspberry Pi → STM32</td>
+            <td>Position servo</td>
+            <td><code>&lt;8&gt;</code></td>
+            <td>Définit la position du servo STM32 (1-12)</td>
+          </tr>
+          <tr>
+            <td>Raspberry Pi → STM32</td>
+            <td>Demande de distance</td>
+            <td><code>&lt;getdistance&gt;</code></td>
+            <td>Demande la dernière mesure de distance</td>
+          </tr>
+          <tr>
+            <td>STM32 → Raspberry Pi</td>
+            <td>Mesure de distance</td>
+            <td><code>&lt;Distance: 15.32 cm&gt;</code></td>
+            <td>Transmet une mesure de distance</td>
+          </tr>
+          <tr>
+            <td>STM32 → Raspberry Pi</td>
+            <td>Confirmation</td>
+            <td><code>&lt;Mode 1 activated&gt;</code></td>
+            <td>Confirme une commande reçue</td>
+          </tr>
+          <tr>
+            <td>STM32 → Raspberry Pi</td>
+            <td>Erreur</td>
+            <td><code>&lt;Error: Invalid command&gt;</code></td>
+            <td>Signale une erreur dans une commande</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        Pour assurer une communication fiable, la fonction <code>sendCommand()</code> a été implémentée avec un mécanisme spécial : elle envoie chaque caractère individuellement avec un petit délai entre chaque envoi. Cette approche, bien que plus lente, évite les pertes de données qui peuvent survenir lorsque le buffer du récepteur est saturé.
+      </p>
+
+      <div class="code-sample">
+        <pre><code>void sendCommand(int fd, const char* command) {
+    if (fd < 0) return;
+    
+    // Formater la commande
+    char formattedCommand[64];
+    snprintf(formattedCommand, sizeof(formattedCommand), "<%s>", command);
+    
+    // Assurez-vous que chaque caractère est envoyé correctement
+    for (int i = 0; i < strlen(formattedCommand); i++) {
+        write(fd, &formattedCommand[i], 1);
+        // Petit délai entre chaque caractère
+        usleep(1000); // 1ms
+    }
+    
+    printf("Commande envoyée: %s\n", command);
+}</code></pre>
+      </div>
+
+      <h3 id="56-implementation-multi-thread">
+        5.6 Implémentation multi-thread
+      </h3>
+
+      <p>
+        Une des particularités de l'implémentation sur Raspberry Pi est l'utilisation de plusieurs threads pour gérer différentes tâches en parallèle :
+      </p>
+
+      <ol class="steps">
         <li>
-          <strong>Mode 1</strong> : Les deux servos (STM32 et Raspberry Pi)
-          suivent le capteur ultrason
+          <strong>Thread PWM</strong> : Ce thread génère le signal PWM pour contrôler le servo-moteur. Il calcule précisément les timings nécessaires pour produire une impulsion de la durée adéquate toutes les 20ms (50Hz).
         </li>
         <li>
-          <strong>Mode 2</strong> : Le servo STM32 suit les commandes manuelles,
-          tandis que le servo Raspberry Pi suit le capteur
+          <strong>Thread de réception série</strong> : Ce thread surveille en permanence le port série pour recevoir et traiter les messages provenant du STM32, notamment les mesures de distance.
         </li>
         <li>
-          <strong>Mode IDLE</strong> : Position centrale des servo-moteurs
+          <strong>Thread de contrôle servo</strong> : Ce thread calcule la position que doit prendre le servo en fonction du mode actif et des données disponibles (distance mesurée ou commande utilisateur).
+        </li>
+        <li>
+          <strong>Thread principal</strong> : Ce thread gère l'interface utilisateur, traite les commandes et les transmet au STM32.
         </li>
       </ol>
+
+      <p>
+        Pour coordonner ces threads et éviter les problèmes d'accès concurrent, le programme utilise des mutex qui protègent les variables partagées comme le mode actuel, la distance mesurée ou la position du servo.
+      </p>
+
+      <div class="code-sample">
+        <pre><code>// Exemple d'utilisation de mutex pour protéger l'accès aux variables partagées
+pthread_mutex_lock(&mutex);
+int mode = currentMode;
+float distance = currentDistance;
+pthread_mutex_unlock(&mutex);
+
+// Traitement avec les valeurs récupérées
+if (mode == 1) {
+    // Utilisation des données en mode 1
+} else if (mode == 2) {
+    // Utilisation des données en mode 2
+}</code></pre>
+      </div>
+
+      <p>
+        Cette architecture multi-thread permet au système de gérer plusieurs tâches simultanément, comme la génération précise du signal PWM pendant que les données série sont reçues et que l'utilisateur entre des commandes.
+      </p>
+
+      <h3 id="57-outils-de-diagnostic">
+        5.7 Outils de diagnostic
+      </h3>
+
+      <p>
+        Pour faciliter le développement et le débogage du système, plusieurs outils de diagnostic ont été créés :
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Outil</th>
+            <th>Fichier</th>
+            <th>Objectif</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Test UART</td>
+            <td>test_uart.c</td>
+            <td>
+              <ul>
+                <li>Vérifie la configuration et le fonctionnement de la communication série</li>
+                <li>Envoie un message de test et affiche la réponse</li>
+                <li>Aide à identifier les problèmes de connexion</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td>Mini-terminal</td>
+            <td>minicom.c</td>
+            <td>
+              <ul>
+                <li>Outil simplifié similaire à minicom</li>
+                <li>Envoie une commande spécifique et affiche toutes les réponses</li>
+                <li>Montre chaque caractère reçu pour débogage à bas niveau</li>
+                <li>Identifie les messages complets entre délimiteurs &lt; et &gt;</li>
+              </ul>
+            </td>
+          </tr>
+          <tr>
+            <td>Commande getdistance</td>
+            <td>Dans main.c</td>
+            <td>
+              <ul>
+                <li>Demande et affiche la dernière distance mesurée</li>
+                <li>Permet de vérifier le bon fonctionnement du capteur</li>
+                <li>Affiche les mesures dans un format coloré pour meilleure lisibilité</li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        Ces outils ont été particulièrement utiles pour identifier et résoudre les problèmes de communication entre la Raspberry Pi et le STM32, notamment les questions de timing, de formatage des messages et de configuration du port série.
+      </p>
+
+      <div class="code-sample">
+        <pre><code>// Extrait du programme minicom.c pour le diagnostic
+printf("Envoi de <mode1> puis affichage de toutes les réponses...\n");
+    
+// Envoyer mode1
+const char *cmd = "<mode1>\r\n";
+write(fd, cmd, strlen(cmd));
+tcdrain(fd);
+
+// Lecture des réponses
+printf("Réponses:\n");
+
+// Mode non-bloquant
+int flags = fcntl(fd, F_GETFL, 0);
+fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+
+// Écouter pendant 5 secondes
+time_t end_time = time(NULL) + 5;
+
+char buffer[256] = {0};
+int bufferIndex = 0;
+int inMessage = 0;
+
+while (time(NULL) < end_time) {
+    char c;
+    if (read(fd, &c, 1) > 0) {
+        // Afficher chaque caractère
+        printf("%c", (c >= 32 && c <= 126) ? c : '.');
+        
+        // Construire des messages complets entre < et >
+        if (c == '<') {
+            inMessage = 1;
+            bufferIndex = 0;
+            buffer[0] = c;
+            bufferIndex++;
+        } else if (c == '>' && inMessage) {
+            buffer[bufferIndex] = c;
+            buffer[bufferIndex + 1] = '\0';
+            printf("\nMessage complet: %s\n", buffer);
+            inMessage = 0;
+        } else if (inMessage && bufferIndex < sizeof(buffer) - 2) {
+            buffer[bufferIndex] = c;
+            bufferIndex++;
+        }
+        
+        fflush(stdout);
+    }
+    usleep(5000);
+}</code></pre>
+      </div>
 
       <h2 id="6-conclusion-et-perspectives">6. Conclusion et perspectives</h2>
 
@@ -1448,6 +2165,12 @@
           possible via l'interface série du STM32 ou via l'application console
           de la Raspberry Pi.
         </li>
+        <li>
+          <strong>Programmation multi-thread</strong> : Utilisation de plusieurs threads sur Raspberry Pi pour gérer différentes tâches en parallèle.
+        </li>
+        <li>
+          <strong>Développement modulaire</strong> : Architecture logicielle organisée en modules réutilisables et bien séparés.
+        </li>
       </ol>
 
       <h3 id="ameliorations-futures">Améliorations futures</h3>
@@ -1458,133 +2181,32 @@
         <li>
           <strong>Interface graphique</strong> : Développement d'une interface
           graphique sur la Raspberry Pi pour visualiser les mesures de distance
-          et contrôler les actionneurs.
+          et contrôler les actionneurs de manière plus intuitive.
         </li>
         <li>
           <strong>Traitement avancé des données</strong> : Implémentation
-          d'algorithmes de filtrage pour améliorer la précision des mesures.
+          d'algorithmes de filtrage pour améliorer la précision des mesures et réduire les variations aléatoires.
         </li>
         <li>
           <strong>Extension des capteurs</strong> : Ajout de capteurs
           supplémentaires (température, humidité) pour enrichir les
-          fonctionnalités.
+          fonctionnalités et créer un système plus complet.
         </li>
         <li>
           <strong>Communication sans fil</strong> : Remplacement de la liaison
-          UART par une communication Bluetooth ou WiFi.
+          UART par une communication Bluetooth ou WiFi pour plus de flexibilité dans le placement des composants.
         </li>
         <li>
           <strong>Enregistrement de données</strong> : Implémentation d'un
-          système de logging et d'analyse des données sur la Raspberry Pi.
+          système de logging et d'analyse des données sur la Raspberry Pi pour suivre l'évolution des mesures dans le temps.
         </li>
         <li>
           <strong>Serveur/client</strong> : Développement de l'application sous
-          forme d'un serveur/client pour permettre un contrôle à distance.
+          forme d'un serveur/client pour permettre un contrôle à distance via un navigateur web ou une application mobile.
         </li>
         <li>
           <strong>Historisation des mesures</strong> : Enregistrement des 200
-          dernières valeurs de distance et génération de fichiers pour analyse.
-        </li>
-      </ul>
-
-      <h2 id="7-demonstration">7. Démonstration</h2>
-
-      <p>
-        Une démonstration complète du système a été réalisée pour valider le
-        fonctionnement global. Cette démonstration met en évidence les capacités
-        du système dans différentes conditions d'utilisation :
-      </p>
-
-      <h3>Scénario de démonstration</h3>
-
-      <ol>
-        <li>
-          <strong>Initialisation du système</strong> :
-          <ul>
-            <li>Démarrage en mode IDLE</li>
-            <li>Vérification des LED éteintes</li>
-            <li>Servo-moteurs en position centrale</li>
-          </ul>
+          dernières valeurs de distance et génération de fichiers pour analyse statistique ou visualisation graphique.
         </li>
         <li>
-          <strong>Transition en Mode 1 (suivi par capteur)</strong> :
-          <ul>
-            <li>Envoi de la commande &lt;mode1&gt;</li>
-            <li>Vérification de l'allumage de la LED bleue</li>
-            <li>
-              Test avec obstacles à différentes distances (7cm, 15cm, 22cm)
-            </li>
-            <li>
-              Vérification du positionnement proportionnel du servo-moteur
-            </li>
-            <li>
-              Test hors plage (&lt;5cm, &gt;25cm) et vérification du retour en
-              position centrale
-            </li>
-          </ul>
-        </li>
-        <li>
-          <strong>Transition en Mode 2 (contrôle manuel)</strong> :
-          <ul>
-            <li>Envoi de la commande &lt;mode2&gt;</li>
-            <li>Vérification de l'allumage de la LED verte</li>
-            <li>
-              Envoi de différentes valeurs (3, 7, 11) et vérification du
-              positionnement correspondant
-            </li>
-            <li>
-              Test de valeurs hors plage et observation du comportement du
-              système
-            </li>
-          </ul>
-        </li>
-        <li>
-          <strong>Tests sur la Raspberry Pi</strong> :
-          <ul>
-            <li>
-              Vérification de la synchronisation entre les deux servo-moteurs en
-              Mode 1
-            </li>
-            <li>
-              Test du Mode 2 avec commandes entrées via l'interface utilisateur
-              de la Raspberry Pi
-            </li>
-            <li>
-              Vérification de la communication bidirectionnelle entre STM32 et
-              Raspberry Pi
-            </li>
-          </ul>
-        </li>
-      </ol>
-
-      <h3>Résultats de la démonstration</h3>
-
-      <p>
-        Tous les tests ont été validés avec succès, confirmant le bon
-        fonctionnement de l'ensemble du système. Les points forts observés lors
-        de la démonstration sont :
-      </p>
-
-      <ul>
-        <li>
-          Excellente réactivité du système aux changements d'obstacles (temps de
-          réponse &lt; 100ms)
-        </li>
-        <li>Bonne précision du positionnement des servo-moteurs</li>
-        <li>Transitions fluides entre les différents modes</li>
-        <li>Interface utilisateur intuitive et informative</li>
-        <li>Communication robuste entre la STM32 et la Raspberry Pi</li>
-        <li>
-          Résilience face aux conditions d'erreur (valeurs hors plage, commandes
-          invalides)
-        </li>
-      </ul>
-
-      <p>
-        La démonstration a permis de valider l'ensemble des fonctionnalités du
-        système et de confirmer la robustesse de l'implémentation dans des
-        conditions réelles d'utilisation.
-      </p>
-    </div>
-  </body>
-</html>
+          <strong>Amélioration du PWM sur Raspberry Pi</strong> : Utilisation d'une bibliothèque dédiée
