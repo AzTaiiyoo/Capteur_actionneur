@@ -75,17 +75,22 @@
   * @param fd Descripteur de fichier pour la connexion série
   * @param command Commande à envoyer
   */
- void sendCommand(int fd, const char* command) {
-     if (fd < 0) return;
-     
-     // Formater la commande comme attendu par la STM32 (encadré par < >)
-     char formattedCommand[64];
-     snprintf(formattedCommand, sizeof(formattedCommand), "<%s>", command);
-     
-     // Envoyer la commande sur le port série
-     write(fd, formattedCommand, strlen(formattedCommand));
-     printf("Commande envoyée: %s\n", command);
- }
+void sendCommand(int fd, const char* command) {
+    if (fd < 0) return;
+    
+    // Formater la commande
+    char formattedCommand[64];
+    snprintf(formattedCommand, sizeof(formattedCommand), "<%s>", command);
+    
+    // Assurez-vous que chaque caractère est envoyé correctement
+    for (int i = 0; i < strlen(formattedCommand); i++) {
+        write(fd, &formattedCommand[i], 1);
+        // Petit délai entre chaque caractère
+        usleep(1000); // 1ms
+    }
+    
+    printf("Commande envoyée: %s\n", command);
+}
  
  /**
   * @brief Thread pour recevoir les données de la STM32
