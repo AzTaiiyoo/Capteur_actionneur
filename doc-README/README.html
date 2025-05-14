@@ -1673,7 +1673,14 @@
             <td>
               • Suppression du paramétrage VMIN et VTIME qui causait des blocages<br />
               • Évitement du mode non-bloquant qui engendrait des pertes de données<br />
-              • Utilisation de tcflush() pour vider les buffers avant utilisation
+              • Utilisation de tcflush() pour vider les buffers avant utilisation<br />
+              • Mauvaise configuration du port série <br />
+              • Ouverture d'une communication parallèle bloquant l'uart dans l'application<br />
+            </td>
+            <td><strong>Interface Raspberry</strong></td>
+            <td>
+              • Problèmes d'affichage concurrent lors de l'écriture de commande et lecture de données<br />
+              • Répétition de l'envoi du mode actif, rendant moins lisible l'interface<br />
             </td>
           </tr>
         </tbody>
@@ -1696,8 +1703,8 @@
       <div class="key-point">
         <strong>Composants principaux :</strong>
         <ul>
-          <li><strong>STM32F4</strong> : Gère le capteur HC-SR04 et son propre servo-moteur</li>
-          <li><strong>Raspberry Pi</strong> : Contrôle un second servo-moteur et sert d'interface utilisateur</li>
+          <li><strong>STM32F407</strong> : Gère le capteur HC-SR04 et son propre servo-moteur</li>
+          <li><strong>Raspberry Pi</strong> : Contrôle un second servo-moteur et sert d'interface utilisateur, peut contrôler le servo-moteur de la STM32F407</li>
           <li><strong>Communication UART</strong> : Lien bidirectionnel entre les deux plateformes</li>
           <li><strong>Interface utilisateur</strong> : Console en mode texte sur la Raspberry Pi</li>
         </ul>
@@ -1712,10 +1719,10 @@
         <li><strong>Redondance</strong> : Si l'une des plateformes rencontre un problème, l'autre peut continuer à fonctionner partiellement</li>
         <li><strong>Flexibilité</strong> : L'architecture permet d'ajouter facilement de nouvelles fonctionnalités sur l'une ou l'autre plateforme</li>
         <li><strong>Apprentissage</strong> : Cette configuration permet d'explorer les contraintes et avantages des deux types de systèmes</li>
-        <li>STM32F407 VGT avec capteur HC-SR04 et servo-moteur</li>
-        <li>Raspberry Pi avec son propre servo-moteur</li>
-        <li>Communication UART entre les deux systèmes</li>
-        <li>Interface utilisateur sur la Raspberry Pi</li>
+        <li><strong>STM32F407 VGT</strong> avec capteur HC-SR04 et servo-moteur</li>
+        <li><strong>Raspberry Pi </strong>avec son propre servo-moteur</li>
+        <li><strong>Communication UART</strong> entre les deux systèmes</li>
+        <li><strong>Interface utilisateur</strong> sur la Raspberry Pi</li>
       </ul>
 
       <h3 id="52-fonctionnalites-de-la-raspberry-pi">
