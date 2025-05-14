@@ -318,7 +318,7 @@
   </head>
   <body>
     <div class="cover">
-      <span class="logo">STM32F4</span>
+      <span class="logo">STM32F407 VGT</span>
 
       <div class="cover-content">
         <h1>Du Capteur à l'Actionneur</h1>
@@ -534,7 +534,12 @@
       <h3 id="11-objectif-du-projet">1.1 Objectif du projet</h3>
 
       <p>
-        Ce projet vise à développer un système embarqué distribué utilisant à la fois un microcontrôleur STM32F4 et une Raspberry Pi pour interfacer un capteur de distance à ultrasons (HC-SR04) avec deux servo-moteurs. L'objectif principal est de créer un système capable de réagir à l'environnement (mesure de distance) ou à des commandes utilisateur (via liaison série) pour positionner précisément les servo-moteurs.
+        Ce projet vise à développer un système embarqué sur microcontrôleur
+        STM32F407 VGT permettant d'interfacer un capteur de distance à ultrasons
+        (HC-SR04) avec un servo-moteur. L'objectif principal est de créer un
+        système capable de réagir à l'environnement (mesure de distance) ou à
+        des commandes utilisateur (via liaison série) pour positionner
+        précisément un servo-moteur.
       </p>
 
       <div class="key-point">
@@ -1707,6 +1712,10 @@
         <li><strong>Redondance</strong> : Si l'une des plateformes rencontre un problème, l'autre peut continuer à fonctionner partiellement</li>
         <li><strong>Flexibilité</strong> : L'architecture permet d'ajouter facilement de nouvelles fonctionnalités sur l'une ou l'autre plateforme</li>
         <li><strong>Apprentissage</strong> : Cette configuration permet d'explorer les contraintes et avantages des deux types de systèmes</li>
+        <li>STM32F407 VGT avec capteur HC-SR04 et servo-moteur</li>
+        <li>Raspberry Pi avec son propre servo-moteur</li>
+        <li>Communication UART entre les deux systèmes</li>
+        <li>Interface utilisateur sur la Raspberry Pi</li>
       </ul>
 
       <h3 id="52-fonctionnalites-de-la-raspberry-pi">
