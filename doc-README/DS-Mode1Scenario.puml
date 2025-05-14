@@ -15,44 +15,38 @@ USART -> Main: Notification de commande
 deactivate USART
 activate Main
 
-Main -> Main: currentState = STATE_MODE1
-note right: Changement d'état
-Main -> Main: Allume LED_BLEU_Pin, éteint LED_VERT_Pin
-Main -> USART: sendMessage("Mode 1 activated")
+Main -> Main: Passe en MODE1
+note right: currentState = STATE_MODE1
+Main -> Main: Allume LED_BLEU_Pin
+Main -> USART: sendMessage("Mode 1 activated...")
 deactivate Main
 
 ' Boucle de mesure et contrôle
-loop tant que currentState == STATE_MODE1
-  activate Main
-  Main -> HCSR04: distance = HC_SR04_GetDistance()
+loop tant que mode = 1
   activate HCSR04
-  HCSR04 --> Main: Retourne distance
+  HCSR04 -> HCSR04: Mesure distance
+  HCSR04 -> Main: Retourne distance
   deactivate HCSR04
   
+  activate Main
   alt distance entre 5 et 25 cm
-    Main -> Main: Allume LED_ORANGE_Pin, éteint LED_ROUGE_Pin
     Main -> Servo: position = Servo_DistanceToPosition(distance)
     activate Servo
-    note right: Conversion linéaire\n5cm → 1000µs (0°)\n25cm → 2000µs (180°)
+    note right: Conversion linéaire\n5cm → 0°\n25cm → 180°
     Servo --> Main: retourne position calculée
     deactivate Servo
     Main -> Servo: Servo_SetPosition(position)
   else distance hors plage
-    Main -> Main: Allume LED_ROUGE_Pin, éteint LED_ORANGE_Pin
     Main -> Servo: Servo_SetToMiddle()
     note right: Position par défaut (90°)
   end
-  
-  ' Envoi de la distance mesurée via UART
-  Main -> USART: sprintf(message, "Distance: %.2f cm", distance)
-  Main -> USART: sendMessage(message)
   deactivate Main
   
-  ' Sur la Raspberry Pi
-  USART --> User: Affiche mesure sur la console
-  note right: Les deux servo-moteurs\n(STM32 et Raspberry Pi)\nsuivent la même distance
+  activate USART
+  HCSR04 -> USART: Envoie "Distance: XX.XX cm"
+  deactivate USART
 end
 
-footer Projet Capteur à Actionneur – Mai 2025
+footer Projet Capteur à Actionneur – Avril 2025
 
 @enduml
