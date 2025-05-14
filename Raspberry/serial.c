@@ -10,66 +10,65 @@
   * @return Descripteur de fichier pour la connexion série, ou -1 en cas d'erreur
   */
  int openSerialConnection(void) {
-     int fd = open(UART_DEVICE, O_RDWR | O_NOCTTY | O_NDELAY);
-     if (fd < 0) {
-         fprintf(stderr, "Impossible d'ouvrir le port série %s\n", UART_DEVICE);
-         return -1;
-     }
-     
-     // Configuration du port série
-     struct termios tty;
-     memset(&tty, 0, sizeof(tty));
-     
-     if (tcgetattr(fd, &tty) != 0) {
-         fprintf(stderr, "Erreur lors de la lecture des attributs du port série\n");
-         close(fd);
-         return -1;
-     }
-     
-     // Configurer la vitesse à 115200 bauds
-     speed_t baud = B115200;
-     cfsetospeed(&tty, baud);
-     cfsetispeed(&tty, baud);
-     
-     // 8N1 (8 bits, pas de parité, 1 bit d'arrêt)
-     tty.c_cflag &= ~PARENB;
-     tty.c_cflag &= ~CSTOPB;
-     tty.c_cflag &= ~CSIZE;
-     tty.c_cflag |= CS8;
-     
-     // Pas de contrôle de flux
-     tty.c_cflag &= ~CRTSCTS;
-     
-     // Activer la réception et désactiver le contrôle du modem
-     tty.c_cflag |= CREAD | CLOCAL;
-     
-     // Mode non canonique
-     tty.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-     
-     // Désactiver le traitement des caractères spéciaux
-     tty.c_iflag &= ~(IXON | IXOFF | IXANY);
-     tty.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL);
-     
-     // Désactiver le traitement de sortie
-     tty.c_oflag &= ~OPOST;
-     
-     // Délai de lecture minimal
-     tty.c_cc[VMIN] = 0;
-     tty.c_cc[VTIME] = 1; // 0.1 seconde
-     
-     // Appliquer les modifications
-     if (tcsetattr(fd, TCSANOW, &tty) != 0) {
-         fprintf(stderr, "Erreur lors de l'application des attributs du port série\n");
-         close(fd);
-         return -1;
-     }
-     
-     // Configurer en mode non bloquant
-     fcntl(fd, F_SETFL, O_NONBLOCK);
-     
-     printf("Connexion série établie sur %s\n", UART_DEVICE);
-     return fd;
- }
+    int fd = open(UART_DEVICE, O_RDWR | O_NOCTTY | O_NDELAY);
+    if (fd < 0) {
+        fprintf(stderr, "Impossible d'ouvrir le port série %s\n", UART_DEVICE);
+        return -1;
+    }
+    
+    // Configuration du port série
+    struct termios tty;
+    memset(&tty, 0, sizeof(tty));
+    
+    if (tcgetattr(fd, &tty) != 0) {
+        fprintf(stderr, "Erreur lors de la lecture des attributs du port série\n");
+        close(fd);
+        return -1;
+    }
+    
+    // Configurer la vitesse à 115200 bauds
+    cfsetispeed(&tty, B115200);
+    cfsetospeed(&tty, B115200);
+    
+    // 8N1 (8 bits, pas de parité, 1 bit d'arrêt)
+    tty.c_cflag &= ~PARENB;
+    tty.c_cflag &= ~CSTOPB;
+    tty.c_cflag &= ~CSIZE;
+    tty.c_cflag |= CS8;
+    
+    // Pas de contrôle de flux
+    tty.c_cflag &= ~CRTSCTS;
+    
+    // Activer la réception et désactiver le contrôle du modem
+    tty.c_cflag |= CREAD | CLOCAL;
+    
+    // Mode non canonique, pas d'écho
+    tty.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+    
+    // Désactiver le traitement de sortie
+    tty.c_oflag &= ~OPOST;
+    
+    // Configuration des timeouts - À SUPPRIMER OU MODIFIER
+    // Ne pas configurer VMIN et VTIME pour utiliser les valeurs par défaut
+    // comme dans le code qui fonctionne
+    
+    // Appliquer les modifications
+    if (tcsetattr(fd, TCSANOW, &tty) != 0) {
+        fprintf(stderr, "Erreur lors de l'application des attributs du port série\n");
+        close(fd);
+        return -1;
+    }
+    
+    // Vider les buffers (ajout recommandé)
+    tcflush(fd, TCIOFLUSH);
+    
+    // IMPORTANT: NE PAS configurer en mode non-bloquant après
+    // Supprimer cette ligne qui peut causer des problèmes:
+    // fcntl(fd, F_SETFL, O_NONBLOCK);
+    
+    printf("Connexion série établie sur %s\n", UART_DEVICE);
+    return fd;
+}
  
  /**
   * @brief Envoie une commande formatée à la STM32
