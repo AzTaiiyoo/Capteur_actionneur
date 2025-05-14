@@ -380,46 +380,7 @@
             >4. Difficultés rencontrées et solutions</a
           >
         </li>
-        <li>
-          <a href="#5-interaction-raspberry-pi-stm32"
-            >5. Interaction Raspberry Pi - STM32</a
-          >
-          <ul>
-            <li>
-              <a href="#51-architecture-du-systeme-global"
-                >5.1 Architecture du système global</a
-              >
-            </li>
-            <li>
-              <a href="#52-fonctionnalites-de-la-raspberry-pi"
-                >5.2 Fonctionnalités de la Raspberry Pi</a
-              >
-            </li>
-            <li>
-              <a href="#53-modules-logiciels-raspberry-pi"
-                >5.3 Modules logiciels Raspberry Pi</a
-              >
-            </li>
-            <li>
-              <a href="#54-modes-de-fonctionnement-raspberry"
-                >5.4 Modes de fonctionnement</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="#6-conclusion-et-perspectives"
-            >6. Conclusion et perspectives</a
-          >
-          <ul>
-            <li>
-              <a href="#ameliorations-futures">Améliorations futures</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="#7-demonstration">7. Démonstration</a>
-        </li>
+        <li><a href="#5-conclusion">5. Conclusion</a></li>
       </ul>
     </div>
 
@@ -448,8 +409,6 @@
         <li>Communication série formatée</li>
         <li>Gestion d'une machine à états</li>
         <li>Développement modulaire avec séparation des responsabilités</li>
-        <li>Communication entre STM32 et Raspberry Pi</li>
-        <li>Traitement parallèle avec plusieurs threads sur Raspberry Pi</li>
       </ul>
 
       <h3 id="12-modes-de-fonctionnement">1.2 Modes de fonctionnement</h3>
@@ -861,12 +820,12 @@
           <tr>
             <td rowspan="2">STM32</td>
             <td>TX</td>
-            <td>PA2</td>
+            <td>PC6</td>
             <td>Connecté à RX Raspberry Pi</td>
           </tr>
           <tr>
             <td>RX</td>
-            <td>PA3</td>
+            <td>PC7</td>
             <td>Connecté à TX Raspberry Pi</td>
           </tr>
           <tr>
@@ -1290,301 +1249,35 @@
               la connexion électrique<br />• Changement d'un fil de connexion<br />
             </td>
           </tr>
-          <tr>
-            <td><strong>Communication STM32-Raspberry Pi</strong></td>
-            <td>
-              Difficultés lors de l'échange de données entre les deux
-              plateformes
-            </td>
-            <td>
-              • Utilisation d'un adaptateur de niveau logique<br />
-              • Mise en place d'un protocole robuste avec délimiteurs<br />
-              • Gestion d'erreurs et retransmission en cas d'échec
-            </td>
-          </tr>
-          <tr>
-            <td><strong>Génération PWM Raspberry Pi</strong></td>
-            <td>
-              Difficultés à générer un signal PWM précis pour le servo sur
-              Raspberry Pi
-            </td>
-            <td>
-              • Implémentation d'un thread dédié au PWM<br />
-              • Utilisation de timers logiciels avec usleep()<br />
-              • Compensation des délais d'exécution
-            </td>
-          </tr>
         </tbody>
       </table>
 
-      <h2 id="5-interaction-raspberry-pi-stm32">
-        5. Interaction Raspberry Pi - STM32
-      </h2>
+      <h2 id="5-conclusion">5. Conclusion</h2>
 
       <p>
-        En complément du système STM32, le projet utilise également une
-        Raspberry Pi pour communiquer avec le microcontrôleur via UART et pour
-        contrôler un second servo-moteur.
+        Ce projet a permis de développer un système complet intégrant capteur et
+        actionneur, avec une interface utilisateur série. Les principales
+        réalisations sont :
       </p>
-
-      <h3 id="51-architecture-du-systeme-global">
-        5.1 Architecture du système global
-      </h3>
-
-      <p>Le système global est construit selon l'architecture suivante :</p>
-
-      <ul>
-        <li>STM32F4 avec capteur HC-SR04 et servo-moteur</li>
-        <li>Raspberry Pi avec son propre servo-moteur</li>
-        <li>Communication UART entre les deux systèmes</li>
-        <li>Interface utilisateur sur la Raspberry Pi</li>
-      </ul>
-
-      <h3 id="52-fonctionnalites-de-la-raspberry-pi">
-        5.2 Fonctionnalités de la Raspberry Pi
-      </h3>
-
-      <p>La Raspberry Pi remplit les fonctions suivantes :</p>
-      <ul>
-        <li>Récupération des données de distance depuis la STM32</li>
-        <li>Envoi de commandes de contrôle vers la STM32</li>
-        <li>
-          Contrôle de son propre servo-moteur en fonction de la distance mesurée
-        </li>
-        <li>
-          Interface utilisateur en mode texte pour la configuration et le
-          monitoring
-        </li>
-      </ul>
-
-      <h3 id="53-modules-logiciels-raspberry-pi">
-        5.3 Modules logiciels Raspberry Pi
-      </h3>
-
-      <p>
-        L'application sur Raspberry Pi est développée en C et organisée en
-        plusieurs modules :
-      </p>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Module</th>
-            <th>Fichiers</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Principal</td>
-            <td>main.c, common.h</td>
-            <td>
-              Coordination des différents modules et interface utilisateur
-            </td>
-          </tr>
-          <tr>
-            <td>Communication série</td>
-            <td>serial.c, serial.h</td>
-            <td>Gestion de la communication UART avec la STM32</td>
-          </tr>
-          <tr>
-            <td>Servo-moteur</td>
-            <td>servo.c, servo.h</td>
-            <td>Contrôle du servo-moteur via PWM sur GPIO</td>
-          </tr>
-          <tr>
-            <td>GPIO</td>
-            <td>gpio.c, gpio.h</td>
-            <td>Contrôle des broches GPIO de la Raspberry Pi</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3 id="54-modes-de-fonctionnement-raspberry">
-        5.4 Modes de fonctionnement
-      </h3>
-
-      <p>
-        Le système Raspberry Pi propose les modes de fonctionnement suivants :
-      </p>
-      <ol>
-        <li>
-          <strong>Mode 1</strong> : Les deux servos (STM32 et Raspberry Pi)
-          suivent le capteur ultrason
-        </li>
-        <li>
-          <strong>Mode 2</strong> : Le servo STM32 suit les commandes manuelles,
-          tandis que le servo Raspberry Pi suit le capteur
-        </li>
-        <li>
-          <strong>Mode IDLE</strong> : Position centrale des servo-moteurs
-        </li>
-      </ol>
-
-      <h2 id="6-conclusion-et-perspectives">6. Conclusion et perspectives</h2>
-
-      <p>Ce projet a permis de développer un système complet intégrant :</p>
 
       <ol>
         <li>
-          <strong>Architecture multi-systèmes</strong> : Collaboration entre un
-          microcontrôleur STM32 et une Raspberry Pi pour créer un système
-          distribué de contrôle.
+          <strong>Architecture modulaire</strong> : Le système est divisé en
+          modules réutilisables avec des interfaces claires.
         </li>
         <li>
-          <strong>Communication inter-système</strong> : Utilisation de l'UART
-          pour permettre l'échange d'informations entre les deux plateformes.
+          <strong>Machine à états robuste</strong> : La gestion explicite des
+          états simplifie la logique et rend le comportement prévisible.
         </li>
         <li>
-          <strong>Interface capteur-actionneur</strong> : Traitement des données
-          du capteur ultrason pour contrôler les servo-moteurs en temps réel.
+          <strong>Interface utilisateur intuitive</strong> : Les commandes
+          simples et le retour d'information constant facilitent l'utilisation.
         </li>
         <li>
-          <strong>Machine à états robuste</strong> : Gestion explicite des
-          différents modes de fonctionnement avec transitions sécurisées.
-        </li>
-        <li>
-          <strong>Interface utilisateur bi-plateforme</strong> : Interaction
-          possible via l'interface série du STM32 ou via l'application console
-          de la Raspberry Pi.
+          <strong>Fiabilité</strong> : La gestion des erreurs, les timeouts et
+          les vérifications de plages assurent un fonctionnement robuste.
         </li>
       </ol>
-
-      <h3 id="ameliorations-futures">Améliorations futures</h3>
-
-      <p>Plusieurs pistes d'amélioration pourraient être explorées :</p>
-
-      <ul>
-        <li>
-          <strong>Interface graphique</strong> : Développement d'une interface
-          graphique sur la Raspberry Pi pour visualiser les mesures de distance
-          et contrôler les actionneurs.
-        </li>
-        <li>
-          <strong>Traitement avancé des données</strong> : Implémentation
-          d'algorithmes de filtrage pour améliorer la précision des mesures.
-        </li>
-        <li>
-          <strong>Extension des capteurs</strong> : Ajout de capteurs
-          supplémentaires (température, humidité) pour enrichir les
-          fonctionnalités.
-        </li>
-        <li>
-          <strong>Communication sans fil</strong> : Remplacement de la liaison
-          UART par une communication Bluetooth ou WiFi.
-        </li>
-        <li>
-          <strong>Enregistrement de données</strong> : Implémentation d'un
-          système de logging et d'analyse des données sur la Raspberry Pi.
-        </li>
-        <li>
-          <strong>Serveur/client</strong> : Développement de l'application sous
-          forme d'un serveur/client pour permettre un contrôle à distance.
-        </li>
-        <li>
-          <strong>Historisation des mesures</strong> : Enregistrement des 200
-          dernières valeurs de distance et génération de fichiers pour analyse.
-        </li>
-      </ul>
-
-      <h2 id="7-demonstration">7. Démonstration</h2>
-
-      <p>
-        Une démonstration complète du système a été réalisée pour valider le
-        fonctionnement global. Cette démonstration met en évidence les capacités
-        du système dans différentes conditions d'utilisation :
-      </p>
-
-      <h3>Scénario de démonstration</h3>
-
-      <ol>
-        <li>
-          <strong>Initialisation du système</strong> :
-          <ul>
-            <li>Démarrage en mode IDLE</li>
-            <li>Vérification des LED éteintes</li>
-            <li>Servo-moteurs en position centrale</li>
-          </ul>
-        </li>
-        <li>
-          <strong>Transition en Mode 1 (suivi par capteur)</strong> :
-          <ul>
-            <li>Envoi de la commande &lt;mode1&gt;</li>
-            <li>Vérification de l'allumage de la LED bleue</li>
-            <li>
-              Test avec obstacles à différentes distances (7cm, 15cm, 22cm)
-            </li>
-            <li>
-              Vérification du positionnement proportionnel du servo-moteur
-            </li>
-            <li>
-              Test hors plage (&lt;5cm, &gt;25cm) et vérification du retour en
-              position centrale
-            </li>
-          </ul>
-        </li>
-        <li>
-          <strong>Transition en Mode 2 (contrôle manuel)</strong> :
-          <ul>
-            <li>Envoi de la commande &lt;mode2&gt;</li>
-            <li>Vérification de l'allumage de la LED verte</li>
-            <li>
-              Envoi de différentes valeurs (3, 7, 11) et vérification du
-              positionnement correspondant
-            </li>
-            <li>
-              Test de valeurs hors plage et observation du comportement du
-              système
-            </li>
-          </ul>
-        </li>
-        <li>
-          <strong>Tests sur la Raspberry Pi</strong> :
-          <ul>
-            <li>
-              Vérification de la synchronisation entre les deux servo-moteurs en
-              Mode 1
-            </li>
-            <li>
-              Test du Mode 2 avec commandes entrées via l'interface utilisateur
-              de la Raspberry Pi
-            </li>
-            <li>
-              Vérification de la communication bidirectionnelle entre STM32 et
-              Raspberry Pi
-            </li>
-          </ul>
-        </li>
-      </ol>
-
-      <h3>Résultats de la démonstration</h3>
-
-      <p>
-        Tous les tests ont été validés avec succès, confirmant le bon
-        fonctionnement de l'ensemble du système. Les points forts observés lors
-        de la démonstration sont :
-      </p>
-
-      <ul>
-        <li>
-          Excellente réactivité du système aux changements d'obstacles (temps de
-          réponse &lt; 100ms)
-        </li>
-        <li>Bonne précision du positionnement des servo-moteurs</li>
-        <li>Transitions fluides entre les différents modes</li>
-        <li>Interface utilisateur intuitive et informative</li>
-        <li>Communication robuste entre la STM32 et la Raspberry Pi</li>
-        <li>
-          Résilience face aux conditions d'erreur (valeurs hors plage, commandes
-          invalides)
-        </li>
-      </ul>
-
-      <p>
-        La démonstration a permis de valider l'ensemble des fonctionnalités du
-        système et de confirmer la robustesse de l'implémentation dans des
-        conditions réelles d'utilisation.
-      </p>
     </div>
   </body>
 </html>

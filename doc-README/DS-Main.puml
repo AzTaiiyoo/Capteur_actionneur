@@ -1,18 +1,33 @@
 @startuml
 
-' Participants (modules)
+' Participants (modules) avec couleurs pour faciliter la lecture
 actor "User" as User
-participant "Main" as Main
-participant "HCSR04" as HCSR04
-participant "Servo" as Servo
-participant "USART_COMM" as USART
+participant "Main" as Main #LightBlue
+participant "HCSR04" as HCSR04 #LightGreen
+participant "Servo" as Servo #LightYellow
+participant "USART_COMM" as USART #LightPink
 
-' Initialisation
+' Titre plus visible
+title Diagramme de séquence principal du projet
+
+' Initialisation avec activation
 == Initialisation ==
+activate Main
 Main -> HCSR04: HC_SR04_init()
+activate HCSR04
+HCSR04 --> Main: initialisation réussie
+deactivate HCSR04
+
 Main -> Servo: Servo_Init()
+activate Servo
+Servo --> Main: initialisation réussie
+deactivate Servo
+
 Main -> Servo: Servo_SetToMiddle()
 Main -> USART: sendMessage("System ready...")
+activate USART
+USART --> Main: message envoyé
+deactivate USART
 
 ' Boucle principale avec référence
 == Boucle Principale ==
@@ -38,7 +53,8 @@ ref over User, Main, Servo, USART
   Scénario: Mode 2 - Consigne utilisateur
 end ref
 
-title Diagramme de séquence du projet global
-footer Projet Capteur à Actionneur – Avril 2025
+deactivate Main
+
+footer Projet Capteur à Actionneur – Mai 2025
 
 @enduml

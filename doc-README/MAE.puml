@@ -1,11 +1,11 @@
 @startuml
 
-title  Machine à Etat du projet global
+title  Machine à État du projet global
 
-' Point de départ
-[*] -down-> idle
+' Point de départ plus explicite
+[*] -down-> idle : Démarrage du système
 
-' État IDLE
+' État IDLE - pas de changement majeur nécessaire
 state "IDLE" as idle {
   state "LEDs éteintes" as idle_leds
   state "Servo en position centrale" as idle_servo
@@ -21,6 +21,7 @@ state "MODE2" as mode2 {
   state value_choice <<choice>>
   mode2_servo -down-> value_choice : Commande\nreçue
   value_choice -up-> mode2_servo : [Valeur 1-12]
+  value_choice -down-> mode2_servo : [Valeur invalide]\nPosition inchangée
 }
 
 ' État MODE1
@@ -35,14 +36,14 @@ state "MODE1" as mode1 {
   mode1_choice -right-> idle_servo : [Distance hors plage]
 }
 
-' Transitions entre états principaux
+' Transitions entre états principaux avec couleurs pour meilleure lisibilité
 idle -down-> mode2 : Commande <mode2>
 mode1 -up-> idle : Commande <quit>
-idle -down-> mode1 : Commande <mode1>
+idle -up-> mode1 : Commande <mode1>
 mode2 -up-> idle : Commande <quit>
-mode1 -right-> mode2 : Commande <mode2>
+mode1 -left-> mode2 : Commande <mode2>
 mode2 -left-> mode1 : Commande <mode1>
 
-footer Projet Capteur à Actionneur – Avril 2025
+footer Projet Capteur à Actionneur – Mai 2025
 
 @enduml

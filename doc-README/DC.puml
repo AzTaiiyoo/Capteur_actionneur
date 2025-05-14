@@ -1,7 +1,7 @@
 @startuml
 ' Style du diagramme
 skinparam classAttributeIconSize 0
-
+skinparam packageStyle rectangle
 
 ' Définition des classes
 class Main {
@@ -116,6 +116,6 @@ USART_COMM ..> USART_Constants : utilise
 USART_COMM ..> UART : utilise
 
 title Diagramme de classe du projet global
-footer Projet Capteur à Actionneur – Avril 2025
+footer Projet Capteur à Actionneur – Mai 2025
 
 @enduml

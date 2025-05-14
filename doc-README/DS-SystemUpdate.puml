@@ -1,31 +1,48 @@
 @startuml
 ' Participants (modules)
-participant "Main" as Main
-participant "HCSR04" as HCSR04
-participant "Servo" as Servo
+participant "Main" as Main #LightBlue
+participant "HCSR04" as HCSR04 #LightGreen
+participant "Servo" as Servo #LightYellow
+
+title Diagramme de séquence : Mise à jour du système selon l'état
 
 Main -> Main: updateSystem()
+activate Main
 
 alt currentState == STATE_IDLE
+  note right: Mode IDLE - Repos
   Main -> Servo: Servo_SetToMiddle()
   Main -> Main: Éteindre les LEDs (LED_BLEU_Pin et LED_VERT_Pin)
 else currentState == STATE_MODE1
+  note right: Mode 1 - Suivi capteur
   Main -> Main: Allumer LED_BLEU_Pin, éteindre LED_VERT_Pin
-  Main -> HCSR04: récupérer distance actuelle
+  Main -> HCSR04: distance = HCSR04_GetDistance()
+  activate HCSR04
+  HCSR04 --> Main: retourne distance actuelle
+  deactivate HCSR04
   
   alt distance dans la plage valide (5-25 cm)
-    Main -> Servo: Servo_DistanceToPosition(distance)
+    Main -> Servo: position = Servo_DistanceToPosition(distance)
+    activate Servo
+    Servo --> Main: retourne position calculée
+    deactivate Servo
     Main -> Servo: Servo_SetPosition(position)
-  else
+    note right: Le servo suit proportionnellement la distance
+  else distance hors plage
     Main -> Servo: Servo_SetToMiddle()
+    note right: Position de sécurité par défaut
   end
 else currentState == STATE_MODE2
+  note right: Mode 2 - Commande utilisateur
   Main -> Main: Allumer LED_VERT_Pin, éteindre LED_BLEU_Pin
-  Main -> Servo: Servo_ValueToPosition(servoPosition)
+  Main -> Servo: position = Servo_ValueToPosition(servoPosition)
+  activate Servo
+  Servo --> Main: retourne position calculée
+  deactivate Servo
   Main -> Servo: Servo_SetPosition(position)
 end
 
-title Diagramme de séquence représentant la mise à jour du système selon l'état
-footer Projet Capteur à Actionneur – Avril 2025
+deactivate Main
 
+footer Projet Capteur à Actionneur – Mai 2025
 @enduml

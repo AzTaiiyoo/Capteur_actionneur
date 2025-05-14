@@ -1,0 +1,80 @@
+@startuml
+title Diagramme de séquence : Threads sur Raspberry Pi
+
+participant "Main Thread" as Main
+participant "PWM Thread" as PWM
+participant "Serial Thread" as Serial
+participant "Servo Control Thread" as Servo
+participant "STM32" as STM32
+
+activate Main
+Main -> Main: Initialisation du système
+
+' Création des threads
+Main -> PWM **: pthread_create()
+Main -> Serial **: pthread_create()
+Main -> Servo **: pthread_create()
+
+Main -> STM32: Envoie commande initiale (quit)
+Main -> Main: Affiche menu utilisateur
+
+' Boucle principale du thread PWM
+activate PWM
+loop tant que pwmRunning == true
+  PWM -> PWM: Génère impulsion PWM de durée currentPosition
+  PWM -> PWM: Attend pour compléter période de 20ms
+end
+deactivate PWM
+
+' Boucle principale du thread Serial
+activate Serial
+loop tant que stopThreads == false
+  STM32 -> Serial: Données de distance
+  alt message de distance reçu
+    Serial -> Serial: Extraire valeur distance
+    Serial -> Servo: Met à jour currentDistance (via mutex)
+  end
+end
+deactivate Serial
+
+' Boucle principale du thread Servo
+activate Servo
+loop tant que stopThreads == false
+  Servo -> Servo: Lit currentMode, currentDistance (via mutex)
+  alt mode == 1
+    Servo -> Servo: Position servo = distanceToPosition(distance)
+  else mode == 2
+    Servo -> Servo: Position servo basée sur capteur
+  else mode == 0
+    Servo -> Servo: Position servo au milieu
+  end
+  Servo -> Servo: Met à jour currentPosition (via mutex)
+  Servo -> Servo: Attend 50ms
+end
+deactivate Servo
+
+' Gestion des commandes utilisateur
+loop tant que stopThreads == false
+  -> Main: Entrée utilisateur
+  alt commande = "mode1"
+    Main -> Main: currentMode = 1 (via mutex)
+    Main -> STM32: Envoie "mode1"
+  else commande = "mode2"
+    Main -> Main: currentMode = 2 (via mutex)
+    Main -> STM32: Envoie "mode2"
+  else commande = 1-12 (en mode2)
+    Main -> STM32: Envoie valeur
+  else commande = "quit"
+    Main -> STM32: Envoie "quit"
+    Main -> Main: stopThreads = 1
+  end
+end
+
+' Terminaison
+Main -> Main: Attends fin des threads
+Main -> Main: Libère ressources
+
+deactivate Main
+
+footer Projet Capteur à Actionneur – Mai 2025
+@enduml

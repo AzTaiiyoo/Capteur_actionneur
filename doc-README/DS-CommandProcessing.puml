@@ -1,42 +1,54 @@
 @startuml
-' Participants (modules)
+' Participants (modules) avec descriptions plus précises
 actor "User" as User
-participant "Main" as Main
-participant "HCSR04" as HCSR04
-participant "Servo" as Servo
-participant "USART_COMM" as USART
+participant "Main" as Main #LightBlue
+participant "HCSR04" as HCSR04 #LightGreen
+participant "Servo" as Servo #LightYellow
+participant "USART_COMM" as USART #LightPink
 
-' Mise à jour initiale
+' Titre en haut pour meilleure lisibilité
+title Diagramme de séquence : Traitement des commandes utilisateur
+
+' Mise à jour initiale avec une note explicative
+note over Main, HCSR04: Mise à jour périodique des capteurs
 Main -> HCSR04: HC_SR04_update(sensor, mode)
 
 ' Communication série avec l'utilisateur
 alt message reçu de l'utilisateur
   User -> USART: envoi commande
+  activate USART
   USART -> Main: receiveMessage() retourne message complet
+  deactivate USART
+  activate Main
+  
+  note right of Main: Analyse syntaxique de la commande
   Main -> Main: parseCommand() analyse la commande
   
   alt commande = "mode1"
     Main -> Main: currentState = STATE_MODE1, mode = 1
     Main -> USART: sendMessage("Mode 1 activated...")
+    note right: La LED bleue sera allumée au prochain updateSystem()
   else commande = "mode2"
     Main -> Main: currentState = STATE_MODE2, mode = 2
     Main -> USART: sendMessage("Mode 2 activated...")
+    note right: La LED verte sera allumée au prochain updateSystem()
   else commande = "quit"
     Main -> Main: currentState = STATE_IDLE
     Main -> USART: sendMessage("Returned to idle state")
+    note right: Les LEDs seront éteintes au prochain updateSystem()
   else commande = valeur entre 1-12
     alt si en MODE2
       Main -> Main: servoPosition = value
-      Main -> USART: sendMessage("Servo position set...")
+      Main -> USART: sendMessage("Servo position set to " + value)
     else
-      Main -> USART: sendMessage("Error: Can only set...")
+      Main -> USART: sendMessage("Error: Can only set position in MODE2")
     end
   else
-    Main -> USART: sendMessage("Unknown command...")
+    Main -> USART: sendMessage("Unknown command: " + command)
   end
+  deactivate Main
 end
 
-title Diagramme de séquence représentant le traitement des commandes utilisateur
-footer Projet Capteur à Actionneur – Avril 2025
+footer Projet Capteur à Actionneur – Mai 2025
 
 @enduml

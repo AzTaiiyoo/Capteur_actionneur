@@ -1,25 +1,52 @@
 @startuml
-' Participants (modules)
+' Participants (modules) avec couleurs
 actor "User" as User
-participant "Main" as Main
-participant "HCSR04" as HCSR04
-participant "Servo" as Servo
-participant "USART_COMM" as USART
+participant "Main" as Main #LightBlue
+participant "HCSR04" as HCSR04 #LightGreen
+participant "Servo" as Servo #LightYellow
+participant "USART_COMM" as USART #LightPink
 
+title Scénario d'utilisation: Mode 1 - Suivi de distance
+
+' Activation du Mode 1
 User -> USART: Envoie "mode1"
+activate USART
 USART -> Main: Notification de commande
-Main -> Main: Passe en MODE1
-Main -> USART: sendMessage("Mode 1 activated...")
-Main -> Main: Allume LED_BLEU_Pin
+deactivate USART
+activate Main
 
+Main -> Main: Passe en MODE1
+note right: currentState = STATE_MODE1
+Main -> Main: Allume LED_BLEU_Pin
+Main -> USART: sendMessage("Mode 1 activated...")
+deactivate Main
+
+' Boucle de mesure et contrôle
 loop tant que mode = 1
+  activate HCSR04
   HCSR04 -> HCSR04: Mesure distance
   HCSR04 -> Main: Retourne distance
-  Main -> Servo: Ajuste position selon distance
+  deactivate HCSR04
+  
+  activate Main
+  alt distance entre 5 et 25 cm
+    Main -> Servo: position = Servo_DistanceToPosition(distance)
+    activate Servo
+    note right: Conversion linéaire\n5cm → 0°\n25cm → 180°
+    Servo --> Main: retourne position calculée
+    deactivate Servo
+    Main -> Servo: Servo_SetPosition(position)
+  else distance hors plage
+    Main -> Servo: Servo_SetToMiddle()
+    note right: Position par défaut (90°)
+  end
+  deactivate Main
+  
+  activate USART
   HCSR04 -> USART: Envoie "Distance: XX.XX cm"
+  deactivate USART
 end
 
-title Diagramme de séquence représentant le Mode 1 - Suivi de distance
 footer Projet Capteur à Actionneur – Avril 2025
 
 @enduml

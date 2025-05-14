@@ -1,24 +1,45 @@
 @startuml
-' Participants (modules)
+' Participants (modules) avec couleurs
 actor "User" as User
-participant "Main" as Main
-participant "Servo" as Servo
-participant "USART_COMM" as USART
+participant "Main" as Main #LightBlue
+participant "Servo" as Servo #LightYellow
+participant "USART_COMM" as USART #LightPink
 
+title Scénario d'utilisation: Mode 2 - Consigne utilisateur
+
+' Activation du Mode 2
 User -> USART: Envoie "mode2"
+activate USART
 USART -> Main: Notification de commande
+deactivate USART
+activate Main
+
 Main -> Main: Passe en MODE2
-Main -> USART: sendMessage("Mode 2 activated...")
+note right: currentState = STATE_MODE2
 Main -> Main: Allume LED_VERT_Pin
+Main -> USART: sendMessage("Mode 2 activated...")
+deactivate Main
 
+' Envoi d'une valeur de position
 User -> USART: Envoie valeur "8"
+activate USART
 USART -> Main: Notification de valeur
-Main -> Main: servoPosition = 8
-Main -> USART: sendMessage("Servo position set to 8")
-Main -> Servo: Servo_ValueToPosition(8)
-Main -> Servo: Servo_SetPosition(position)
+deactivate USART
+activate Main
 
-title Diagramme de séquence représentant le Mode 2 - Consigne utilisateur
-footer Projet Capteur à Actionneur – Avril 2025
+Main -> Main: servoPosition = 8
+note right: Stockage de la\nvaleur reçue
+Main -> USART: sendMessage("Servo position set to 8")
+
+' Calcul et application de la position
+Main -> Servo: position = Servo_ValueToPosition(8)
+activate Servo
+note right: Conversion linéaire\n1 → 0°\n12 → 180°
+Servo --> Main: retourne position calculée (entre 1000-2000µs)
+deactivate Servo
+Main -> Servo: Servo_SetPosition(position)
+deactivate Main
+
+footer Projet Capteur à Actionneur – Mai 2025
 
 @enduml
