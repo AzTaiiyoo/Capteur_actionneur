@@ -1,6 +1,11 @@
 /**
  * @file servo_test.c
  * @brief Programme de test pour vérifier le fonctionnement PWM du servo-moteur sur Raspberry Pi
+ * @details Ce programme génère un signal PWM précis pour contrôler un servo-moteur
+ * et effectue un balayage automatique de la position minimale à la position maximale
+ * @author Développeur du Projet
+ * @date Mai 2025
+ * @version 1.0
  */
 
 #include <stdio.h>
@@ -12,28 +17,52 @@
 #include <pthread.h>
 #include <sys/time.h>
 
-// Configuration GPIO
-#define SERVO_PIN  18  // GPIO 18 (broche physique 12)
+/**
+ * @defgroup gpio_config Configuration GPIO
+ * @{
+ */
+/** @brief Numéro de la broche GPIO utilisée pour le servo-moteur (GPIO 18, broche physique 12) */
+#define SERVO_PIN  18
+/** @} */
 
-// Configuration servo
-#define SERVO_MIN_POSITION  1000  // Position 0° (1ms)
-#define SERVO_MID_POSITION  1500  // Position 90° (1.5ms)
-#define SERVO_MAX_POSITION  2000  // Position 180° (2ms)
-#define PWM_PERIOD         20000  // Période PWM en microsecondes (50Hz)
+/**
+ * @defgroup servo_config Configuration du servo-moteur
+ * @{
+ */
+/** @brief Position minimale du servo-moteur (1ms = 0°) */
+#define SERVO_MIN_POSITION  1000
+/** @brief Position centrale du servo-moteur (1.5ms = 90°) */
+#define SERVO_MID_POSITION  1500
+/** @brief Position maximale du servo-moteur (2ms = 180°) */
+#define SERVO_MAX_POSITION  2000
+/** @brief Période du signal PWM en microsecondes (50Hz = 20ms) */
+#define PWM_PERIOD         20000
+/** @} */
 
-// Variables globales
+/**
+ * @defgroup global_vars Variables globales
+ * @{
+ */
+/** @brief Drapeau indiquant si le programme est en cours d'exécution (1 = exécution, 0 = arrêt) */
 volatile int running = 1;
+/** @brief Position actuelle du servo-moteur en microsecondes */
 volatile int currentPosition = SERVO_MID_POSITION;
+/** @brief Mutex pour protéger l'accès à la variable currentPosition */
 pthread_mutex_t positionMutex = PTHREAD_MUTEX_INITIALIZER;
+/** @} */
 
-// Prototypes
+// Prototypes de fonctions
 void setupGPIO(void);
+void writeGPIO(int value);
 void cleanup(int signum);
 void* pwmThread(void* arg);
 void* sweepThread(void* arg);
 
 /**
  * @brief Fonction principale
+ * @return int Code de sortie (0 = succès, 1 = erreur)
+ * @details Initialise le système, crée les threads de génération PWM et de balayage,
+ * puis attend la fin de l'exécution
  */
 int main(void) {
     printf("=== Programme de test PWM pour servo-moteur sur Raspberry Pi ===\n");
@@ -48,11 +77,19 @@ int main(void) {
     // Création des threads
     pthread_t pwmThreadId, sweepThreadId;
     
+    /**
+     * @brief Création du thread de génération PWM
+     * @see pwmThread
+     */
     if (pthread_create(&pwmThreadId, NULL, pwmThread, NULL) != 0) {
         fprintf(stderr, "Erreur lors de la création du thread PWM\n");
         return 1;
     }
     
+    /**
+     * @brief Création du thread de balayage du servo
+     * @see sweepThread
+     */
     if (pthread_create(&sweepThreadId, NULL, sweepThread, NULL) != 0) {
         fprintf(stderr, "Erreur lors de la création du thread de balayage\n");
         running = 0;
@@ -69,6 +106,8 @@ int main(void) {
 
 /**
  * @brief Initialise le GPIO pour le servo-moteur
+ * @details Configure la broche GPIO en tant que sortie en utilisant l'interface sysfs
+ * @see SERVO_PIN
  */
 void setupGPIO(void) {
     // Exporter le GPIO
@@ -103,7 +142,9 @@ void setupGPIO(void) {
 
 /**
  * @brief Écrit une valeur sur le GPIO du servo
- * @param value Valeur à écrire (0 ou 1)
+ * @param value Valeur à écrire (0 = état bas, 1 = état haut)
+ * @details Utilise l'interface sysfs pour modifier l'état de la broche GPIO
+ * @see SERVO_PIN
  */
 void writeGPIO(int value) {
     char path[50];
@@ -124,6 +165,13 @@ void writeGPIO(int value) {
 
 /**
  * @brief Thread qui génère le signal PWM pour le servo
+ * @param arg Argument du thread (non utilisé)
+ * @return void* Valeur de retour du thread (NULL)
+ * @details Génère un signal PWM précis en contrôlant la durée des impulsions pour
+ * positionner le servo-moteur à l'angle souhaité
+ * @see currentPosition
+ * @see positionMutex
+ * @see PWM_PERIOD
  */
 void* pwmThread(void* arg) {
     struct timeval tv;
@@ -167,6 +215,14 @@ void* pwmThread(void* arg) {
 
 /**
  * @brief Thread qui fait balayer le servo de gauche à droite
+ * @param arg Argument du thread (non utilisé)
+ * @return void* Valeur de retour du thread (NULL)
+ * @details Fait osciller le servo-moteur entre sa position minimale et maximale
+ * en modifiant progressivement la valeur de currentPosition
+ * @see SERVO_MIN_POSITION
+ * @see SERVO_MAX_POSITION
+ * @see currentPosition
+ * @see positionMutex
  */
 void* sweepThread(void* arg) {
     int position = SERVO_MIN_POSITION;
@@ -210,6 +266,10 @@ void* sweepThread(void* arg) {
 
 /**
  * @brief Nettoyage des ressources avant de quitter
+ * @param signum Numéro du signal (pour la gestion de SIGINT)
+ * @details Arrête les threads, met la broche GPIO à l'état bas et libère la broche
+ * @see running
+ * @see SERVO_PIN
  */
 void cleanup(int signum) {
     printf("\nNettoyage et arrêt du programme...\n");
