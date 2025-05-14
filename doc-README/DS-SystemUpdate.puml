@@ -16,7 +16,7 @@ alt currentState == STATE_IDLE
 else currentState == STATE_MODE1
   note right: Mode 1 - Suivi capteur
   Main -> Main: Allumer LED_BLEU_Pin, éteindre LED_VERT_Pin
-  Main -> HCSR04: distance = HCSR04_GetDistance()
+  Main -> HCSR04: distance = HC_SR04_GetDistance()
   activate HCSR04
   HCSR04 --> Main: retourne distance actuelle
   deactivate HCSR04
@@ -28,9 +28,14 @@ else currentState == STATE_MODE1
     deactivate Servo
     Main -> Servo: Servo_SetPosition(position)
     note right: Le servo suit proportionnellement la distance
+    
+    ' Envoi de la distance par UART pour informer l'utilisateur
+    Main -> Main: Formatage du message "Distance: %.2f cm"
+    Main -> Main: Envoi message formaté via UART
   else distance hors plage
     Main -> Servo: Servo_SetToMiddle()
     note right: Position de sécurité par défaut
+    Main -> Main: Allumer LED_ROUGE_Pin si > 25cm, LED_ORANGE_Pin si < 5cm
   end
 else currentState == STATE_MODE2
   note right: Mode 2 - Commande utilisateur
@@ -40,6 +45,15 @@ else currentState == STATE_MODE2
   Servo --> Main: retourne position calculée
   deactivate Servo
   Main -> Servo: Servo_SetPosition(position)
+  
+  ' Continuer à mesurer la distance pour information
+  Main -> HCSR04: distance = HC_SR04_GetDistance()
+  activate HCSR04
+  HCSR04 --> Main: retourne distance actuelle
+  deactivate HCSR04
+  
+  ' Envoi périodique de la distance mesurée
+  Main -> Main: Envoi périodique "Distance: %.2f cm" via UART
 end
 
 deactivate Main

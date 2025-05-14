@@ -11,28 +11,44 @@ activate Main
 Main -> Main: Initialisation du système
 
 ' Création des threads
-Main -> PWM **: pthread_create()
-Main -> Serial **: pthread_create()
-Main -> Servo **: pthread_create()
+Main -> PWM **: pthread_create(&pwmThreadId, NULL, pwmThread, NULL)
+Main -> Serial **: pthread_create(&serialThreadId, NULL, receiveDataThread, NULL)
+Main -> Servo **: pthread_create(&servoThreadId, NULL, servoControlThread, NULL)
 
-Main -> STM32: Envoie commande initiale (quit)
-Main -> Main: Affiche menu utilisateur
+Main -> STM32: sendCommand(serialFd, "quit")
+Main -> Main: printHelp()
 
 ' Boucle principale du thread PWM
 activate PWM
 loop tant que pwmRunning == true
-  PWM -> PWM: Génère impulsion PWM de durée currentPosition
-  PWM -> PWM: Attend pour compléter période de 20ms
+  PWM -> PWM: Obtient position actuelle (pthread_mutex_lock/unlock)
+  PWM -> PWM: writeGPIO(SERVO_PIN, 1) - Impulsion HIGH
+  PWM -> PWM: usleep(position) - Durée de l'impulsion
+  PWM -> PWM: writeGPIO(SERVO_PIN, 0) - Impulsion LOW
+  PWM -> PWM: Attend pour compléter la période de 20ms
 end
 deactivate PWM
 
 ' Boucle principale du thread Serial
 activate Serial
 loop tant que stopThreads == false
-  STM32 -> Serial: Données de distance
-  alt message de distance reçu
-    Serial -> Serial: Extraire valeur distance
-    Serial -> Servo: Met à jour currentDistance (via mutex)
+  STM32 -> Serial: Données (caractère par caractère)
+  alt c == '<'
+    Serial -> Serial: Début d'un nouveau message
+  else c == '>' && startReceived
+    Serial -> Serial: Fin du message - buffer[bufferIndex] = '\0'
+    
+    alt strstr(buffer, "Distance:") != NULL
+      Serial -> Serial: pthread_mutex_lock(&mutex)
+      Serial -> Serial: Extraire valeur distance
+      Serial -> Serial: currentDistance = distance
+      Serial -> Serial: sprintf(lastDistanceMessage, "%.2f cm", distance)
+      Serial -> Serial: pthread_mutex_unlock(&mutex)
+    else autres messages
+      Serial -> Serial: Traitement des autres types de messages
+    end
+  else
+    Serial -> Serial: Ajouter caractère au buffer
   end
 end
 deactivate Serial
@@ -40,39 +56,86 @@ deactivate Serial
 ' Boucle principale du thread Servo
 activate Servo
 loop tant que stopThreads == false
-  Servo -> Servo: Lit currentMode, currentDistance (via mutex)
+  Servo -> Servo: pthread_mutex_lock(&mutex)
+  Servo -> Servo: Lire mode, distance, manualValue
+  Servo -> Servo: pthread_mutex_unlock(&mutex)
+  
   alt mode == 1
-    Servo -> Servo: Position servo = distanceToPosition(distance)
+    alt distance entre SERVO_MIN_DISTANCE et SERVO_MAX_DISTANCE
+      Servo -> Servo: position = distanceToPosition(distance)
+    else
+      Servo -> Servo: position = SERVO_MID_POSITION
+    end
   else mode == 2
-    Servo -> Servo: Position servo basée sur capteur
+    alt distance entre SERVO_MIN_DISTANCE et SERVO_MAX_DISTANCE
+      Servo -> Servo: position = distanceToPosition(distance)
+    else
+      Servo -> Servo: position = SERVO_MID_POSITION
+    end
   else mode == 0
-    Servo -> Servo: Position servo au milieu
+    Servo -> Servo: position = SERVO_MID_POSITION
   end
-  Servo -> Servo: Met à jour currentPosition (via mutex)
-  Servo -> Servo: Attend 50ms
+  
+  Servo -> Servo: pthread_mutex_lock(&mutex)
+  Servo -> Servo: currentPosition = position
+  Servo -> Servo: pthread_mutex_unlock(&mutex)
+  
+  Servo -> Servo: usleep(50000) // 50ms
 end
 deactivate Servo
 
 ' Gestion des commandes utilisateur
 loop tant que stopThreads == false
-  -> Main: Entrée utilisateur
-  alt commande = "mode1"
-    Main -> Main: currentMode = 1 (via mutex)
-    Main -> STM32: Envoie "mode1"
-  else commande = "mode2"
-    Main -> Main: currentMode = 2 (via mutex)
-    Main -> STM32: Envoie "mode2"
-  else commande = 1-12 (en mode2)
-    Main -> STM32: Envoie valeur
-  else commande = "quit"
-    Main -> STM32: Envoie "quit"
+  -> Main: fgets(command, sizeof(command), stdin)
+  
+  alt command == "mode1"
+    Main -> Main: pthread_mutex_lock(&mutex)
+    Main -> Main: currentMode = 1
+    Main -> Main: pthread_mutex_unlock(&mutex)
+    Main -> STM32: sendCommand(serialFd, "mode1")
+    Main -> Main: Affiche "Mode 1 activé"
+  else command == "mode2"
+    Main -> Main: pthread_mutex_lock(&mutex)
+    Main -> Main: currentMode = 2
+    Main -> Main: pthread_mutex_unlock(&mutex)
+    Main -> STM32: sendCommand(serialFd, "mode2")
+    Main -> Main: Affiche "Mode 2 activé"
+  else command == "getdistance"
+    Main -> STM32: sendCommand(serialFd, "getdistance")
+    Main -> Main: pthread_mutex_lock(&mutex)
+    Main -> Main: Affiche lastDistanceMessage
+    Main -> Main: pthread_mutex_unlock(&mutex)
+  else command entre 1 et 12
+    Main -> Main: pthread_mutex_lock(&mutex)
+    Main -> Main: Vérifie si currentMode == 2
+    alt currentMode == 2
+      Main -> Main: manualValue = atoi(command)
+      Main -> STM32: sendCommand(serialFd, command)
+      Main -> Main: Affiche "Position servo définie à X"
+    else
+      Main -> Main: Affiche message d'erreur (mode 2 requis)
+    end
+    Main -> Main: pthread_mutex_unlock(&mutex)
+  else command == "quit" ou "exit"
+    Main -> STM32: sendCommand(serialFd, "quit")
+    Main -> Main: pthread_mutex_lock(&mutex)
+    Main -> Main: currentMode = 0
+    Main -> Main: pthread_mutex_unlock(&mutex)
     Main -> Main: stopThreads = 1
+  else command == "help" ou "?"
+    Main -> Main: printHelp()
+  else
+    Main -> Main: Affiche "Commande non reconnue"
   end
 end
 
 ' Terminaison
-Main -> Main: Attends fin des threads
-Main -> Main: Libère ressources
+Main -> Main: stopThreads = 1
+Main -> Main: pwmRunning = 0
+Main -> Main: pthread_join(pwmThreadId, NULL)
+Main -> Main: pthread_join(serialThreadId, NULL)
+Main -> Main: pthread_join(servoThreadId, NULL)
+Main -> Main: cleanup(0)
 
 deactivate Main
 

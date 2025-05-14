@@ -15,19 +15,22 @@ state "IDLE" as idle {
 ' État MODE2
 state "MODE2" as mode2 {
   state "LED verte allumée" as mode2_led
-  state "Servo suit consigne série" as mode2_servo
-  mode2_led -down-> mode2_servo
+  state "Servo STM32 suit consigne série" as mode2_servo_stm
+  state "Servo Raspberry suit capteur" as mode2_servo_rasp
+  
+  mode2_led -down-> mode2_servo_stm
+  mode2_servo_stm -down-> mode2_servo_rasp
   
   state value_choice <<choice>>
-  mode2_servo -down-> value_choice : Commande\nreçue
-  value_choice -up-> mode2_servo : [Valeur 1-12]
-  value_choice -down-> mode2_servo : [Valeur invalide]\nPosition inchangée
+  mode2_servo_stm -right-> value_choice : Commande\nreçue
+  value_choice -up-> mode2_servo_stm : [Valeur 1-12]
+  value_choice -right-> mode2_servo_stm : [Valeur invalide]\nPosition inchangée
 }
 
 ' État MODE1
 state "MODE1" as mode1 {
   state "LED bleue allumée" as mode1_led
-  state "Servo suit capteur HC-SR04" as mode1_servo
+  state "Les deux servos suivent capteur HC-SR04" as mode1_servo
   mode1_led -down-> mode1_servo
   
   state mode1_choice <<choice>>
@@ -41,8 +44,8 @@ idle -down-> mode2 : Commande <mode2>
 mode1 -up-> idle : Commande <quit>
 idle -up-> mode1 : Commande <mode1>
 mode2 -up-> idle : Commande <quit>
-mode1 -left-> mode2 : Commande <mode2>
-mode2 -left-> mode1 : Commande <mode1>
+mode1 -right-> mode2 : Commande <mode2>
+mode2 -right-> mode1 : Commande <mode1>
 
 footer Projet Capteur à Actionneur – Mai 2025
 

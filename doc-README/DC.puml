@@ -1,121 +1,130 @@
 @startuml
-' Style du diagramme
+' Style du diagramme simplifié
 skinparam classAttributeIconSize 0
 skinparam packageStyle rectangle
+skinparam linetype ortho
 
-' Définition des classes
-class Main {
-  - currentState: SystemState
-  - servoPosition: uint8_t
-  - mode: int
-  + main(): int
-  - handleSerialCommunication(): void
-  - parseCommand(command: char): Command
-  - processCommand(command: char): void
-  - updateSystem(): void
-  - SystemClock_Config(): void
-  - Error_Handler(): void
+' Deux grands packages principaux
+package "STM32" {
+  class Main {
+    - currentState: SystemState
+    - servoPosition: int
+    + main(): int
+    - updateSystem(): void
+    - processCommand(command: char*): void
+  }
+
+  class HC_SR04 {
+    + init(): void
+    + getDistance(): float
+    + update(): void
+  }
+
+  class Servo {
+    + init(): void
+    + setPosition(position: int): void
+    + setToMiddle(): void
+    + distanceToPosition(distance: float): int
+    + valueToPosition(value: int): int
+  }
+
+  class UART {
+    + init(): void
+    + sendMessage(message: char*): void
+    + receiveMessage(): char*
+  }
 }
 
-class HC_SR04 {
-  - trigger_port: GPIO_TypeDef
-  - trigger_pin: uint16_t
-  - echo_port: GPIO_TypeDef
-  - echo_pin: uint16_t
-  - timer: TIM_HandleTypeDef
-  + distance: float
-  + get_instance(): HC_SR04
-  + init(): void
-  + get_distance(): float
-  + update(mode: int): void
-  - Delay_Microseconds(us: uint32_t): void
+package "Raspberry Pi" {
+  class RPI_Main {
+    - currentMode: int
+    - currentDistance: float
+    - serialFd: int
+    + main(): int
+    - handleUserInput(): void
+    - printHelp(): void
+  }
+
+  class GPIO {
+    + setupGPIO(): int
+    + writeGPIO(pin: int, value: int): void
+  }
+
+  class ServoControl {
+    + distanceToPosition(distance: float): int
+    + valueToPosition(value: int): int
+    + pwmThread(): void
+    + servoControlThread(): void
+  }
+
+  class SerialComm {
+    + openConnection(): int
+    + sendCommand(command: char*): void
+    + receiveDataThread(): void
+  }
 }
 
-class HC_SR04_Constants <<utility>> {
-  +  TRIGGER_PIN: uint16_t = GPIO_PIN_8
-  +  ECHO_PIN: uint16_t = GPIO_PIN_9
-  +  GPIO_PORT: GPIO_TypeDef = GPIOA
+' Énumérations simplifiées
+enum "États du système" as SystemState {
+  IDLE
+  MODE1 (suivi capteur)
+  MODE2 (contrôle manuel)
 }
 
-class Servo {
-  + init(): void
-  + setPosition(position: uint32_t): void
-  + setToMiddle(): void
-  + distanceToPosition(distance: float): uint32_t
-  + valueToPosition(value: uint8_t): uint32_t
+' Constantes partagées
+class "Constantes communes" as Constants {
+  + SERVO_MIN_POSITION: int = 1000
+  + SERVO_MID_POSITION: int = 1500
+  + SERVO_MAX_POSITION: int = 2000
+  + SERVO_MIN_DISTANCE: float = 5.0
+  + SERVO_MAX_DISTANCE: float = 25.0
+  + SERVO_MIN_VALUE: int = 1
+  + SERVO_MAX_VALUE: int = 12
 }
 
-class ServoConstants <<utility>> {
-  +  MIN_POSITION: uint32_t = 1000
-  +  MID_POSITION: uint32_t = 1500
-  +  MAX_POSITION: uint32_t = 2000
-  +  MIN_DISTANCE: float = 5.0f
-  +  MAX_DISTANCE: float = 25.0f
-  +  MIN_VALUE: uint8_t = 1
-  +  MAX_VALUE: uint8_t = 12
-}
+' Relations STM32 - simplifiées
+Main --> HC_SR04 : utilise
+Main --> Servo : contrôle
+Main --> UART : communique
+Main --> SystemState : utilise
 
-class USART_COMM {
-  - rxBuffer: uint8_t[]
-  - txBuffer: uint8_t[]
-  + sendMessage(message: char): void
-  + receiveMessage(buffer: char, maxSize: size_t): int
-}
+' Relations Raspberry Pi - simplifiées
+RPI_Main --> GPIO : utilise
+RPI_Main --> ServoControl : contrôle
+RPI_Main --> SerialComm : communique
 
-class USART_Constants <<utility>> {
-  +  TIMEOUT: uint32_t = 1000
-  +  BUFFER_SIZE: size_t = 256
-}
+' Relation STM32 - Raspberry Pi
+SerialComm <--> UART : communication UART
 
-' Énumérations
-enum SystemState {
-  STATE_IDLE
-  STATE_MODE1
-  STATE_MODE2
-}
+' Relations avec constantes - simplifiées
+HC_SR04 ..> Constants : utilise
+Servo ..> Constants : utilise
+ServoControl ..> Constants : utilise
 
-enum Command {
-  CMD_NONE
-  CMD_MODE1
-  CMD_MODE2
-  CMD_QUIT
-  CMD_VALUE
-}
+' Threads Raspberry Pi
+note right of ServoControl
+  Utilise plusieurs threads:
+  - Thread PWM pour générer le signal servo
+  - Thread de contrôle pour calculer position
+end note
 
-' Hardware interfaces
-class TIM {
-  + TIM1
-  + TIM3
-}
+note right of SerialComm
+  Thread dédié pour recevoir 
+  données depuis STM32
+end note
 
-class GPIO {
-  + GPIOA
-  + GPIOD
-}
+note right of RPI_Main
+  Thread principal pour
+  interface utilisateur
+end note
 
-class UART {
-  +  huart2
-}
+' Note explicative globale
+note bottom of Constants
+  Le système utilise la communication UART entre STM32 et Raspberry Pi
+  pour contrôler deux servo-moteurs selon différents modes.
+  Les deux plateformes partagent des constantes et des modes de fonctionnement communs.
+end note
 
-' Relations
-Main "1" --> "1" SystemState : utilise
-Main "1" --> "1" Command : utilise
-Main "1" --> "1" HC_SR04 : utilise
-Main "1" --> "1" Servo : utilise
-Main "1" --> "1" USART_COMM : utilise
-
-HC_SR04 ..> HC_SR04_Constants : utilise
-HC_SR04 ..> TIM : utilise
-HC_SR04 ..> GPIO : utilise
-HC_SR04 ..> USART_COMM : utilise pour logging
-
-Servo ..> ServoConstants : utilise
-Servo ..> TIM : utilise
-
-USART_COMM ..> USART_Constants : utilise
-USART_COMM ..> UART : utilise
-
-title Diagramme de classe du projet global
+title Diagramme de classe simplifié - Système distribué STM32/Raspberry Pi
 footer Projet Capteur à Actionneur – Mai 2025
-
 @enduml

@@ -10,41 +10,46 @@ participant "USART_COMM" as USART #LightPink
 title Diagramme de séquence : Traitement des commandes utilisateur
 
 ' Mise à jour initiale avec une note explicative
-note over Main, HCSR04: Mise à jour périodique des capteurs
-Main -> HCSR04: HC_SR04_update(sensor, mode)
+note over Main, HCSR04: Lecture constante des caractères entrants via UART
 
-' Communication série avec l'utilisateur
-alt message reçu de l'utilisateur
+alt message complet reçu entre délimiteurs < et >
   User -> USART: envoi commande
   activate USART
-  USART -> Main: receiveMessage() retourne message complet
+  USART -> Main: message complet détecté et transmis
   deactivate USART
   activate Main
   
   note right of Main: Analyse syntaxique de la commande
-  Main -> Main: parseCommand() analyse la commande
   
   alt commande = "mode1"
-    Main -> Main: currentState = STATE_MODE1, mode = 1
-    Main -> USART: sendMessage("Mode 1 activated...")
+    Main -> Main: currentState = STATE_MODE1
+    Main -> USART: sendMessage("Mode 1 activated")
     note right: La LED bleue sera allumée au prochain updateSystem()
   else commande = "mode2"
-    Main -> Main: currentState = STATE_MODE2, mode = 2
-    Main -> USART: sendMessage("Mode 2 activated...")
+    Main -> Main: currentState = STATE_MODE2
+    Main -> USART: sendMessage("Mode 2 activated")
     note right: La LED verte sera allumée au prochain updateSystem()
   else commande = "quit"
     Main -> Main: currentState = STATE_IDLE
     Main -> USART: sendMessage("Returned to idle state")
     note right: Les LEDs seront éteintes au prochain updateSystem()
+  else commande = "getdistance"
+    Main -> HCSR04: distance = HC_SR04_GetDistance()
+    Main -> USART: sendMessage("LastDistance: %.2f cm", distance)
+    note right: Commande spéciale pour obtenir la distance actuelle
+  else commande = "demo"
+    Main -> Main: Lance séquence de démonstration
+    Main -> USART: sendMessage("Demo mode activated")
+    note right: Mode spécial pour démonstration
   else commande = valeur entre 1-12
-    alt si en MODE2
-      Main -> Main: servoPosition = value
-      Main -> USART: sendMessage("Servo position set to " + value)
+    alt si currentState == STATE_MODE2
+      Main -> Main: servoPosition = valeur
+      Main -> USART: sendMessage("Servo position set to %d", valeur)
     else
       Main -> USART: sendMessage("Error: Can only set position in MODE2")
     end
   else
-    Main -> USART: sendMessage("Unknown command: " + command)
+    Main -> USART: sendMessage("Unknown command: %s", command)
   end
   deactivate Main
 end

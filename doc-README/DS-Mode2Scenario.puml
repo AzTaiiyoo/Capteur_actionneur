@@ -14,10 +14,10 @@ USART -> Main: Notification de commande
 deactivate USART
 activate Main
 
-Main -> Main: Passe en MODE2
-note right: currentState = STATE_MODE2
-Main -> Main: Allume LED_VERT_Pin
-Main -> USART: sendMessage("Mode 2 activated...")
+Main -> Main: currentState = STATE_MODE2
+note right: Changement d'état
+Main -> Main: Allume LED_VERT_Pin, éteint LED_BLEU_Pin
+Main -> USART: sendMessage("Mode 2 activated")
 deactivate Main
 
 ' Envoi d'une valeur de position
@@ -27,6 +27,7 @@ USART -> Main: Notification de valeur
 deactivate USART
 activate Main
 
+Main -> Main: Vérifie si en Mode 2
 Main -> Main: servoPosition = 8
 note right: Stockage de la\nvaleur reçue
 Main -> USART: sendMessage("Servo position set to 8")
@@ -34,10 +35,16 @@ Main -> USART: sendMessage("Servo position set to 8")
 ' Calcul et application de la position
 Main -> Servo: position = Servo_ValueToPosition(8)
 activate Servo
-note right: Conversion linéaire\n1 → 0°\n12 → 180°
+note right: Conversion linéaire\n1 → 1000µs (0°)\n12 → 2000µs (180°)
 Servo --> Main: retourne position calculée (entre 1000-2000µs)
 deactivate Servo
 Main -> Servo: Servo_SetPosition(position)
+
+' Continuer à mesurer et envoyer la distance
+Main -> Main: Mesure de distance en arrière-plan
+Main -> USART: Envoi périodique de "Distance: xx.xx cm"
+note right: Le servo Raspberry Pi\ncontinue de suivre\nle capteur
+
 deactivate Main
 
 footer Projet Capteur à Actionneur – Mai 2025

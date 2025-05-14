@@ -13,7 +13,7 @@ title Diagramme de séquence principal du projet
 ' Initialisation avec activation
 == Initialisation ==
 activate Main
-Main -> HCSR04: HC_SR04_init()
+Main -> HCSR04: HC_SR04_Init()
 activate HCSR04
 HCSR04 --> Main: initialisation réussie
 deactivate HCSR04
@@ -23,8 +23,13 @@ activate Servo
 Servo --> Main: initialisation réussie
 deactivate Servo
 
+Main -> USART: USART_Init()
+activate USART
+USART --> Main: initialisation réussie
+deactivate USART
+
 Main -> Servo: Servo_SetToMiddle()
-Main -> USART: sendMessage("System ready...")
+Main -> USART: sendMessage("System ready")
 activate USART
 USART --> Main: message envoyé
 deactivate USART
@@ -51,6 +56,12 @@ end ref
 
 ref over User, Main, Servo, USART
   Scénario: Mode 2 - Consigne utilisateur
+end ref
+
+' Scénario spécifique Raspberry Pi
+== Système distribué Raspberry Pi - STM32 ==
+ref over User, Main, Servo, USART
+  Threads Raspberry Pi - Communication avec STM32
 end ref
 
 deactivate Main
